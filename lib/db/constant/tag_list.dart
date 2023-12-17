@@ -7,56 +7,56 @@ final dummyTagList = [
   ColorLabelModel(
     id: _uuid.v4(),
     labelName: '要件定義',
-    color: colorList[0].color,
+    colorModel: colorList[0],
   ),
   ColorLabelModel(
     id: _uuid.v4(),
     labelName: '基本設計',
-    color: colorList[1].color,
+    colorModel: colorList[1],
   ),
   ColorLabelModel(
     id: _uuid.v4(),
     labelName: '詳細設計',
-    color: colorList[2].color,
+    colorModel: colorList[2],
   ),
   ColorLabelModel(
     id: _uuid.v4(),
     labelName: '画面設計書作成',
-    color: colorList[3].color,
+    colorModel: colorList[3],
   ),
   ColorLabelModel(
     id: _uuid.v4(),
     labelName: 'API設計書作成',
-    color: colorList[4].color,
+    colorModel: colorList[4],
   ),
   ColorLabelModel(
     id: _uuid.v4(),
     labelName: '画面設計書修正',
-    color: colorList[5].color,
+    colorModel: colorList[5],
   ),
   ColorLabelModel(
     id: _uuid.v4(),
     labelName: 'API設計書修正',
-    color: colorList[6].color,
+    colorModel: colorList[6],
   ),
   ColorLabelModel(
     id: _uuid.v4(),
     labelName: '新規実装',
-    color: colorList[7].color,
+    colorModel: colorList[7],
   ),
   ColorLabelModel(
     id: _uuid.v4(),
     labelName: '実装修正',
-    color: colorList[8].color,
+    colorModel: colorList[8],
   ),
   ColorLabelModel(
     id: _uuid.v4(),
     labelName: 'バグ対応',
-    color: colorList[9].color,
+    colorModel: colorList[9],
   ),
   ColorLabelModel(
     id: _uuid.v4(),
     labelName: 'レビュー',
-    color: colorList[10].color,
+    colorModel: colorList[10],
   ),
 ];

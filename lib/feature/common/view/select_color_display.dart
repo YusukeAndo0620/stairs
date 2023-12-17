@@ -17,7 +17,7 @@ class SelectColorDisplay extends ConsumerWidget {
   });
   final String title;
   final Color selectedColorInfo;
-  final Function(Color) onTapBackIcon;
+  final Function(ColorModel) onTapBackIcon;
   final Function(int) onTap;
 
   @override
@@ -53,7 +53,7 @@ class SelectColorDisplay extends ConsumerWidget {
           ),
           onPressed: () {
             if (selectColorNotifier != null) {
-              onTapBackIcon(selectColorNotifier!.selectedColorInfo.color);
+              onTapBackIcon(selectColorNotifier!.selectedColorInfo);
             }
             Navigator.of(context).pop();
           },

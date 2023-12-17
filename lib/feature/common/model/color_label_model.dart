@@ -4,26 +4,22 @@ class ColorLabelModel {
   ColorLabelModel({
     required this.id,
     required this.labelName,
-    required this.color,
-    this.devLangId,
+    required this.colorModel,
   });
 
   final String id;
   final String labelName;
-  final Color color;
-  final String? devLangId;
+  final ColorModel colorModel;
 
   factory ColorLabelModel.fromJson(dynamic json) {
     final id = json['id'];
     final labelName = json['name'];
-    final color = getColorFromCode(code: json['color_id']);
-    final devLangId = (json['dev_lang_id']);
+    final colorModel = json['color_model'];
 
     final model = ColorLabelModel(
       id: id,
       labelName: labelName,
-      color: color,
-      devLangId: devLangId,
+      colorModel: colorModel,
     );
 
     return model;
@@ -33,8 +29,7 @@ class ColorLabelModel {
     final Map<String, dynamic> data = {};
     data['id'] = id;
     data['name'] = labelName;
-    data['color_id'] = color.getColorId;
-    data['dev_lang_id'] = devLangId;
+    data['color_model'] = colorModel;
 
     return data;
   }
@@ -45,8 +40,7 @@ class ColorLabelModel {
       ColorLabelModel{
         id: $id,
         name: $labelName,
-        color_id: ${color.getColorId},
-        dev_lang_id: $devLangId,
+        color_model: $colorModel,
       }
     ''';
   }

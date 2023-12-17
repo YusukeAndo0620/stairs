@@ -62,7 +62,7 @@ class ProjectListDisplay extends StatelessWidget {
                     ProjectListItem(
                       projectId: listItem.projectId,
                       projectName: listItem.projectName,
-                      themeColor: listItem.themeColor,
+                      themeColor: listItem.themeColorModel.color,
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) {

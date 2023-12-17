@@ -1,3 +1,4 @@
+import 'package:stairs/db/provider/database_provider.dart';
 import 'package:stairs/feature/project/component/provider/dev_lang_provider.dart';
 import 'package:stairs/feature/project/provider/project_detail_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
@@ -55,10 +56,17 @@ class ProjectEditModal extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = LoomTheme.of(context);
     //プロジェクト詳細
-    final projectDetailState =
-        ref.watch(projectDetailProvider(projectId: projectId));
+    final projectDetailState = ref.watch(projectDetailProvider(
+        projectId: projectId, database: ref.watch(databaseProvider)));
+
+    // Notifier
+    final projectDetailNotifier = ref.watch(projectDetailProvider(
+            projectId: projectId, database: ref.watch(databaseProvider))
+        .notifier);
+
     //開発言語一覧
-    final devLangState = ref.watch(devLangProvider);
+    final devLangState =
+        ref.watch(devLangProvider(db: ref.watch(databaseProvider)));
 
     return Modal(
       buildMainContent: projectDetailState.when(
@@ -83,10 +91,8 @@ class ProjectEditModal extends ConsumerWidget {
                         inputValue: detail.projectName,
                         hintText: _kProjectHintTxt,
                         onSubmitted: (projectName) {
-                          final notifier = ref.read(
-                              projectDetailProvider(projectId: projectId)
-                                  .notifier);
-                          notifier.changeProjectName(projectName: projectName);
+                          projectDetailNotifier.changeProjectName(
+                              projectName: projectName);
                         }),
                     // 色,
                     CardLstItem.labeWithIcon(
@@ -96,7 +102,7 @@ class ProjectEditModal extends ConsumerWidget {
                       hintText: _kColorHintTxt,
                       itemList: [
                         ColorBox(
-                          color: detail.themeColor,
+                          color: detail.themeColorModel.color,
                         ),
                       ],
                       onTap: () => Navigator.of(context).push(
@@ -104,13 +110,11 @@ class ProjectEditModal extends ConsumerWidget {
                           builder: (context) {
                             return SelectColorDisplay(
                               title: _kColorTxt,
-                              selectedColorInfo: detail.themeColor,
+                              selectedColorInfo: detail.themeColorModel.color,
                               onTap: (id) {},
-                              onTapBackIcon: (colorInfo) {
-                                final notifier = ref.read(
-                                    projectDetailProvider(projectId: projectId)
-                                        .notifier);
-                                notifier.changeThemeColor(colorInfo: colorInfo);
+                              onTapBackIcon: (colorModel) {
+                                projectDetailNotifier.changeThemeColor(
+                                    colorModel: colorModel);
                               },
                             );
                           },
@@ -126,10 +130,8 @@ class ProjectEditModal extends ConsumerWidget {
                         inputValue: detail.industry,
                         hintText: _kIndustryHintTxt,
                         onSubmitted: (industry) {
-                          final notifier = ref.read(
-                              projectDetailProvider(projectId: projectId)
-                                  .notifier);
-                          notifier.changeIndustry(industry: industry);
+                          projectDetailNotifier.changeIndustry(
+                              industry: industry);
                         }),
                     // 期日
                     CardLstItem.labeWithIcon(
@@ -171,10 +173,7 @@ class ProjectEditModal extends ConsumerWidget {
                         );
 
                         if (range != null) {
-                          final notifier = ref.read(
-                              projectDetailProvider(projectId: projectId)
-                                  .notifier);
-                          notifier.changeDueDate(
+                          projectDetailNotifier.changeDueDate(
                             startDate: range.start,
                             endDate: range.end,
                           );
@@ -191,10 +190,8 @@ class ProjectEditModal extends ConsumerWidget {
                       hintText: _kContentHintTxt,
                       maxLength: _kContentMaxLength,
                       onSubmitted: (description) {
-                        final notifier = ref.read(
-                            projectDetailProvider(projectId: projectId)
-                                .notifier);
-                        notifier.changeDescription(description: description);
+                        projectDetailNotifier.changeDescription(
+                            description: description);
                       },
                     ),
                     // OS,
@@ -219,10 +216,7 @@ class ProjectEditModal extends ConsumerWidget {
                               hintText: _kOsInputHintTxt,
                               emptyText: _kOsListEmptyTxt,
                               onTapBack: (data) {
-                                final notifier = ref.read(
-                                    projectDetailProvider(projectId: projectId)
-                                        .notifier);
-                                notifier.changeOs(
+                                projectDetailNotifier.changeOs(
                                     osList: (data as List<LabelModel>));
                               },
                             );
@@ -252,10 +246,7 @@ class ProjectEditModal extends ConsumerWidget {
                               hintText: _kDbInputHintTxt,
                               emptyText: _kDbListEmptyTxt,
                               onTapBack: (data) {
-                                final notifier = ref.read(
-                                    projectDetailProvider(projectId: projectId)
-                                        .notifier);
-                                notifier.changeDb(
+                                projectDetailNotifier.changeDb(
                                     dbList: (data as List<LabelModel>));
                               },
                             );
@@ -286,10 +277,7 @@ class ProjectEditModal extends ConsumerWidget {
                               labeList: devLangState.value ?? [],
                               selectedList: detail.devLanguageList,
                               onTapBack: (data) {
-                                final notifier = ref.read(
-                                    projectDetailProvider(projectId: projectId)
-                                        .notifier);
-                                notifier.changeDevLanguageList(
+                                projectDetailNotifier.changeDevLanguageList(
                                     devLanguageList: (data));
                               },
                             );
@@ -319,10 +307,7 @@ class ProjectEditModal extends ConsumerWidget {
                               hintText: _kToolInputHintTxt,
                               emptyText: _kToolListEmptyTxt,
                               onTapBack: (data) {
-                                final notifier = ref.read(
-                                    projectDetailProvider(projectId: projectId)
-                                        .notifier);
-                                notifier.changeToolList(
+                                projectDetailNotifier.changeToolList(
                                     toolList: (data as List<LabelModel>));
                               },
                             );
@@ -352,10 +337,7 @@ class ProjectEditModal extends ConsumerWidget {
                               selectedLabelList: detail.devProgressList,
                               onTap: (id) {},
                               onTapBackIcon: (labelList) {
-                                final notifier = ref.read(
-                                    projectDetailProvider(projectId: projectId)
-                                        .notifier);
-                                notifier.changeDevProgressList(
+                                projectDetailNotifier.changeDevProgressList(
                                   devProgressList: labelList,
                                 );
                               },
@@ -374,10 +356,7 @@ class ProjectEditModal extends ConsumerWidget {
                       ),
                       hintText: _kDevSizeHintTxt,
                       onSubmitted: (devSize) {
-                        final notifier = ref.read(
-                            projectDetailProvider(projectId: projectId)
-                                .notifier);
-                        notifier.changeDevSize(
+                        projectDetailNotifier.changeDevSize(
                           devSize: int.parse(devSize),
                         );
                       },
@@ -399,7 +378,7 @@ class ProjectEditModal extends ConsumerWidget {
                         for (final item in detail.tagList)
                           LabelTip(
                             label: item.labelName,
-                            themeColor: item.color,
+                            themeColor: item.colorModel.color,
                           )
                       ],
                       onTap: () => Navigator.of(context).push(
@@ -409,10 +388,7 @@ class ProjectEditModal extends ConsumerWidget {
                               title: _kLabelTxt,
                               tagList: detail.tagList,
                               onTapBack: (data) {
-                                final notifier = ref.read(
-                                    projectDetailProvider(projectId: projectId)
-                                        .notifier);
-                                notifier.changeTagList(
+                                projectDetailNotifier.changeTagList(
                                   tagList: (data as List<ColorLabelModel>),
                                 );
                               },

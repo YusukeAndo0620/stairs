@@ -1,3 +1,4 @@
+import 'package:stairs/db/database.dart';
 import 'package:stairs/feature/project/model/project_detail_model.dart';
 import 'package:stairs/feature/project/repository/project_repository.dart';
 import 'package:stairs/loom/loom_package.dart';
@@ -9,7 +10,8 @@ const _uuid = Uuid();
 final _initialProjectDetailModel = ProjectDetailModel(
   projectId: _uuid.v4(),
   projectName: '',
-  themeColor: const  Color.fromARGB(255, 255, 31, 31),
+  themeColorModel:
+      ColorModel(id: 1, color: const Color.fromARGB(255, 255, 31, 31)),
   industry: '',
   displayCount: 145,
   startDate: DateTime(2010, 1, 1),
@@ -23,42 +25,29 @@ final _initialProjectDetailModel = ProjectDetailModel(
 
 @riverpod
 class ProjectDetail extends _$ProjectDetail {
-  // Repository(APIの取得)の状態を管理する
-  final brandDetailRepositoryProvider = Provider((ref) => ProjectRepository());
   final _logger = stairsLogger(name: 'project_detail');
 
   @override
-  FutureOr<ProjectDetailModel?> build({required String projectId}) async {
+  FutureOr<ProjectDetailModel?> build(
+      {required String projectId, required StairsDatabase database}) async {
     _logger.d('build実施 projectId: $projectId');
-    return getDetail(projectId: projectId);
+    return getDetail(projectId: projectId, database: database);
   }
 
-  Future<ProjectDetailModel?> getDetail({required String projectId}) async {
+  Future<ProjectDetailModel?> getDetail(
+      {required String projectId, required StairsDatabase database}) async {
     _logger.d('getProjectDetail: プロジェクト取得 projectId: $projectId');
-
+    // Repository(APIの取得)の状態を管理する
+    final projectRepositoryProvider =
+        Provider((ref) => ProjectRepository(db: database));
     if (projectId.isEmpty) {
       return _initialProjectDetailModel;
     } else {
       // API通信開始
-      final repository = ref.read(brandDetailRepositoryProvider);
+      final repository = ref.read(projectRepositoryProvider);
       final detail = await repository.getProjectDetail(projectId: projectId);
       return detail;
     }
-  }
-
-  Future<void> setDetail({required String projectId}) async {
-    _logger.d('setDetail: プロジェクト取得 projectId: $projectId');
-    final detail = await getDetail(projectId: projectId);
-    update(
-      (data) {
-        state = const AsyncLoading();
-        return data = detail;
-      },
-      onError: (error, stack) {
-        state = AsyncError(error, stack);
-        throw Exception(error);
-      },
-    );
   }
 
   Future<void> updateDetail() async {}
@@ -77,11 +66,11 @@ class ProjectDetail extends _$ProjectDetail {
     );
   }
 
-  void changeThemeColor({required Color colorInfo}) {
+  void changeThemeColor({required ColorModel colorModel}) {
     update(
       (data) {
         state = const AsyncLoading();
-        return data = data!.copyWith(themeColor: colorInfo);
+        return data = data!.copyWith(themeColorModel: colorModel);
       },
       onError: (error, stack) {
         state = AsyncError(error, stack);

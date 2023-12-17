@@ -3,7 +3,7 @@ import 't_project.dart';
 
 /// OS
 @TableIndex(name: 'os_id', columns: {#osId})
-class TOs extends Table {
+class TOsInfo extends Table {
   TextColumn get osId => text().withLength(min: 1, max: 50)();
   TextColumn get name => text().withLength(min: 1, max: 100)();
   TextColumn get projectId =>

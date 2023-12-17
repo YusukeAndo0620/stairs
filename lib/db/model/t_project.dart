@@ -15,6 +15,8 @@ class TProject extends Table {
   TextColumn get endDate =>
       text().clientDefault(() => DateTime.now().toIso8601String())();
   TextColumn get description => text().withLength(min: 1, max: 500)();
+  IntColumn get devSize => integer()();
+
   TextColumn get accountId =>
       text().withLength(min: 1, max: 50).references(MAccount, #accountId)();
 

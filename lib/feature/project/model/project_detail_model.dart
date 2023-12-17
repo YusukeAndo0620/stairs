@@ -4,7 +4,7 @@ class ProjectDetailModel {
   ProjectDetailModel({
     required this.projectId,
     required this.projectName,
-    required this.themeColor,
+    required this.themeColorModel,
     required this.industry,
     this.displayCount = 0,
     required this.startDate,
@@ -25,8 +25,8 @@ class ProjectDetailModel {
   /// プロジェクト名
   final String projectName;
 
-  /// カラーID
-  final Color themeColor;
+  /// カラー
+  final ColorModel themeColorModel;
 
   /// 業種
   final String industry;
@@ -67,7 +67,7 @@ class ProjectDetailModel {
   ProjectDetailModel copyWith({
     String? projectId,
     String? projectName,
-    Color? themeColor,
+    ColorModel? themeColorModel,
     String? industry,
     int? displayCount,
     DateTime? startDate,
@@ -84,7 +84,7 @@ class ProjectDetailModel {
       ProjectDetailModel(
         projectId: projectId ?? this.projectId,
         projectName: projectName ?? this.projectName,
-        themeColor: themeColor ?? this.themeColor,
+        themeColorModel: themeColorModel ?? this.themeColorModel,
         industry: industry ?? this.industry,
         displayCount: displayCount ?? this.displayCount,
         startDate: startDate ?? this.startDate,

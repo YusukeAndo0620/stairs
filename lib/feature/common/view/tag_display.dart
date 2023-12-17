@@ -84,7 +84,7 @@ class TagDisplay extends ConsumerWidget {
                               linkHintText: _kColorHintText,
                               linkedWidgets: [
                                 ColorBox(
-                                  color: info.color,
+                                  color: info.colorModel.color,
                                 ),
                               ],
                               onTextSubmitted: (value, id) {
@@ -96,11 +96,12 @@ class TagDisplay extends ConsumerWidget {
                                   builder: (context) {
                                     return SelectColorDisplay(
                                       title: _kColorTxt,
-                                      selectedColorInfo: info.color,
+                                      selectedColorInfo: info.colorModel.color,
                                       onTap: (id) {},
-                                      onTapBackIcon: (colorInfo) {
+                                      onTapBackIcon: (colorModel) {
                                         tagNotifier.updateLinkColor(
-                                            id: id, themeColor: colorInfo);
+                                            id: id,
+                                            themeColorModel: colorModel);
                                       },
                                     );
                                   },

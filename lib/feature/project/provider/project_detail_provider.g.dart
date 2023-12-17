@@ -6,7 +6,7 @@ part of 'project_detail_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$projectDetailHash() => r'97875d08d42d1a57439e6458440fd71ffcf34c5f';
+String _$projectDetailHash() => r'ab6a98969a1f0048971037d2c2ed70f292b37381';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -32,9 +32,11 @@ class _SystemHash {
 abstract class _$ProjectDetail
     extends BuildlessAutoDisposeAsyncNotifier<ProjectDetailModel?> {
   late final String projectId;
+  late final StairsDatabase database;
 
   FutureOr<ProjectDetailModel?> build({
     required String projectId,
+    required StairsDatabase database,
   });
 }
 
@@ -50,9 +52,11 @@ class ProjectDetailFamily extends Family<AsyncValue<ProjectDetailModel?>> {
   /// See also [ProjectDetail].
   ProjectDetailProvider call({
     required String projectId,
+    required StairsDatabase database,
   }) {
     return ProjectDetailProvider(
       projectId: projectId,
+      database: database,
     );
   }
 
@@ -62,6 +66,7 @@ class ProjectDetailFamily extends Family<AsyncValue<ProjectDetailModel?>> {
   ) {
     return call(
       projectId: provider.projectId,
+      database: provider.database,
     );
   }
 
@@ -86,8 +91,11 @@ class ProjectDetailProvider extends AutoDisposeAsyncNotifierProviderImpl<
   /// See also [ProjectDetail].
   ProjectDetailProvider({
     required String projectId,
+    required StairsDatabase database,
   }) : this._internal(
-          () => ProjectDetail()..projectId = projectId,
+          () => ProjectDetail()
+            ..projectId = projectId
+            ..database = database,
           from: projectDetailProvider,
           name: r'projectDetailProvider',
           debugGetCreateSourceHash:
@@ -98,6 +106,7 @@ class ProjectDetailProvider extends AutoDisposeAsyncNotifierProviderImpl<
           allTransitiveDependencies:
               ProjectDetailFamily._allTransitiveDependencies,
           projectId: projectId,
+          database: database,
         );
 
   ProjectDetailProvider._internal(
@@ -108,9 +117,11 @@ class ProjectDetailProvider extends AutoDisposeAsyncNotifierProviderImpl<
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.projectId,
+    required this.database,
   }) : super.internal();
 
   final String projectId;
+  final StairsDatabase database;
 
   @override
   FutureOr<ProjectDetailModel?> runNotifierBuild(
@@ -118,6 +129,7 @@ class ProjectDetailProvider extends AutoDisposeAsyncNotifierProviderImpl<
   ) {
     return notifier.build(
       projectId: projectId,
+      database: database,
     );
   }
 
@@ -126,13 +138,16 @@ class ProjectDetailProvider extends AutoDisposeAsyncNotifierProviderImpl<
     return ProviderOverride(
       origin: this,
       override: ProjectDetailProvider._internal(
-        () => create()..projectId = projectId,
+        () => create()
+          ..projectId = projectId
+          ..database = database,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         projectId: projectId,
+        database: database,
       ),
     );
   }
@@ -145,13 +160,16 @@ class ProjectDetailProvider extends AutoDisposeAsyncNotifierProviderImpl<
 
   @override
   bool operator ==(Object other) {
-    return other is ProjectDetailProvider && other.projectId == projectId;
+    return other is ProjectDetailProvider &&
+        other.projectId == projectId &&
+        other.database == database;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, projectId.hashCode);
+    hash = _SystemHash.combine(hash, database.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -161,6 +179,9 @@ mixin ProjectDetailRef
     on AutoDisposeAsyncNotifierProviderRef<ProjectDetailModel?> {
   /// The parameter `projectId` of this provider.
   String get projectId;
+
+  /// The parameter `database` of this provider.
+  StairsDatabase get database;
 }
 
 class _ProjectDetailProviderElement
@@ -170,6 +191,8 @@ class _ProjectDetailProviderElement
 
   @override
   String get projectId => (origin as ProjectDetailProvider).projectId;
+  @override
+  StairsDatabase get database => (origin as ProjectDetailProvider).database;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

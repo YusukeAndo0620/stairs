@@ -5,11 +5,13 @@ List<ProjectListItemModel> dummyProjectList = [
   ProjectListItemModel(
     projectId: '1',
     projectName: '某生命保険リプレース案件',
-    themeColor: const Color.fromARGB(255, 255, 31, 31),
+    themeColorModel:
+        ColorModel(id: 1, color: const Color.fromARGB(255, 255, 31, 31)),
   ),
   ProjectListItemModel(
     projectId: '2',
     projectName: '某小売業顧客管理システムリニューアル案件',
-    themeColor: const Color.fromARGB(255, 11, 255, 3),
+    themeColorModel:
+        ColorModel(id: 3, color: const Color.fromARGB(255, 11, 255, 3)),
   ),
 ];

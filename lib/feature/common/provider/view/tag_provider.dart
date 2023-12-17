@@ -18,8 +18,9 @@ class Tag extends _$Tag {
     );
   }
 
-  void updateLinkColor({required String id, required Color themeColor}) {
-    state = _getReplacedList(targetId: id, themeColor: themeColor);
+  void updateLinkColor(
+      {required String id, required ColorModel themeColorModel}) {
+    state = _getReplacedList(targetId: id, themeColorModel: themeColorModel);
   }
 
   void formatTagList() {
@@ -32,7 +33,10 @@ class Tag extends _$Tag {
     final addingColorLabelInfo = ColorLabelModel(
       id: _uuid.v4(),
       labelName: '',
-      color: const Color.fromARGB(255, 255, 31, 31),
+      colorModel: ColorModel(
+        id: 1,
+        color: const Color.fromARGB(255, 255, 31, 31),
+      ),
     );
 
     final targetLinkLabelList = [...state];
@@ -56,7 +60,7 @@ class Tag extends _$Tag {
   List<ColorLabelModel> _getReplacedList({
     required String targetId,
     String? inputValue,
-    Color? themeColor,
+    ColorModel? themeColorModel,
   }) {
     final targetIndex = state.indexWhere((element) => element.id == targetId);
     final replacedList = [...state];
@@ -64,7 +68,7 @@ class Tag extends _$Tag {
     final editTarget = ColorLabelModel(
       id: targetId,
       labelName: inputValue ?? state[targetIndex].labelName,
-      color: themeColor ?? state[targetIndex].color,
+      colorModel: themeColorModel ?? state[targetIndex].colorModel,
     );
 
     replacedList.replaceRange(targetIndex, targetIndex + 1, [editTarget]);

@@ -11,7 +11,7 @@ export 'model/t_dev_progress_rel.dart';
 export 'model/t_tag.dart';
 export 'model/t_tag_rel.dart';
 export 'model/t_tool.dart';
-export 'model/t_os.dart';
+export 'model/t_os_info.dart';
 export 'model/t_db.dart';
 export 'model/t_board.dart';
 export 'model/t_task.dart';

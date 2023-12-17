@@ -3,6 +3,15 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:stairs/db/dao/t_db_dao.dart';
+import 'package:stairs/db/dao/t_dev_lang_dao.dart';
+import 'package:stairs/db/dao/t_dev_lang_rel_dao.dart';
+import 'package:stairs/db/dao/t_dev_progress_rel_dao.dart';
+import 'package:stairs/db/dao/t_os_info_dao.dart';
+import 'package:stairs/db/dao/t_project_dao.dart';
+import 'package:stairs/db/dao/t_tag_rel_dao.dart';
+import 'package:stairs/db/dao/t_tool_dao.dart';
+import 'package:stairs/db/dummy/dummy_project_detail.dart';
 import 'package:stairs/feature/common/utils.dart';
 import 'package:stairs/loom/stairs_logger.dart';
 import 'package:uuid/uuid.dart';
@@ -31,7 +40,7 @@ final _logger = stairsLogger(name: 'database');
     TTag,
     TTagRel,
     TTool,
-    TOs,
+    TOsInfo,
     TDb,
     TBoard,
     TTask,
@@ -40,6 +49,14 @@ final _logger = stairsLogger(name: 'database');
   ],
   daos: [
     MAccountDao,
+    TProjectDao,
+    TOsInfoDao,
+    TDbDao,
+    TDevLangRelDao,
+    TToolDao,
+    TDevProgressRelDao,
+    TTagRelDao,
+    TDevLangDao,
   ],
 )
 class StairsDatabase extends _$StairsDatabase {
@@ -54,11 +71,10 @@ class StairsDatabase extends _$StairsDatabase {
           _logger.i('===Database: 作成開始====');
           await m.createAll();
           // アカウント
-          final accountId = _uuid.v4();
           await into(mAccount).insert(
-            MAccountCompanion(
-              accountId: Value(accountId),
-              address: const Value('ando08620@gmail.com'),
+            const MAccountCompanion(
+              accountId: Value('1'),
+              address: Value('ando08620@gmail.com'),
             ),
           );
           // カラー
@@ -94,44 +110,21 @@ class StairsDatabase extends _$StairsDatabase {
                 name: Value(dummyTagList[i].labelName),
                 colorId: Value(i),
                 isReadOnly: const Value(true),
-                accountId: Value(accountId),
+                accountId: const Value('1'),
               ),
             );
           }
-          await migrateFromUnixTimestampsToText(m);
+          // プロジェクトダミーダータ
+          for (final item in dummyProjectDetailList) {
+            await into(tProject).insert(item);
+          }
           _logger.i('===Database: 作成終了===');
         },
         onUpgrade: (m, from, to) async {
           _logger.i('===Database: 更新開始 schemaVersion: $schemaVersion===');
-          await migrateFromUnixTimestampsToText(m);
-
           _logger.i('===Database: 更新終了===');
         },
       );
-
-  Future<void> migrateFromUnixTimestampsToText(Migrator m) async {
-    for (final table in allTables) {
-      final dateTimeColumns =
-          table.$columns.where((c) => c.type == DriftSqlType.dateTime);
-
-      if (dateTimeColumns.isNotEmpty) {
-        // This table has dateTime columns which need to be migrated.
-        await m.alterTable(
-          TableMigration(
-            table,
-            columnTransformer: {
-              for (final column in dateTimeColumns)
-                // We assume that the column in the database is an int (unix
-                // timestamp), use `fromUnixEpoch` to convert it to a date time.
-                // Note that the resulting value in the database is in UTC.
-                column:
-                    DateTimeExpressions.fromUnixEpoch(column.dartCast<int>()),
-            },
-          ),
-        );
-      }
-    }
-  }
 }
 
 LazyDatabase _openConnection() {

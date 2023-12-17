@@ -4,22 +4,22 @@ class ProjectListItemModel {
   ProjectListItemModel({
     required this.projectId,
     required this.projectName,
-    required this.themeColor,
+    required this.themeColorModel,
   });
 
   final String projectId;
   final String projectName;
-  final Color themeColor;
+  final ColorModel themeColorModel;
 
   factory ProjectListItemModel.fromJson(dynamic json) {
     final projectId = json['projectId'];
     final projectName = json['projectName'];
-    final themeColor = getColorFromCode(code: json['themeColor']);
+    final themeColorModel = json['themeColorModel'];
 
     final model = ProjectListItemModel(
       projectId: projectId,
       projectName: projectName,
-      themeColor: themeColor,
+      themeColorModel: themeColorModel,
     );
 
     return model;
@@ -29,7 +29,7 @@ class ProjectListItemModel {
     final Map<String, dynamic> data = {};
     data['projectId'] = projectId;
     data['projectName'] = projectName;
-    data['themeColor'] = themeColor.getColorId;
+    data['themeColorModel'] = themeColorModel;
 
     return data;
   }
@@ -40,7 +40,7 @@ class ProjectListItemModel {
       ProjectListItemModel{
         projectId: $projectId, 
         projectName: $projectName, 
-        themeColor: ${themeColor.getColorId},
+        themeColorModel: $themeColorModel,
       }
     ''';
   }

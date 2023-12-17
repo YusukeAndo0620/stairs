@@ -201,9 +201,11 @@ class _TileContent extends ConsumerWidget {
                 padding: _kContentPadding,
                 margin: _kContentMargin,
                 decoration: BoxDecoration(
-                  color: info.checked ? info.color.withOpacity(0.7) : null,
+                  color: info.checked
+                      ? info.colorModel.color.withOpacity(0.7)
+                      : null,
                   border: Border.all(
-                    color: info.color,
+                    color: info.colorModel.color,
                     width: _kBorderWidth,
                   ),
                   borderRadius: BorderRadius.circular(5.0),
@@ -236,7 +238,7 @@ class _ListItem extends StatelessWidget {
       child: Row(
         children: [
           ColorBox(
-            color: info.color,
+            color: info.colorModel.color,
             size: _kCheckIconSize,
           ),
           const SizedBox(width: _kListItemSpace),

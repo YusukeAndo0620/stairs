@@ -13,9 +13,9 @@ class CommonRepository {
       _logger.i('getColorList 通信開始');
       final response = await database.select(database.mColor).get();
       _logger.i('取得データ：$response');
-      final targetData = _convertMColorToModel(colorData: response);
+      final responseData = _convertMColorToModel(colorData: response);
 
-      return targetData;
+      return responseData;
     } on Exception catch (exception) {
       _logger.e(exception);
       rethrow;
@@ -30,9 +30,10 @@ class CommonRepository {
       _logger.i('getDevProgressList 通信開始');
       final response = await database.select(database.mDevProgressList).get();
       _logger.i('取得データ：$response');
-      final targetData = _convertMDevProgressToModel(devProgressList: response);
+      final responseData =
+          _convertMDevProgressToModel(devProgressList: response);
 
-      return targetData;
+      return responseData;
     } on Exception catch (exception) {
       _logger.e(exception);
       rethrow;

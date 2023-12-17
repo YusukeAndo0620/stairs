@@ -1,3 +1,4 @@
+import 'package:stairs/db/database.dart';
 import 'package:stairs/feature/project/model/project_list_item_model.dart';
 import 'package:stairs/feature/project/repository/project_repository.dart';
 import 'package:stairs/loom/loom_package.dart';
@@ -7,37 +8,24 @@ part 'project_list_provider.g.dart';
 
 @riverpod
 class ProjectList extends _$ProjectList {
-  // Repository(APIの取得)の状態を管理する
-  final projectRepositoryProvider = Provider((ref) => ProjectRepository());
   final _logger = stairsLogger(name: 'project_list');
 
   @override
-  FutureOr<List<ProjectListItemModel>> build() async {
-    return getProjectList();
+  FutureOr<List<ProjectListItemModel>> build(
+      {required StairsDatabase database}) async {
+    return getProjectList(database: database);
   }
 
   /// データの取得メソッド
-  Future<void> setProjectList() async {
-    _logger.d('setProjectList: プロジェクト一覧セット');
-    final list = await getProjectList();
-    update(
-      (data) {
-        state = const AsyncLoading();
-        return data = list;
-      },
-      onError: (error, stack) {
-        state = AsyncError(error, stack);
-        throw Exception(error);
-      },
-    );
-  }
-
-  /// データの取得メソッド
-  Future<List<ProjectListItemModel>> getProjectList() async {
+  Future<List<ProjectListItemModel>> getProjectList(
+      {required StairsDatabase database}) async {
     _logger.d('getProjectList: プロジェクト一覧取得');
+    final projectRepositoryProvider =
+        Provider((ref) => ProjectRepository(db: database));
     // API通信開始
     final repository = ref.read(projectRepositoryProvider);
     final list = await repository.getProjectList() ?? [];
+    _logger.d('list: $list');
     return list;
   }
 }

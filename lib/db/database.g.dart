@@ -1547,6 +1547,12 @@ class $TProjectTable extends TProject
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 500),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
+  static const VerificationMeta _devSizeMeta =
+      const VerificationMeta('devSize');
+  @override
+  late final GeneratedColumn<int> devSize = GeneratedColumn<int>(
+      'dev_size', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _accountIdMeta =
       const VerificationMeta('accountId');
   @override
@@ -1584,6 +1590,7 @@ class $TProjectTable extends TProject
         startDate,
         endDate,
         description,
+        devSize,
         accountId,
         createAt,
         updateAt
@@ -1646,6 +1653,12 @@ class $TProjectTable extends TProject
     } else if (isInserting) {
       context.missing(_descriptionMeta);
     }
+    if (data.containsKey('dev_size')) {
+      context.handle(_devSizeMeta,
+          devSize.isAcceptableOrUnknown(data['dev_size']!, _devSizeMeta));
+    } else if (isInserting) {
+      context.missing(_devSizeMeta);
+    }
     if (data.containsKey('account_id')) {
       context.handle(_accountIdMeta,
           accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
@@ -1685,6 +1698,8 @@ class $TProjectTable extends TProject
           .read(DriftSqlType.string, data['${effectivePrefix}end_date'])!,
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      devSize: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}dev_size'])!,
       accountId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}account_id'])!,
       createAt: attachedDatabase.typeMapping
@@ -1709,6 +1724,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
   final String startDate;
   final String endDate;
   final String description;
+  final int devSize;
   final String accountId;
   final String createAt;
   final String updateAt;
@@ -1721,6 +1737,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       required this.startDate,
       required this.endDate,
       required this.description,
+      required this.devSize,
       required this.accountId,
       required this.createAt,
       required this.updateAt});
@@ -1735,6 +1752,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
     map['start_date'] = Variable<String>(startDate);
     map['end_date'] = Variable<String>(endDate);
     map['description'] = Variable<String>(description);
+    map['dev_size'] = Variable<int>(devSize);
     map['account_id'] = Variable<String>(accountId);
     map['create_at'] = Variable<String>(createAt);
     map['update_at'] = Variable<String>(updateAt);
@@ -1751,6 +1769,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       startDate: Value(startDate),
       endDate: Value(endDate),
       description: Value(description),
+      devSize: Value(devSize),
       accountId: Value(accountId),
       createAt: Value(createAt),
       updateAt: Value(updateAt),
@@ -1769,6 +1788,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       startDate: serializer.fromJson<String>(json['startDate']),
       endDate: serializer.fromJson<String>(json['endDate']),
       description: serializer.fromJson<String>(json['description']),
+      devSize: serializer.fromJson<int>(json['devSize']),
       accountId: serializer.fromJson<String>(json['accountId']),
       createAt: serializer.fromJson<String>(json['createAt']),
       updateAt: serializer.fromJson<String>(json['updateAt']),
@@ -1786,6 +1806,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       'startDate': serializer.toJson<String>(startDate),
       'endDate': serializer.toJson<String>(endDate),
       'description': serializer.toJson<String>(description),
+      'devSize': serializer.toJson<int>(devSize),
       'accountId': serializer.toJson<String>(accountId),
       'createAt': serializer.toJson<String>(createAt),
       'updateAt': serializer.toJson<String>(updateAt),
@@ -1801,6 +1822,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
           String? startDate,
           String? endDate,
           String? description,
+          int? devSize,
           String? accountId,
           String? createAt,
           String? updateAt}) =>
@@ -1813,6 +1835,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
         startDate: startDate ?? this.startDate,
         endDate: endDate ?? this.endDate,
         description: description ?? this.description,
+        devSize: devSize ?? this.devSize,
         accountId: accountId ?? this.accountId,
         createAt: createAt ?? this.createAt,
         updateAt: updateAt ?? this.updateAt,
@@ -1828,6 +1851,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
           ..write('startDate: $startDate, ')
           ..write('endDate: $endDate, ')
           ..write('description: $description, ')
+          ..write('devSize: $devSize, ')
           ..write('accountId: $accountId, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
@@ -1845,6 +1869,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       startDate,
       endDate,
       description,
+      devSize,
       accountId,
       createAt,
       updateAt);
@@ -1860,6 +1885,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
           other.startDate == this.startDate &&
           other.endDate == this.endDate &&
           other.description == this.description &&
+          other.devSize == this.devSize &&
           other.accountId == this.accountId &&
           other.createAt == this.createAt &&
           other.updateAt == this.updateAt);
@@ -1874,6 +1900,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
   final Value<String> startDate;
   final Value<String> endDate;
   final Value<String> description;
+  final Value<int> devSize;
   final Value<String> accountId;
   final Value<String> createAt;
   final Value<String> updateAt;
@@ -1887,6 +1914,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
     this.startDate = const Value.absent(),
     this.endDate = const Value.absent(),
     this.description = const Value.absent(),
+    this.devSize = const Value.absent(),
     this.accountId = const Value.absent(),
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
@@ -1901,6 +1929,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
     this.startDate = const Value.absent(),
     this.endDate = const Value.absent(),
     required String description,
+    required int devSize,
     required String accountId,
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
@@ -1911,6 +1940,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
         industry = Value(industry),
         displayCount = Value(displayCount),
         description = Value(description),
+        devSize = Value(devSize),
         accountId = Value(accountId);
   static Insertable<TProjectData> custom({
     Expression<String>? projectId,
@@ -1921,6 +1951,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
     Expression<String>? startDate,
     Expression<String>? endDate,
     Expression<String>? description,
+    Expression<int>? devSize,
     Expression<String>? accountId,
     Expression<String>? createAt,
     Expression<String>? updateAt,
@@ -1935,6 +1966,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
       if (startDate != null) 'start_date': startDate,
       if (endDate != null) 'end_date': endDate,
       if (description != null) 'description': description,
+      if (devSize != null) 'dev_size': devSize,
       if (accountId != null) 'account_id': accountId,
       if (createAt != null) 'create_at': createAt,
       if (updateAt != null) 'update_at': updateAt,
@@ -1951,6 +1983,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
       Value<String>? startDate,
       Value<String>? endDate,
       Value<String>? description,
+      Value<int>? devSize,
       Value<String>? accountId,
       Value<String>? createAt,
       Value<String>? updateAt,
@@ -1964,6 +1997,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       description: description ?? this.description,
+      devSize: devSize ?? this.devSize,
       accountId: accountId ?? this.accountId,
       createAt: createAt ?? this.createAt,
       updateAt: updateAt ?? this.updateAt,
@@ -1998,6 +2032,9 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
+    if (devSize.present) {
+      map['dev_size'] = Variable<int>(devSize.value);
+    }
     if (accountId.present) {
       map['account_id'] = Variable<String>(accountId.value);
     }
@@ -2024,6 +2061,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
           ..write('startDate: $startDate, ')
           ..write('endDate: $endDate, ')
           ..write('description: $description, ')
+          ..write('devSize: $devSize, ')
           ..write('accountId: $accountId, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt, ')
@@ -2048,6 +2086,15 @@ class $TDevLanguageRelTable extends TDevLanguageRel
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _contentMeta =
+      const VerificationMeta('content');
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+      'content', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
   static const VerificationMeta _projectIdMeta =
       const VerificationMeta('projectId');
   @override
@@ -2059,6 +2106,17 @@ class $TDevLanguageRelTable extends TDevLanguageRel
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES t_project (project_id)'));
+  static const VerificationMeta _devLangIdMeta =
+      const VerificationMeta('devLangId');
+  @override
+  late final GeneratedColumn<String> devLangId = GeneratedColumn<String>(
+      'dev_lang_id', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES t_dev_language (dev_lang_id)'));
   static const VerificationMeta _createAtMeta =
       const VerificationMeta('createAt');
   @override
@@ -2076,7 +2134,8 @@ class $TDevLanguageRelTable extends TDevLanguageRel
       requiredDuringInsert: false,
       clientDefault: () => DateTime.now().toIso8601String());
   @override
-  List<GeneratedColumn> get $columns => [id, projectId, createAt, updateAt];
+  List<GeneratedColumn> get $columns =>
+      [id, content, projectId, devLangId, createAt, updateAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2091,11 +2150,25 @@ class $TDevLanguageRelTable extends TDevLanguageRel
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
+    if (data.containsKey('content')) {
+      context.handle(_contentMeta,
+          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
     if (data.containsKey('project_id')) {
       context.handle(_projectIdMeta,
           projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta));
     } else if (isInserting) {
       context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('dev_lang_id')) {
+      context.handle(
+          _devLangIdMeta,
+          devLangId.isAcceptableOrUnknown(
+              data['dev_lang_id']!, _devLangIdMeta));
+    } else if (isInserting) {
+      context.missing(_devLangIdMeta);
     }
     if (data.containsKey('create_at')) {
       context.handle(_createAtMeta,
@@ -2116,8 +2189,12 @@ class $TDevLanguageRelTable extends TDevLanguageRel
     return TDevLanguageRelData(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      content: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
       projectId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}project_id'])!,
+      devLangId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}dev_lang_id'])!,
       createAt: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
       updateAt: attachedDatabase.typeMapping
@@ -2134,19 +2211,25 @@ class $TDevLanguageRelTable extends TDevLanguageRel
 class TDevLanguageRelData extends DataClass
     implements Insertable<TDevLanguageRelData> {
   final int id;
+  final String content;
   final String projectId;
+  final String devLangId;
   final String createAt;
   final String updateAt;
   const TDevLanguageRelData(
       {required this.id,
+      required this.content,
       required this.projectId,
+      required this.devLangId,
       required this.createAt,
       required this.updateAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['content'] = Variable<String>(content);
     map['project_id'] = Variable<String>(projectId);
+    map['dev_lang_id'] = Variable<String>(devLangId);
     map['create_at'] = Variable<String>(createAt);
     map['update_at'] = Variable<String>(updateAt);
     return map;
@@ -2155,7 +2238,9 @@ class TDevLanguageRelData extends DataClass
   TDevLanguageRelCompanion toCompanion(bool nullToAbsent) {
     return TDevLanguageRelCompanion(
       id: Value(id),
+      content: Value(content),
       projectId: Value(projectId),
+      devLangId: Value(devLangId),
       createAt: Value(createAt),
       updateAt: Value(updateAt),
     );
@@ -2166,7 +2251,9 @@ class TDevLanguageRelData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TDevLanguageRelData(
       id: serializer.fromJson<int>(json['id']),
+      content: serializer.fromJson<String>(json['content']),
       projectId: serializer.fromJson<String>(json['projectId']),
+      devLangId: serializer.fromJson<String>(json['devLangId']),
       createAt: serializer.fromJson<String>(json['createAt']),
       updateAt: serializer.fromJson<String>(json['updateAt']),
     );
@@ -2176,17 +2263,26 @@ class TDevLanguageRelData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'content': serializer.toJson<String>(content),
       'projectId': serializer.toJson<String>(projectId),
+      'devLangId': serializer.toJson<String>(devLangId),
       'createAt': serializer.toJson<String>(createAt),
       'updateAt': serializer.toJson<String>(updateAt),
     };
   }
 
   TDevLanguageRelData copyWith(
-          {int? id, String? projectId, String? createAt, String? updateAt}) =>
+          {int? id,
+          String? content,
+          String? projectId,
+          String? devLangId,
+          String? createAt,
+          String? updateAt}) =>
       TDevLanguageRelData(
         id: id ?? this.id,
+        content: content ?? this.content,
         projectId: projectId ?? this.projectId,
+        devLangId: devLangId ?? this.devLangId,
         createAt: createAt ?? this.createAt,
         updateAt: updateAt ?? this.updateAt,
       );
@@ -2194,7 +2290,9 @@ class TDevLanguageRelData extends DataClass
   String toString() {
     return (StringBuffer('TDevLanguageRelData(')
           ..write('id: $id, ')
+          ..write('content: $content, ')
           ..write('projectId: $projectId, ')
+          ..write('devLangId: $devLangId, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
           ..write(')'))
@@ -2202,43 +2300,58 @@ class TDevLanguageRelData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, projectId, createAt, updateAt);
+  int get hashCode =>
+      Object.hash(id, content, projectId, devLangId, createAt, updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TDevLanguageRelData &&
           other.id == this.id &&
+          other.content == this.content &&
           other.projectId == this.projectId &&
+          other.devLangId == this.devLangId &&
           other.createAt == this.createAt &&
           other.updateAt == this.updateAt);
 }
 
 class TDevLanguageRelCompanion extends UpdateCompanion<TDevLanguageRelData> {
   final Value<int> id;
+  final Value<String> content;
   final Value<String> projectId;
+  final Value<String> devLangId;
   final Value<String> createAt;
   final Value<String> updateAt;
   const TDevLanguageRelCompanion({
     this.id = const Value.absent(),
+    this.content = const Value.absent(),
     this.projectId = const Value.absent(),
+    this.devLangId = const Value.absent(),
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
   });
   TDevLanguageRelCompanion.insert({
     this.id = const Value.absent(),
+    required String content,
     required String projectId,
+    required String devLangId,
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
-  }) : projectId = Value(projectId);
+  })  : content = Value(content),
+        projectId = Value(projectId),
+        devLangId = Value(devLangId);
   static Insertable<TDevLanguageRelData> custom({
     Expression<int>? id,
+    Expression<String>? content,
     Expression<String>? projectId,
+    Expression<String>? devLangId,
     Expression<String>? createAt,
     Expression<String>? updateAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (content != null) 'content': content,
       if (projectId != null) 'project_id': projectId,
+      if (devLangId != null) 'dev_lang_id': devLangId,
       if (createAt != null) 'create_at': createAt,
       if (updateAt != null) 'update_at': updateAt,
     });
@@ -2246,12 +2359,16 @@ class TDevLanguageRelCompanion extends UpdateCompanion<TDevLanguageRelData> {
 
   TDevLanguageRelCompanion copyWith(
       {Value<int>? id,
+      Value<String>? content,
       Value<String>? projectId,
+      Value<String>? devLangId,
       Value<String>? createAt,
       Value<String>? updateAt}) {
     return TDevLanguageRelCompanion(
       id: id ?? this.id,
+      content: content ?? this.content,
       projectId: projectId ?? this.projectId,
+      devLangId: devLangId ?? this.devLangId,
       createAt: createAt ?? this.createAt,
       updateAt: updateAt ?? this.updateAt,
     );
@@ -2263,8 +2380,14 @@ class TDevLanguageRelCompanion extends UpdateCompanion<TDevLanguageRelData> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
     if (projectId.present) {
       map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (devLangId.present) {
+      map['dev_lang_id'] = Variable<String>(devLangId.value);
     }
     if (createAt.present) {
       map['create_at'] = Variable<String>(createAt.value);
@@ -2279,7 +2402,9 @@ class TDevLanguageRelCompanion extends UpdateCompanion<TDevLanguageRelData> {
   String toString() {
     return (StringBuffer('TDevLanguageRelCompanion(')
           ..write('id: $id, ')
+          ..write('content: $content, ')
           ..write('projectId: $projectId, ')
+          ..write('devLangId: $devLangId, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
           ..write(')'))
@@ -3599,11 +3724,11 @@ class TToolCompanion extends UpdateCompanion<TToolData> {
   }
 }
 
-class $TOsTable extends TOs with TableInfo<$TOsTable, TO> {
+class $TOsInfoTable extends TOsInfo with TableInfo<$TOsInfoTable, TOsInfoData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $TOsTable(this.attachedDatabase, [this._alias]);
+  $TOsInfoTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _osIdMeta = const VerificationMeta('osId');
   @override
   late final GeneratedColumn<String> osId = GeneratedColumn<String>(
@@ -3654,9 +3779,9 @@ class $TOsTable extends TOs with TableInfo<$TOsTable, TO> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 't_os';
+  static const String $name = 't_os_info';
   @override
-  VerificationContext validateIntegrity(Insertable<TO> instance,
+  VerificationContext validateIntegrity(Insertable<TOsInfoData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -3692,9 +3817,9 @@ class $TOsTable extends TOs with TableInfo<$TOsTable, TO> {
   @override
   Set<GeneratedColumn> get $primaryKey => {osId};
   @override
-  TO map(Map<String, dynamic> data, {String? tablePrefix}) {
+  TOsInfoData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TO(
+    return TOsInfoData(
       osId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}os_id'])!,
       name: attachedDatabase.typeMapping
@@ -3709,18 +3834,18 @@ class $TOsTable extends TOs with TableInfo<$TOsTable, TO> {
   }
 
   @override
-  $TOsTable createAlias(String alias) {
-    return $TOsTable(attachedDatabase, alias);
+  $TOsInfoTable createAlias(String alias) {
+    return $TOsInfoTable(attachedDatabase, alias);
   }
 }
 
-class TO extends DataClass implements Insertable<TO> {
+class TOsInfoData extends DataClass implements Insertable<TOsInfoData> {
   final String osId;
   final String name;
   final String projectId;
   final String createAt;
   final String updateAt;
-  const TO(
+  const TOsInfoData(
       {required this.osId,
       required this.name,
       required this.projectId,
@@ -3737,8 +3862,8 @@ class TO extends DataClass implements Insertable<TO> {
     return map;
   }
 
-  TOsCompanion toCompanion(bool nullToAbsent) {
-    return TOsCompanion(
+  TOsInfoCompanion toCompanion(bool nullToAbsent) {
+    return TOsInfoCompanion(
       osId: Value(osId),
       name: Value(name),
       projectId: Value(projectId),
@@ -3747,10 +3872,10 @@ class TO extends DataClass implements Insertable<TO> {
     );
   }
 
-  factory TO.fromJson(Map<String, dynamic> json,
+  factory TOsInfoData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TO(
+    return TOsInfoData(
       osId: serializer.fromJson<String>(json['osId']),
       name: serializer.fromJson<String>(json['name']),
       projectId: serializer.fromJson<String>(json['projectId']),
@@ -3770,13 +3895,13 @@ class TO extends DataClass implements Insertable<TO> {
     };
   }
 
-  TO copyWith(
+  TOsInfoData copyWith(
           {String? osId,
           String? name,
           String? projectId,
           String? createAt,
           String? updateAt}) =>
-      TO(
+      TOsInfoData(
         osId: osId ?? this.osId,
         name: name ?? this.name,
         projectId: projectId ?? this.projectId,
@@ -3785,7 +3910,7 @@ class TO extends DataClass implements Insertable<TO> {
       );
   @override
   String toString() {
-    return (StringBuffer('TO(')
+    return (StringBuffer('TOsInfoData(')
           ..write('osId: $osId, ')
           ..write('name: $name, ')
           ..write('projectId: $projectId, ')
@@ -3800,7 +3925,7 @@ class TO extends DataClass implements Insertable<TO> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is TO &&
+      (other is TOsInfoData &&
           other.osId == this.osId &&
           other.name == this.name &&
           other.projectId == this.projectId &&
@@ -3808,14 +3933,14 @@ class TO extends DataClass implements Insertable<TO> {
           other.updateAt == this.updateAt);
 }
 
-class TOsCompanion extends UpdateCompanion<TO> {
+class TOsInfoCompanion extends UpdateCompanion<TOsInfoData> {
   final Value<String> osId;
   final Value<String> name;
   final Value<String> projectId;
   final Value<String> createAt;
   final Value<String> updateAt;
   final Value<int> rowid;
-  const TOsCompanion({
+  const TOsInfoCompanion({
     this.osId = const Value.absent(),
     this.name = const Value.absent(),
     this.projectId = const Value.absent(),
@@ -3823,7 +3948,7 @@ class TOsCompanion extends UpdateCompanion<TO> {
     this.updateAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  TOsCompanion.insert({
+  TOsInfoCompanion.insert({
     required String osId,
     required String name,
     required String projectId,
@@ -3833,7 +3958,7 @@ class TOsCompanion extends UpdateCompanion<TO> {
   })  : osId = Value(osId),
         name = Value(name),
         projectId = Value(projectId);
-  static Insertable<TO> custom({
+  static Insertable<TOsInfoData> custom({
     Expression<String>? osId,
     Expression<String>? name,
     Expression<String>? projectId,
@@ -3851,14 +3976,14 @@ class TOsCompanion extends UpdateCompanion<TO> {
     });
   }
 
-  TOsCompanion copyWith(
+  TOsInfoCompanion copyWith(
       {Value<String>? osId,
       Value<String>? name,
       Value<String>? projectId,
       Value<String>? createAt,
       Value<String>? updateAt,
       Value<int>? rowid}) {
-    return TOsCompanion(
+    return TOsInfoCompanion(
       osId: osId ?? this.osId,
       name: name ?? this.name,
       projectId: projectId ?? this.projectId,
@@ -3894,7 +4019,7 @@ class TOsCompanion extends UpdateCompanion<TO> {
 
   @override
   String toString() {
-    return (StringBuffer('TOsCompanion(')
+    return (StringBuffer('TOsInfoCompanion(')
           ..write('osId: $osId, ')
           ..write('name: $name, ')
           ..write('projectId: $projectId, ')
@@ -5636,7 +5761,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final $TTagTable tTag = $TTagTable(this);
   late final $TTagRelTable tTagRel = $TTagRelTable(this);
   late final $TToolTable tTool = $TToolTable(this);
-  late final $TOsTable tOs = $TOsTable(this);
+  late final $TOsInfoTable tOsInfo = $TOsInfoTable(this);
   late final $TDbTable tDb = $TDbTable(this);
   late final $TBoardTable tBoard = $TBoardTable(this);
   late final $TTaskTable tTask = $TTaskTable(this);
@@ -5663,7 +5788,8 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
       Index('tag_rel_id', 'CREATE INDEX tag_rel_id ON t_tag_rel (id)');
   late final Index toolId =
       Index('tool_id', 'CREATE INDEX tool_id ON t_tool (tool_id)');
-  late final Index osId = Index('os_id', 'CREATE INDEX os_id ON t_os (os_id)');
+  late final Index osId =
+      Index('os_id', 'CREATE INDEX os_id ON t_os_info (os_id)');
   late final Index dbId = Index('db_id', 'CREATE INDEX db_id ON t_db (db_id)');
   late final Index boardId =
       Index('board_id', 'CREATE INDEX board_id ON t_board (board_id)');
@@ -5674,6 +5800,16 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final Index taskDevId =
       Index('task_dev_id', 'CREATE INDEX task_dev_id ON t_task_dev (id)');
   late final MAccountDao mAccountDao = MAccountDao(this as StairsDatabase);
+  late final TProjectDao tProjectDao = TProjectDao(this as StairsDatabase);
+  late final TOsInfoDao tOsInfoDao = TOsInfoDao(this as StairsDatabase);
+  late final TDbDao tDbDao = TDbDao(this as StairsDatabase);
+  late final TDevLangRelDao tDevLangRelDao =
+      TDevLangRelDao(this as StairsDatabase);
+  late final TToolDao tToolDao = TToolDao(this as StairsDatabase);
+  late final TDevProgressRelDao tDevProgressRelDao =
+      TDevProgressRelDao(this as StairsDatabase);
+  late final TTagRelDao tTagRelDao = TTagRelDao(this as StairsDatabase);
+  late final TDevLangDao tDevLangDao = TDevLangDao(this as StairsDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5690,7 +5826,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         tTag,
         tTagRel,
         tTool,
-        tOs,
+        tOsInfo,
         tDb,
         tBoard,
         tTask,
@@ -5714,7 +5850,4 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         taskTagId,
         taskDevId
       ];
-  @override
-  DriftDatabaseOptions get options =>
-      const DriftDatabaseOptions(storeDateTimeAsText: true);
 }
