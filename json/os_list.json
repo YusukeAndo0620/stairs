@@ -1,0 +1,7 @@
+{
+  "os_list": [
+    { "id": 1, "name": "Windows" },
+    { "id": 2, "name": "MacOS" },
+    { "id": 3, "name": "Linux" }
+  ]
+}
