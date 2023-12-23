@@ -61,4 +61,54 @@ class TProjectDao extends DatabaseAccessor<StairsDatabase>
       _logger.d('getProjectDetail 通信終了');
     }
   }
+
+  /// プロジェクト 追加
+  Future<void> insertProject({
+    required TProjectCompanion projectData,
+  }) async {
+    try {
+      _logger.d('insertProject 通信開始');
+      _logger.d('projectData:  $projectData');
+      await db.into(db.tProject).insert(projectData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('insertProject 通信終了');
+    }
+  }
+
+  /// プロジェクト 更新
+  Future<void> updateProject({
+    required TProjectCompanion projectData,
+  }) async {
+    try {
+      _logger.d('updateProject 通信開始');
+      _logger.d('projectData:  $projectData');
+      await db.update(db.tProject).replace(projectData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('updateProject 通信終了');
+    }
+  }
+
+  /// プロジェクト 削除
+  Future<void> deleteProjectById({
+    required String projectId,
+  }) async {
+    try {
+      _logger.d('deleteProjectById 通信開始');
+      _logger.d('projectId: $projectId');
+      final query = db.delete(db.tProject)
+        ..where((tbl) => tbl.projectId.equals(projectId));
+      await query.go();
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('deleteProjectById 通信終了');
+    }
+  }
 }

@@ -36,4 +36,38 @@ class TDevProgressRelDao extends DatabaseAccessor<StairsDatabase>
       _logger.d('getDevProgressList 通信終了');
     }
   }
+  
+  /// 開発工程 追加
+  Future<void> insertDevProgress({
+    required TDevProgressRelCompanion devProgressData,
+  }) async {
+    try {
+      _logger.d('insertDevProgress 通信開始');
+      _logger.d('devProgressData:  $devProgressData');
+      await db.into(db.tDevProgressRel).insert(devProgressData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('insertDevProgress 通信終了');
+    }
+  }
+
+  /// 開発工程 削除
+  Future<void> deleteDevProgressByProjectId({
+    required String projectId,
+  }) async {
+    try {
+      _logger.d('deleteDevProgressByProjectId 通信開始');
+      _logger.d('projectId: $projectId');
+      final query = db.delete(db.tDevProgressRel)
+        ..where((tbl) => tbl.projectId.equals(projectId));
+      await query.go();
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('deleteDevProgressByProjectId 通信終了');
+    }
+  }
 }

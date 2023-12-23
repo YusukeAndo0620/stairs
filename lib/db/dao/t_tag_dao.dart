@@ -3,29 +3,24 @@ import 'package:stairs/db/database.dart';
 import 'package:stairs/db/db_package.dart';
 import 'package:stairs/loom/stairs_logger.dart';
 
-part 't_tag_rel_dao.g.dart';
+part 't_tag_dao.g.dart';
 
-@DriftAccessor(tables: [TDevLanguageRel])
-class TTagRelDao extends DatabaseAccessor<StairsDatabase>
-    with _$TTagRelDaoMixin {
-  TTagRelDao(StairsDatabase db) : super(db);
+@DriftAccessor(tables: [TDevLanguage])
+class TTagDao extends DatabaseAccessor<StairsDatabase> with _$TTagDaoMixin {
+  TTagDao(StairsDatabase db) : super(db);
 
-  final _logger = stairsLogger(name: 't_tag_rel_dao');
+  final _logger = stairsLogger(name: 't_tag_dao');
 
-  /// プロジェクトで設定されタグ取得
+  /// タグ取得
   Future<List<TypedResult>> getTagList({
-    required String projectId,
+    required String accountId,
   }) async {
     try {
       _logger.d('getTagList 通信開始');
-      final query = db.select(db.tTagRel)
-        ..where((tbl) => tbl.projectId.equals(projectId));
+      final query = db.select(db.tTag)
+        ..where((tbl) => tbl.accountId.equals(accountId));
 
       final response = await query.join([
-        innerJoin(
-          db.tTag,
-          db.tTagRel.tagId.equalsExp(db.tTag.id),
-        ),
         // カラー
         innerJoin(
           db.mColor,
@@ -44,12 +39,12 @@ class TTagRelDao extends DatabaseAccessor<StairsDatabase>
 
   /// タグ 追加
   Future<void> insertTag({
-    required TTagRelCompanion tagData,
+    required TTagCompanion tagData,
   }) async {
     try {
       _logger.d('insertTag 通信開始');
       _logger.d('tagData:  $tagData');
-      await db.into(db.tTagRel).insert(tagData);
+      await db.into(db.tTag).insert(tagData);
     } on Exception catch (exception) {
       _logger.e(exception);
       rethrow;
@@ -59,20 +54,21 @@ class TTagRelDao extends DatabaseAccessor<StairsDatabase>
   }
 
   /// タグ 削除
-  Future<void> deleteTagByProjectId({
-    required String projectId,
+  Future<void> deleteTagByAccountId({
+    required String accountId,
   }) async {
     try {
-      _logger.d('deleteTagByProjectId 通信開始');
-      _logger.d('projectId: $projectId');
-      final query = db.delete(db.tTagRel)
-        ..where((tbl) => tbl.projectId.equals(projectId));
+      _logger.d('deleteTagByAccountId 通信開始');
+      _logger.d('accountId: $accountId');
+      final query = db.delete(db.tTag)
+        ..where((tbl) =>
+            tbl.accountId.equals(accountId) & tbl.isReadOnly.equals(false));
       await query.go();
     } on Exception catch (exception) {
       _logger.e(exception);
       rethrow;
     } finally {
-      _logger.d('deleteTagByProjectId 通信終了');
+      _logger.d('deleteTagByAccountId 通信終了');
     }
   }
 }

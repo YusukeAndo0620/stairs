@@ -6,7 +6,7 @@ part of 'm_color_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$mColorHash() => r'ae68037265881e0cbf15de5bede7db4bca95a490';
+String _$mColorHash() => r'512bb91bacb00b0e197924fb178fa113ce4f9bf7';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,10 +31,10 @@ class _SystemHash {
 
 abstract class _$MColor
     extends BuildlessAutoDisposeAsyncNotifier<List<ColorModel>?> {
-  late final StairsDatabase database;
+  late final StairsDatabase db;
 
   FutureOr<List<ColorModel>?> build({
-    required StairsDatabase database,
+    required StairsDatabase db,
   });
 }
 
@@ -49,10 +49,10 @@ class MColorFamily extends Family<AsyncValue<List<ColorModel>?>> {
 
   /// See also [MColor].
   MColorProvider call({
-    required StairsDatabase database,
+    required StairsDatabase db,
   }) {
     return MColorProvider(
-      database: database,
+      db: db,
     );
   }
 
@@ -61,7 +61,7 @@ class MColorFamily extends Family<AsyncValue<List<ColorModel>?>> {
     covariant MColorProvider provider,
   ) {
     return call(
-      database: provider.database,
+      db: provider.db,
     );
   }
 
@@ -85,9 +85,9 @@ class MColorProvider
     extends AutoDisposeAsyncNotifierProviderImpl<MColor, List<ColorModel>?> {
   /// See also [MColor].
   MColorProvider({
-    required StairsDatabase database,
+    required StairsDatabase db,
   }) : this._internal(
-          () => MColor()..database = database,
+          () => MColor()..db = db,
           from: mColorProvider,
           name: r'mColorProvider',
           debugGetCreateSourceHash:
@@ -96,7 +96,7 @@ class MColorProvider
                   : _$mColorHash,
           dependencies: MColorFamily._dependencies,
           allTransitiveDependencies: MColorFamily._allTransitiveDependencies,
-          database: database,
+          db: db,
         );
 
   MColorProvider._internal(
@@ -106,17 +106,17 @@ class MColorProvider
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.database,
+    required this.db,
   }) : super.internal();
 
-  final StairsDatabase database;
+  final StairsDatabase db;
 
   @override
   FutureOr<List<ColorModel>?> runNotifierBuild(
     covariant MColor notifier,
   ) {
     return notifier.build(
-      database: database,
+      db: db,
     );
   }
 
@@ -125,13 +125,13 @@ class MColorProvider
     return ProviderOverride(
       origin: this,
       override: MColorProvider._internal(
-        () => create()..database = database,
+        () => create()..db = db,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        database: database,
+        db: db,
       ),
     );
   }
@@ -144,21 +144,21 @@ class MColorProvider
 
   @override
   bool operator ==(Object other) {
-    return other is MColorProvider && other.database == database;
+    return other is MColorProvider && other.db == db;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, database.hashCode);
+    hash = _SystemHash.combine(hash, db.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
 mixin MColorRef on AutoDisposeAsyncNotifierProviderRef<List<ColorModel>?> {
-  /// The parameter `database` of this provider.
-  StairsDatabase get database;
+  /// The parameter `db` of this provider.
+  StairsDatabase get db;
 }
 
 class _MColorProviderElement
@@ -167,7 +167,7 @@ class _MColorProviderElement
   _MColorProviderElement(super.provider);
 
   @override
-  StairsDatabase get database => (origin as MColorProvider).database;
+  StairsDatabase get db => (origin as MColorProvider).db;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

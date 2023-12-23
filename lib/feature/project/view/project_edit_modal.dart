@@ -5,12 +5,19 @@ import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 const _kProjectTitleTxt = 'プロジェクト';
+const _kProjectNameTitleTxt = 'プロジェクト名';
 const _kProjectHintTxt = 'プロジェクト名';
+
 const _kColorTxt = '色';
 const _kColorHintTxt = 'メインテーマを設定';
+
+const _kIndustryTxt = '業種';
 const _kIndustryHintTxt = '業種';
+
 const _kDueTxt = '期間';
 const _kDueHintTxt = '期間を設定';
+
+const _kContentTxt = '業務内容';
 const _kContentHintTxt = '業務内容';
 const _kContentMaxLength = 500;
 
@@ -27,15 +34,17 @@ const _kDbListEmptyTxt = 'DBが登録されていません。\nDBを追加して
 const _kDevLangTxt = '開発言語';
 const _kDevLangHintTxt = '開発言語、フレームワークを設定';
 const _kDevLangListEmptyTxt = '言語が登録されていません。\n言語を登録してください。';
-const _kDevLangVersionHintTxt = 'バージョンなどを入力してください。表示例：Java(Java8)';
+const _kDevLangVersionHintTxt = 'バージョンなどを入力してください。表示例: Java(Java8)';
 
 const _kToolTxt = '開発ツール';
-const _kToolHintTxt = '使用したツールを設定（Backlog, Miro, Figmaなど）';
+const _kToolHintTxt = 'ツールを設定（Backlog, Figmaなど）';
 const _kToolInputHintTxt = 'ツール名を入力';
 const _kToolListEmptyTxt = '開発ツールが登録されていません。\n開発ツールを追加してください';
 
 const _kProgressTxt = '作業工程';
 const _kProgressHintTxt = '携わった作業工程を設定';
+
+const _kDevSizeTxt = '開発人数';
 const _kDevSizeHintTxt = '開発人数を設定';
 
 const _kBoardTitleTxt = 'ボード';
@@ -82,23 +91,22 @@ class ProjectEditModal extends ConsumerWidget {
                       title: _kProjectTitleTxt,
                       bgColor: theme.colorBgLayer1,
                     ),
-                    // プロジェクト名,
+                    // プロジェクト名
                     CardLstItem.input(
-                        icon: Icon(
-                          Icons.assessment,
-                          color: theme.colorPrimary,
-                        ),
+                        label: _kProjectNameTitleTxt,
+                        iconColor: theme.colorPrimary,
+                        iconData: Icons.assessment,
                         inputValue: detail.projectName,
                         hintText: _kProjectHintTxt,
                         onSubmitted: (projectName) {
                           projectDetailNotifier.changeProjectName(
                               projectName: projectName);
                         }),
-                    // 色,
+                    // 色
                     CardLstItem.labeWithIcon(
                       label: _kColorTxt,
-                      iconColor: theme.colorPrimary,
                       iconData: Icons.palette,
+                      iconColor: theme.colorPrimary,
                       hintText: _kColorHintTxt,
                       itemList: [
                         ColorBox(
@@ -123,16 +131,30 @@ class ProjectEditModal extends ConsumerWidget {
                     ),
                     // 業種
                     CardLstItem.input(
-                        icon: Icon(
-                          theme.icons.trash,
-                          color: theme.colorPrimary,
-                        ),
-                        inputValue: detail.industry,
-                        hintText: _kIndustryHintTxt,
-                        onSubmitted: (industry) {
-                          projectDetailNotifier.changeIndustry(
-                              industry: industry);
-                        }),
+                      label: _kIndustryTxt,
+                      iconColor: theme.colorPrimary,
+                      iconData: theme.icons.trash,
+                      inputValue: detail.industry,
+                      hintText: _kIndustryHintTxt,
+                      onSubmitted: (industry) {
+                        projectDetailNotifier.changeIndustry(
+                            industry: industry);
+                      },
+                    ),
+                    // 開発人数
+                    CardLstItem.input(
+                      label: _kDevSizeTxt,
+                      iconColor: theme.colorPrimary,
+                      iconData: Icons.group,
+                      inputType: TextInputType.number,
+                      inputValue: detail.devSize.toString(),
+                      hintText: _kDevSizeHintTxt,
+                      onSubmitted: (devSize) {
+                        projectDetailNotifier.changeDevSize(
+                          devSize: int.parse(devSize),
+                        );
+                      },
+                    ),
                     // 期日
                     CardLstItem.labeWithIcon(
                       label: _kDueTxt,
@@ -182,10 +204,9 @@ class ProjectEditModal extends ConsumerWidget {
                     ),
                     // 業務内容
                     CardLstItem.input(
-                      icon: Icon(
-                        theme.icons.trash,
-                        color: theme.colorPrimary,
-                      ),
+                      label: _kContentTxt,
+                      iconColor: theme.colorPrimary,
+                      iconData: theme.icons.trash,
                       inputValue: detail.description,
                       hintText: _kContentHintTxt,
                       maxLength: _kContentMaxLength,
@@ -346,21 +367,7 @@ class ProjectEditModal extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    // 開発人数
-                    CardLstItem.input(
-                      inputType: TextInputType.number,
-                      inputValue: detail.devSize.toString(),
-                      icon: Icon(
-                        Icons.group,
-                        color: theme.colorPrimary,
-                      ),
-                      hintText: _kDevSizeHintTxt,
-                      onSubmitted: (devSize) {
-                        projectDetailNotifier.changeDevSize(
-                          devSize: int.parse(devSize),
-                        );
-                      },
-                    ),
+
                     const SizedBox(
                       height: _kProjectAndBoardSpace,
                     ),

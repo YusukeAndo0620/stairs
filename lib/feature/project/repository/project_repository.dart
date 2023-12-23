@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:stairs/db/database.dart';
 import 'package:stairs/feature/project/model/project_detail_model.dart';
 import 'package:stairs/feature/project/model/project_list_item_model.dart';
@@ -90,24 +89,6 @@ class ProjectRepository {
       rethrow;
     } finally {
       _logger.i('getProjectDetail 通信終了');
-    }
-  }
-
-  /// プログラミング言語一覧取得
-  Future<List<LabelModel>?> getDevLanguageList() async {
-    try {
-      _logger.i('getDevLanguageList 通信開始');
-      final response = await db.tDevLangDao.getDevLangList(accountId: "1");
-      List<LabelModel> responseData = [];
-      for (final item in response) {
-        responseData.add(LabelModel(id: item.devLangId, labelName: item.name));
-      }
-      return responseData;
-    } on Exception catch (exception) {
-      _logger.e(exception);
-      rethrow;
-    } finally {
-      _logger.i('getDevLanguageList 通信終了');
     }
   }
 }

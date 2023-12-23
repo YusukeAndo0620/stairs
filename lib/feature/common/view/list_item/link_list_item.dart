@@ -52,7 +52,7 @@ class LinkListItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: MediaQuery.of(context).size.width * 0.2,
+            width: MediaQuery.of(context).size.width * 0.5,
             child: TextInput(
               textController: TextEditingController(text: inputValue),
               hintText: hintText,

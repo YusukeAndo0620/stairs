@@ -46,7 +46,7 @@ class InputListItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: MediaQuery.of(context).size.width * 0.5,
+            width: MediaQuery.of(context).size.width * 0.7,
             child: TextInput(
               textController: TextEditingController(text: inputValue),
               hintText: hintText,

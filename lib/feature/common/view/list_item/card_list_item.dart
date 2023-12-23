@@ -3,6 +3,7 @@ import 'package:stairs/loom/loom_package.dart';
 const _kListItemContentPadding = EdgeInsets.all(8.0);
 const _kListItemPadding = EdgeInsets.only(bottom: 16.0);
 const _kLabelWidth = 150.0;
+const _kIconWidth = 20.0;
 const _kLabelIconSpaceWidth = 8.0;
 const _kItemSpaceWidth = 16.0;
 const _kListBottomBorder = 1.0;
@@ -29,7 +30,10 @@ class CardLstItem extends StatelessWidget {
 
   CardLstItem.input({
     Key? key,
-    required Icon icon,
+    double? width,
+    required String label,
+    required Color iconColor,
+    required IconData iconData,
     String inputValue = '',
     required String hintText,
     TextInputType inputType = TextInputType.text,
@@ -38,14 +42,21 @@ class CardLstItem extends StatelessWidget {
     required Function(String) onSubmitted,
   }) : this._(
           key: key,
-          primaryItem: TextInput(
-            icon: icon,
-            textController: TextEditingController(text: inputValue),
-            hintText: hintText,
-            inputType: inputType,
-            maxLength: maxLength,
-            autoFocus: autoFocus,
-            onSubmitted: onSubmitted,
+          primaryItem: _LabelWithIcon(
+            label: label,
+            iconColor: iconColor,
+            iconData: iconData,
+          ),
+          secondaryItem: _SecondaryItem(
+            width: width,
+            widget: TextInput(
+              textController: TextEditingController(text: inputValue),
+              hintText: hintText,
+              inputType: inputType,
+              maxLength: maxLength,
+              autoFocus: autoFocus,
+              onSubmitted: onSubmitted,
+            ),
           ),
         );
 
@@ -64,10 +75,12 @@ class CardLstItem extends StatelessWidget {
             iconColor: iconColor,
             iconData: iconData,
           ),
-          secondaryItem: EventArea(
-            itemList: itemList,
-            hintText: hintText,
-            onTap: onTap,
+          secondaryItem: _SecondaryItem(
+            widget: EventArea(
+              itemList: itemList,
+              hintText: hintText,
+              onTap: onTap,
+            ),
           ),
         );
 
@@ -152,6 +165,24 @@ class _Label extends StatelessWidget {
   }
 }
 
+class _SecondaryItem extends StatelessWidget {
+  const _SecondaryItem({
+    this.width,
+    required this.widget,
+  });
+  final double? width;
+  final Widget widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+          maxWidth: width ?? MediaQuery.of(context).size.width * 0.55),
+      child: widget,
+    );
+  }
+}
+
 class _LabelWithIcon extends StatelessWidget {
   const _LabelWithIcon({
     required this.label,
@@ -166,16 +197,14 @@ class _LabelWithIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
     return SizedBox(
-      width: _kLabelWidth,
+      width: MediaQuery.of(context).size.width * 0.3,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          IconButton(
-            icon: Icon(
-              iconData,
-              color: iconColor,
-            ),
-            onPressed: () {},
+          Icon(
+            iconData,
+            color: iconColor,
+            size: _kIconWidth,
           ),
           const SizedBox(
             width: _kLabelIconSpaceWidth,

@@ -5800,6 +5800,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final Index taskDevId =
       Index('task_dev_id', 'CREATE INDEX task_dev_id ON t_task_dev (id)');
   late final MAccountDao mAccountDao = MAccountDao(this as StairsDatabase);
+  late final MDevLangDao mDevLangDao = MDevLangDao(this as StairsDatabase);
   late final TProjectDao tProjectDao = TProjectDao(this as StairsDatabase);
   late final TOsInfoDao tOsInfoDao = TOsInfoDao(this as StairsDatabase);
   late final TDbDao tDbDao = TDbDao(this as StairsDatabase);

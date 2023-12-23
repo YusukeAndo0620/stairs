@@ -19,6 +19,7 @@ class TOsInfoDao extends DatabaseAccessor<StairsDatabase>
   }) async {
     try {
       _logger.d('getOsList 通信開始');
+      _logger.d('projectId: $projectId');
       final query = db.select(db.tOsInfo)
         ..where((tbl) => tbl.projectId.equals(projectId));
       final response = await query.get();
@@ -29,6 +30,40 @@ class TOsInfoDao extends DatabaseAccessor<StairsDatabase>
       rethrow;
     } finally {
       _logger.d('getOsList 通信終了');
+    }
+  }
+
+  /// OS 追加
+  Future<void> insertOs({
+    required TOsInfoCompanion osData,
+  }) async {
+    try {
+      _logger.d('insertOs 通信開始');
+      _logger.d('osData:  $osData');
+      await db.into(db.tOsInfo).insert(osData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('insertOs 通信終了');
+    }
+  }
+
+  /// OS 削除
+  Future<void> deleteOsByProjectId({
+    required String projectId,
+  }) async {
+    try {
+      _logger.d('deleteOsByProjectId 通信開始');
+      _logger.d('projectId: $projectId');
+      final query = db.delete(db.tOsInfo)
+        ..where((tbl) => tbl.projectId.equals(projectId));
+      await query.go();
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('deleteOsByProjectId 通信終了');
     }
   }
 }

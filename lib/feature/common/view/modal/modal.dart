@@ -1,7 +1,7 @@
 import 'package:stairs/loom/loom_package.dart';
 
 const _kModalPadding = EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0);
-const _kTrailingWidth = 30.0;
+const _kTrailingWidth = 60.0;
 const _kIconSize = 24.0;
 
 class Modal extends StatefulWidget {
@@ -138,16 +138,15 @@ class _LeadingContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = LoomTheme.of(context);
-    return IconButton(
-      icon: icon ??
-          Icon(
-            theme.icons.close,
-            color: theme.colorFgDefault,
-          ),
-      iconSize: iconSize ?? _kIconSize,
-      onPressed: () => Navigator.pop(context),
-    );
+    return icon != null
+        ? IconButton(
+            icon: icon!,
+            iconSize: iconSize ?? _kIconSize,
+            onPressed: () => Navigator.pop(context),
+          )
+        : const SizedBox(
+            width: 60.0,
+          );
   }
 }
 

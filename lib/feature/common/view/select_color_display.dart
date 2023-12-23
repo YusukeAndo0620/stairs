@@ -27,7 +27,7 @@ class SelectColorDisplay extends ConsumerWidget {
     SelectColor? selectColorNotifier;
 
     final colorList =
-        ref.watch(mColorProvider(database: ref.watch(databaseProvider)));
+        ref.watch(mColorProvider(db: ref.watch(databaseProvider)));
 
     colorList.whenData((value) {
       selectColorState = ref.watch(

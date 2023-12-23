@@ -3,6 +3,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:stairs/db/dao/m_dev_lang_dao.dart';
 import 'package:stairs/db/dao/t_db_dao.dart';
 import 'package:stairs/db/dao/t_dev_lang_dao.dart';
 import 'package:stairs/db/dao/t_dev_lang_rel_dao.dart';
@@ -49,6 +50,7 @@ final _logger = stairsLogger(name: 'database');
   ],
   daos: [
     MAccountDao,
+    MDevLangDao,
     TProjectDao,
     TOsInfoDao,
     TDbDao,
@@ -87,13 +89,7 @@ class StairsDatabase extends _$StairsDatabase {
           }
           // 開発言語
           for (final item in dummyDevLangList) {
-            await into(mDevLanguage).insert(
-              MDevLanguageCompanion(
-                devLangId: Value(_uuid.v4()),
-                name: Value(item),
-                isReadOnly: const Value(true),
-              ),
-            );
+            await into(mDevLanguage).insert(item);
           }
           // 開発工程
           for (final item in dummyDevProgressList) {

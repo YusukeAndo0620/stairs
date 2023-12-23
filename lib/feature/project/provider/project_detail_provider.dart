@@ -219,10 +219,15 @@ class ProjectDetail extends _$ProjectDetail {
   }
 
   void changeTagList({required List<ColorLabelModel> tagList}) {
+    final targetList = tagList
+        .map((item) => item.labelName.isNotEmpty ? item : null)
+        .toList()
+        .whereType<ColorLabelModel>()
+        .toList();
     update(
       (data) {
         state = const AsyncLoading();
-        return data = data!.copyWith(tagList: tagList);
+        return data = data!.copyWith(tagList: targetList);
       },
       onError: (error, stack) {
         state = AsyncError(error, stack);

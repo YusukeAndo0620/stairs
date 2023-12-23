@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 const _kSpaceHeight = 120.0;
 const _kLabelWidth = 130.0;
-const _kContentPadding = EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0);
+const _kContentPadding = EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0);
 const _kLabelContentPadding =
     EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
 const _kListItemBorder = 1.0;
@@ -257,7 +257,7 @@ class _ListItem extends StatelessWidget {
             width: _kSpaceWidth,
           ),
           SizedBox(
-            width: MediaQuery.of(context).size.width * 0.5,
+            width: MediaQuery.of(context).size.width * 0.45,
             child: TextInput(
               textController: TextEditingController(text: selectedItem.content),
               hintText: hintText,

@@ -36,4 +36,36 @@ class TDevLangRelDao extends DatabaseAccessor<StairsDatabase>
       _logger.d('getDevLangList 通信終了');
     }
   }
+
+  /// 開発言語紐付け 追加
+  Future<void> insertDevLanguage({
+    required TDevLanguageRelCompanion devLangData,
+  }) async {
+    try {
+      _logger.d('insertDevLanguage 通信開始');
+      _logger.d('devLangData:  $devLangData');
+      await db.into(db.tDevLanguageRel).insert(devLangData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('insertDevLanguage 通信終了');
+    }
+  }
+
+  /// 開発言語紐付け 削除
+  Future<void> deleteDevLangByProjectId({required String projectId}) async {
+    try {
+      _logger.d('deleteDevLangByProjectId 通信開始');
+      _logger.d('projectId: $projectId');
+      final query = db.delete(db.tDevLanguageRel)
+        ..where((tbl) => tbl.projectId.equals(projectId));
+      await query.go();
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('deleteDevLangByProjectId 通信終了');
+    }
+  }
 }

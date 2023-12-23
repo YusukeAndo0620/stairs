@@ -30,4 +30,38 @@ class TDevLangDao extends DatabaseAccessor<StairsDatabase>
       _logger.d('getDevLangList 通信終了');
     }
   }
+
+  /// 開発言語 追加
+  Future<void> insertDevLanguage({
+    required TDevLanguageCompanion devLangData,
+  }) async {
+    try {
+      _logger.d('insertDevLanguage 通信開始');
+      _logger.d('devLangData:  $devLangData');
+      await db.into(db.tDevLanguage).insert(devLangData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('insertDevLanguage 通信終了');
+    }
+  }
+
+  /// 開発言語 削除
+  Future<void> deleteDevLangByAccountId({
+    required String accountId,
+  }) async {
+    try {
+      _logger.d('deleteDevLangByAccountId 通信開始');
+      _logger.d('accountId: $accountId');
+      final query = db.delete(db.tDevLanguage)
+        ..where((tbl) => tbl.accountId.equals(accountId));
+      await query.go();
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('deleteDevLangByAccountId 通信終了');
+    }
+  }
 }

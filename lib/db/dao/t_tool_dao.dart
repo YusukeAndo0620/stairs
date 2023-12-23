@@ -29,4 +29,38 @@ class TToolDao extends DatabaseAccessor<StairsDatabase> with _$TToolDaoMixin {
       _logger.d('getToolList 通信終了');
     }
   }
+
+  /// ツール 追加
+  Future<void> insertTool({
+    required TToolCompanion toolData,
+  }) async {
+    try {
+      _logger.d('insertTool 通信開始');
+      _logger.d('toolData:  $toolData');
+      await db.into(db.tTool).insert(toolData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('insertTool 通信終了');
+    }
+  }
+
+  /// ツール 削除
+  Future<void> deleteToolByProjectId({
+    required String projectId,
+  }) async {
+    try {
+      _logger.d('deleteToolByProjectId 通信開始');
+      _logger.d('projectId: $projectId');
+      final query = db.delete(db.tTool)
+        ..where((tbl) => tbl.projectId.equals(projectId));
+      await query.go();
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('deleteToolByProjectId 通信終了');
+    }
+  }
 }

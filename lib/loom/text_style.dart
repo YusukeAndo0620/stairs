@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 TextStyle textStyleBody(Color color) {
   return TextStyle(
     fontFamily: '',
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.normal,
     letterSpacing: 0,
@@ -17,7 +17,7 @@ TextStyle textStyleBody(Color color) {
 TextStyle textStyleFootnote(Color color) {
   return TextStyle(
     fontFamily: '',
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.normal,
     letterSpacing: 0,
@@ -31,7 +31,7 @@ TextStyle textStyleFootnote(Color color) {
 TextStyle textStyleTitle(Color color) {
   return TextStyle(
     fontFamily: '',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.normal,
     letterSpacing: 0,
@@ -45,7 +45,7 @@ TextStyle textStyleTitle(Color color) {
 TextStyle textStyleSubtitle(Color color) {
   return TextStyle(
     fontFamily: '',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.normal,
     letterSpacing: 0,
@@ -73,7 +73,7 @@ TextStyle textStyleHeading(Color color) {
 TextStyle textStyleSubHeading(Color color) {
   return TextStyle(
     fontFamily: '',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.normal,
     letterSpacing: 0,

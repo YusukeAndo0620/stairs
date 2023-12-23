@@ -28,4 +28,38 @@ class TDbDao extends DatabaseAccessor<StairsDatabase> with _$TDbDaoMixin {
       _logger.d('getDbList 通信終了');
     }
   }
+
+  /// DB 追加
+  Future<void> insertDb({
+    required TDbCompanion dbData,
+  }) async {
+    try {
+      _logger.d('insertDb 通信開始');
+      _logger.d('dbData:  $dbData');
+      await db.into(db.tDb).insert(dbData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('insertDb 通信終了');
+    }
+  }
+
+  /// DB 削除
+  Future<void> deleteDbByProjectId({
+    required String projectId,
+  }) async {
+    try {
+      _logger.d('deleteDbByProjectId 通信開始');
+      _logger.d('projectId: $projectId');
+      final query = db.delete(db.tDb)
+        ..where((tbl) => tbl.projectId.equals(projectId));
+      await query.go();
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('deleteDbByProjectId 通信終了');
+    }
+  }
 }

@@ -9,6 +9,7 @@ const _kBorderWidth = 1.0;
 class TextInput extends StatefulWidget {
   const TextInput({
     super.key,
+    this.width = _kMaxWidth,
     this.icon,
     required this.textController,
     this.inputType = TextInputType.text,
@@ -17,6 +18,7 @@ class TextInput extends StatefulWidget {
     this.autoFocus = false,
     required this.onSubmitted,
   });
+  final double width;
   final Icon? icon;
   final TextEditingController textController;
   final TextInputType inputType;
@@ -55,7 +57,7 @@ class TextInputState extends State<TextInput> {
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: _kMaxWidth),
+      constraints: BoxConstraints(maxWidth: widget.width),
       child: TextField(
         key: ValueKey(widget.textController.hashCode),
         controller: widget.textController,
