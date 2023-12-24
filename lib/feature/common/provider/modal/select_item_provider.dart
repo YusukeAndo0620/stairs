@@ -20,7 +20,6 @@ class SelectItem extends _$SelectItem {
   List<CheckedColorLabelInfo> build() => [];
 
   void init({
-    required String id,
     required List<ColorLabelModel> labelList,
     required List<ColorLabelModel> selectedLabelList,
   }) {

@@ -6,6 +6,10 @@ String getFormattedCommaSeparated({required int value}) {
   return formatter.format(value);
 }
 
+/// yyyy/mm/dd 形式に変換
+String getFormattedDate(DateTime date) =>
+    '${date.year}/${date.month}/${date.day}';
+
 int getIdByColor({required List<ColorModel> colorList, required Color color}) {
   if (colorList.isEmpty) return 1;
   return colorList

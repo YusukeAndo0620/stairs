@@ -15,7 +15,6 @@ enum DisplayType { list, tile }
 class SelectItemModal extends ConsumerWidget {
   const SelectItemModal({
     super.key,
-    required this.id,
     this.type = DisplayType.list,
     required this.title,
     required this.height,
@@ -23,7 +22,6 @@ class SelectItemModal extends ConsumerWidget {
     required this.selectedLabelList,
     required this.onTapListItem,
   });
-  final String id;
   final DisplayType type;
   final String title;
   final double height;
@@ -35,8 +33,9 @@ class SelectItemModal extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectItemState = ref.watch(selectItemProvider);
     if (selectItemState.isEmpty) {
-      ref.read(selectItemProvider.notifier).init(
-          id: id, labelList: labelList, selectedLabelList: selectedLabelList);
+      ref
+          .read(selectItemProvider.notifier)
+          .init(labelList: labelList, selectedLabelList: selectedLabelList);
     }
     return Modal(
       height: height,
