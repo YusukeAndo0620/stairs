@@ -1,7 +1,7 @@
 import 'package:stairs/loom/loom_package.dart';
 
 const _kListItemContentPadding = EdgeInsets.all(8.0);
-const _kListItemPadding = EdgeInsets.only(bottom: 16.0);
+const _kListItemPadding = EdgeInsets.only(bottom: 8.0);
 const _kLabelWidth = 150.0;
 const _kIconWidth = 20.0;
 const _kLabelIconSpaceWidth = 8.0;
@@ -37,6 +37,7 @@ class CardLstItem extends StatelessWidget {
     String inputValue = '',
     required String hintText,
     TextInputType inputType = TextInputType.text,
+    int maxLines = 1,
     int maxLength = 100,
     bool autoFocus = false,
     required Function(String) onSubmitted,
@@ -50,6 +51,7 @@ class CardLstItem extends StatelessWidget {
           secondaryItem: _SecondaryItem(
             width: width,
             widget: TextInput(
+              maxLines: maxLines,
               textController: TextEditingController(text: inputValue),
               hintText: hintText,
               inputType: inputType,
@@ -93,33 +95,29 @@ class CardLstItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
 
-    return Padding(
-      padding: _kListItemContentPadding,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: theme.colorFgDisabled,
-              width: _kListBottomBorder,
-            ),
+    return Container(
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: theme.colorFgDisabled,
+            width: _kListBottomBorder,
           ),
         ),
-        child: Padding(
-          padding: _kListItemPadding,
-          child: secondaryItem == null
-              ? primaryItem
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    primaryItem,
-                    const SizedBox(
-                      width: _kItemSpaceWidth,
-                    ),
-                    secondaryItem!,
-                  ],
-                ),
-        ),
       ),
+      padding: _kListItemContentPadding,
+      child: secondaryItem == null
+          ? primaryItem
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                primaryItem,
+                const SizedBox(
+                  width: _kItemSpaceWidth,
+                ),
+                secondaryItem!,
+              ],
+            ),
     );
   }
 }

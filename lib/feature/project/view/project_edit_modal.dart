@@ -21,6 +21,7 @@ const _kDueHintTxt = '期間を設定';
 const _kContentTxt = '業務内容';
 const _kContentHintTxt = '業務内容';
 const _kContentMaxLength = 500;
+const _kContentMaxLines = 8;
 
 const _kOsTxt = 'OS';
 const _kOsHintTxt = '使用OS・機種';
@@ -54,24 +55,42 @@ const _kLabelHintTxt = 'ラベルを設定';
 
 const _kProjectAndBoardSpace = 30.0;
 
-class ProjectEditModal extends ConsumerWidget {
+class ProjectEditModal extends ConsumerStatefulWidget {
   const ProjectEditModal({
     super.key,
     required this.projectId,
   });
 
   final String projectId;
+  @override
+  ProjectEditModalState createState() => ProjectEditModalState();
+}
+
+class ProjectEditModalState extends ConsumerState<ProjectEditModal> {
+  bool isNewProject = false;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.projectId.isEmpty) {
+      isNewProject = true;
+    }
+  }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
     //プロジェクト詳細
     final projectDetailState = ref.watch(projectDetailProvider(
-        projectId: projectId, database: ref.watch(databaseProvider)));
+        projectId: widget.projectId, database: ref.watch(databaseProvider)));
 
     //プロジェクト詳細 Notifier
     final projectDetailNotifier = ref.watch(projectDetailProvider(
-            projectId: projectId, database: ref.watch(databaseProvider))
+            projectId: widget.projectId, database: ref.watch(databaseProvider))
         .notifier);
 
     //プロジェクト一覧 Notifier
@@ -79,12 +98,18 @@ class ProjectEditModal extends ConsumerWidget {
         projectListProvider(database: ref.watch(databaseProvider)).notifier);
 
     //開発言語一覧
-    final devLangState =
+    final devLangList =
         ref.watch(devLangProvider(db: ref.watch(databaseProvider)));
+
+    //開発工程一覧
+    final devProgressList =
+        ref.watch(devProgressProvider(db: ref.watch(databaseProvider)));
 
     return Modal(
       onClose: () {
-        projectDetailNotifier.updateDetail();
+        isNewProject
+            ? projectDetailNotifier.createProject()
+            : projectDetailNotifier.updateProject();
         projectListNotifier.setProjectList(
             database: ref.watch(databaseProvider));
       },
@@ -219,6 +244,7 @@ class ProjectEditModal extends ConsumerWidget {
                       iconData: theme.icons.trash,
                       inputValue: detail.description,
                       hintText: _kContentHintTxt,
+                      maxLines: _kContentMaxLines,
                       maxLength: _kContentMaxLength,
                       onSubmitted: (description) {
                         projectDetailNotifier.changeDescription(
@@ -305,7 +331,7 @@ class ProjectEditModal extends ConsumerWidget {
                               title: _kDevLangTxt,
                               hintText: _kDevLangVersionHintTxt,
                               selectedListEmptyText: _kDevLangListEmptyTxt,
-                              labeList: devLangState.value ?? [],
+                              labeList: devLangList.value ?? [],
                               selectedList: detail.devLanguageList,
                               onTapBack: (data) {
                                 projectDetailNotifier.changeDevLanguageList(
@@ -316,7 +342,7 @@ class ProjectEditModal extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    // 開発ツール,
+                    // 開発ツール
                     CardLstItem.labeWithIcon(
                       label: _kToolTxt,
                       iconColor: theme.colorPrimary,
@@ -364,9 +390,8 @@ class ProjectEditModal extends ConsumerWidget {
                           builder: (context) {
                             return SelectLabelDisplay(
                               title: _kProgressTxt,
-                              labelList: const [],
+                              labelList: devProgressList.value!,
                               selectedLabelList: detail.devProgressList,
-                              onTap: (id) {},
                               onTapBackIcon: (labelList) {
                                 projectDetailNotifier.changeDevProgressList(
                                   devProgressList: labelList,

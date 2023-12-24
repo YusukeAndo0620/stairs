@@ -14,6 +14,7 @@ class TextInput extends StatefulWidget {
     required this.textController,
     this.inputType = TextInputType.text,
     required this.hintText,
+    this.maxLines = 1,
     this.maxLength = 100,
     this.autoFocus = false,
     required this.onSubmitted,
@@ -23,6 +24,7 @@ class TextInput extends StatefulWidget {
   final TextEditingController textController;
   final TextInputType inputType;
   final String hintText;
+  final int maxLines;
   final int maxLength;
   final bool autoFocus;
   final Function(String) onSubmitted;
@@ -62,6 +64,7 @@ class TextInputState extends State<TextInput> {
         key: ValueKey(widget.textController.hashCode),
         controller: widget.textController,
         style: theme.textStyleBody,
+        maxLines: widget.maxLines,
         maxLength: widget.maxLength,
         cursorColor: theme.colorSecondary,
         keyboardType: widget.inputType,

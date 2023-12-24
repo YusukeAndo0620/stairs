@@ -50,8 +50,23 @@ class ProjectDetail extends _$ProjectDetail {
     }
   }
 
-  Future<void> updateDetail() async {
-    _logger.d('updateDetail: プロジェクト更新');
+  Future<void> createProject() async {
+    _logger.d('createProject: プロジェクト作成');
+    if (state.value == null) {
+      _logger.d('stateに値がないため処理終了');
+      return;
+    }
+    _logger.d('projectId: ${state.value!.projectId}');
+
+    final projectRepositoryProvider =
+        Provider((ref) => ProjectRepository(db: database));
+    // API通信開始
+    final repository = ref.read(projectRepositoryProvider);
+    await repository.createProject(detailModel: state.value!);
+  }
+
+  Future<void> updateProject() async {
+    _logger.d('updateProject: プロジェクト更新');
     if (state.value == null) {
       _logger.d('stateに値がないため処理終了');
       return;
@@ -248,12 +263,4 @@ class ProjectDetail extends _$ProjectDetail {
       },
     );
   }
-
-// ボードで設定したラベル（開発言語＋タグ）リスト取得
-  // List<ColorLabelModel> getLabelList({required String projectId}) {
-  //   //TODO: API使用予定
-  //   final projectDetail = dummyProjectDetailList
-  //       .firstWhere((element) => element.projectId == projectId);
-  //   return projectDetail.allLabelList;
-  // }
 }

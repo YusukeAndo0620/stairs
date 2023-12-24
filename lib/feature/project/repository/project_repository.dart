@@ -101,6 +101,84 @@ class ProjectRepository {
     }
   }
 
+  /// プロジェクト作成
+  Future<void> createProject({required ProjectDetailModel detailModel}) async {
+    try {
+      _logger.i('createProject 開始');
+      _logger.i('projectId: ${detailModel.projectId}');
+      final projectData =
+          _convertProjectDetailToEntity(detailModel: detailModel);
+
+      final osDataList = detailModel.osList
+          .map((item) => db.tOsInfoDao
+              .convertOsToEntity(projectId: detailModel.projectId, model: item))
+          .toList();
+
+      final dbDataList = detailModel.dbList
+          .map((item) => db.tDbDao
+              .convertDbToEntity(projectId: detailModel.projectId, model: item))
+          .toList();
+
+      final devLangDataList = detailModel.devLanguageList
+          .map((item) => db.tDevLangRelDao.convertDevLangRelToEntity(
+              projectId: detailModel.projectId, model: item))
+          .toList();
+
+      final toolDataList = detailModel.toolList
+          .map((item) => db.tToolDao.convertToolToEntity(
+              projectId: detailModel.projectId, model: item))
+          .toList()
+          .whereType<TToolCompanion>()
+          .toList();
+
+      final devProgressDataList = detailModel.devProgressList
+          .map((item) => db.tDevProgressRelDao.convertDevProgressToEntity(
+              projectId: detailModel.projectId, model: item))
+          .toList()
+          .whereType<TDevProgressRelCompanion>()
+          .toList();
+
+      final tagDataList = detailModel.tagList
+          .map((item) => db.tTagRelDao.convertTagToEntity(
+              projectId: detailModel.projectId, model: item))
+          .toList()
+          .whereType<TTagRelCompanion>()
+          .toList();
+
+      // プロジェクト作成
+      await db.tProjectDao.insertProject(projectData: projectData);
+      // OS 作成
+      for (final item in osDataList) {
+        await db.tOsInfoDao.insertOs(osData: item);
+      }
+      // DB 作成
+      for (final item in dbDataList) {
+        await db.tDbDao.insertDb(dbData: item);
+      }
+      // 開発言語紐付け 作成
+      for (final item in devLangDataList) {
+        await db.tDevLangRelDao.insertDevLanguage(devLangData: item);
+      }
+      // 開発ツール 作成
+      for (final item in toolDataList) {
+        await db.tToolDao.insertTool(toolData: item);
+      }
+      // 開発工程 作成
+      for (final item in devProgressDataList) {
+        await db.tDevProgressRelDao.insertDevProgress(devProgressData: item);
+      }
+      // タグ 作成
+      for (final item in tagDataList) {
+        await db.tTagRelDao.insertTag(tagData: item);
+      }
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('createProject 終了');
+    }
+  }
+
   /// プロジェクト更新
   Future<void> updateProject({required ProjectDetailModel detailModel}) async {
     try {
@@ -145,7 +223,7 @@ class ProjectRepository {
           .whereType<TTagRelCompanion>()
           .toList();
 
-      // プロジェクト情報
+      // プロジェクト情報 更新
       await db.tProjectDao.updateProject(projectData: projectData);
       // OS 削除
       await db.tOsInfoDao.deleteOsByProjectId(projectId: detailModel.projectId);

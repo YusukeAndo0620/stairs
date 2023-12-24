@@ -12,13 +12,11 @@ class SelectLabelDisplay extends ConsumerWidget {
     required this.labelList,
     required this.selectedLabelList,
     required this.onTapBackIcon,
-    required this.onTap,
   });
   final String title;
   final List<LabelModel> labelList;
   final List<LabelModel> selectedLabelList;
   final Function(List<LabelModel>) onTapBackIcon;
-  final Function(int) onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

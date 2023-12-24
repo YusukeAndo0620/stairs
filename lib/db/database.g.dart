@@ -1513,7 +1513,7 @@ class $TProjectTable extends TProject
   late final GeneratedColumn<String> industry = GeneratedColumn<String>(
       'industry', aliasedName, false,
       additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
   static const VerificationMeta _displayCountMeta =
@@ -1544,7 +1544,7 @@ class $TProjectTable extends TProject
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
       'description', aliasedName, false,
       additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 500),
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 500),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
   static const VerificationMeta _devSizeMeta =

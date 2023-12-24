@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '/loom/theme.dart';
 
 const _kAnimatedDuration = Duration(milliseconds: 100);
-const _kItemPadding = EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0);
+const _kItemPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0);
 const _kIconWidth = 24.0;
 const _kEventAreaMinHeight = 40.0;
 
