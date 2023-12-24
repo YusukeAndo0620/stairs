@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:stairs/db/database.dart';
 import 'package:stairs/db/db_package.dart';
-import 'package:stairs/loom/stairs_logger.dart';
+import 'package:stairs/loom/loom_package.dart';
 
 part 't_tool_dao.g.dart';
 
@@ -62,5 +62,18 @@ class TToolDao extends DatabaseAccessor<StairsDatabase> with _$TToolDaoMixin {
     } finally {
       _logger.d('deleteToolByProjectId 通信終了');
     }
+  }
+
+  // Tool model to entity
+  TToolCompanion convertToolToEntity({
+    required String projectId,
+    required LabelModel model,
+  }) {
+    return TToolCompanion(
+      toolId: Value(model.id),
+      name: Value(model.labelName),
+      projectId: Value(projectId),
+      updateAt: Value(DateTime.now().toIso8601String()),
+    );
   }
 }

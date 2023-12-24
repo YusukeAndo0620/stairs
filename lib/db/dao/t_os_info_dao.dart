@@ -1,8 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:stairs/db/database.dart';
 import 'package:stairs/db/db_package.dart';
-
-import 'package:stairs/loom/stairs_logger.dart';
+import 'package:stairs/loom/loom_package.dart';
 
 part 't_os_info_dao.g.dart';
 
@@ -65,5 +64,18 @@ class TOsInfoDao extends DatabaseAccessor<StairsDatabase>
     } finally {
       _logger.d('deleteOsByProjectId 通信終了');
     }
+  }
+
+  // OS model to entity
+  TOsInfoCompanion convertOsToEntity({
+    required String projectId,
+    required LabelModel model,
+  }) {
+    return TOsInfoCompanion(
+      osId: Value(model.id),
+      name: Value(model.labelName),
+      projectId: Value(projectId),
+      updateAt: Value(DateTime.now().toIso8601String()),
+    );
   }
 }

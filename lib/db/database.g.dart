@@ -2092,7 +2092,7 @@ class $TDevLanguageRelTable extends TDevLanguageRel
   late final GeneratedColumn<String> content = GeneratedColumn<String>(
       'content', aliasedName, false,
       additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 50),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
   static const VerificationMeta _projectIdMeta =
@@ -3452,19 +3452,19 @@ class $TToolTable extends TTool with TableInfo<$TToolTable, TToolData> {
   static const VerificationMeta _createAtMeta =
       const VerificationMeta('createAt');
   @override
-  late final GeneratedColumn<DateTime> createAt = GeneratedColumn<DateTime>(
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
       'create_at', aliasedName, false,
-      type: DriftSqlType.dateTime,
+      type: DriftSqlType.string,
       requiredDuringInsert: false,
-      clientDefault: () => DateTime.now().toLocal());
+      clientDefault: () => DateTime.now().toIso8601String());
   static const VerificationMeta _updateAtMeta =
       const VerificationMeta('updateAt');
   @override
-  late final GeneratedColumn<DateTime> updateAt = GeneratedColumn<DateTime>(
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
       'update_at', aliasedName, false,
-      type: DriftSqlType.dateTime,
+      type: DriftSqlType.string,
       requiredDuringInsert: false,
-      clientDefault: () => DateTime.now().toLocal());
+      clientDefault: () => DateTime.now().toIso8601String());
   @override
   List<GeneratedColumn> get $columns =>
       [toolId, name, projectId, createAt, updateAt];
@@ -3520,9 +3520,9 @@ class $TToolTable extends TTool with TableInfo<$TToolTable, TToolData> {
       projectId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}project_id'])!,
       createAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}create_at'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
       updateAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}update_at'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
     );
   }
 
@@ -3536,8 +3536,8 @@ class TToolData extends DataClass implements Insertable<TToolData> {
   final String toolId;
   final String name;
   final String projectId;
-  final DateTime createAt;
-  final DateTime updateAt;
+  final String createAt;
+  final String updateAt;
   const TToolData(
       {required this.toolId,
       required this.name,
@@ -3550,8 +3550,8 @@ class TToolData extends DataClass implements Insertable<TToolData> {
     map['tool_id'] = Variable<String>(toolId);
     map['name'] = Variable<String>(name);
     map['project_id'] = Variable<String>(projectId);
-    map['create_at'] = Variable<DateTime>(createAt);
-    map['update_at'] = Variable<DateTime>(updateAt);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
     return map;
   }
 
@@ -3572,8 +3572,8 @@ class TToolData extends DataClass implements Insertable<TToolData> {
       toolId: serializer.fromJson<String>(json['toolId']),
       name: serializer.fromJson<String>(json['name']),
       projectId: serializer.fromJson<String>(json['projectId']),
-      createAt: serializer.fromJson<DateTime>(json['createAt']),
-      updateAt: serializer.fromJson<DateTime>(json['updateAt']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
     );
   }
   @override
@@ -3583,8 +3583,8 @@ class TToolData extends DataClass implements Insertable<TToolData> {
       'toolId': serializer.toJson<String>(toolId),
       'name': serializer.toJson<String>(name),
       'projectId': serializer.toJson<String>(projectId),
-      'createAt': serializer.toJson<DateTime>(createAt),
-      'updateAt': serializer.toJson<DateTime>(updateAt),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
     };
   }
 
@@ -3592,8 +3592,8 @@ class TToolData extends DataClass implements Insertable<TToolData> {
           {String? toolId,
           String? name,
           String? projectId,
-          DateTime? createAt,
-          DateTime? updateAt}) =>
+          String? createAt,
+          String? updateAt}) =>
       TToolData(
         toolId: toolId ?? this.toolId,
         name: name ?? this.name,
@@ -3630,8 +3630,8 @@ class TToolCompanion extends UpdateCompanion<TToolData> {
   final Value<String> toolId;
   final Value<String> name;
   final Value<String> projectId;
-  final Value<DateTime> createAt;
-  final Value<DateTime> updateAt;
+  final Value<String> createAt;
+  final Value<String> updateAt;
   final Value<int> rowid;
   const TToolCompanion({
     this.toolId = const Value.absent(),
@@ -3655,8 +3655,8 @@ class TToolCompanion extends UpdateCompanion<TToolData> {
     Expression<String>? toolId,
     Expression<String>? name,
     Expression<String>? projectId,
-    Expression<DateTime>? createAt,
-    Expression<DateTime>? updateAt,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3673,8 +3673,8 @@ class TToolCompanion extends UpdateCompanion<TToolData> {
       {Value<String>? toolId,
       Value<String>? name,
       Value<String>? projectId,
-      Value<DateTime>? createAt,
-      Value<DateTime>? updateAt,
+      Value<String>? createAt,
+      Value<String>? updateAt,
       Value<int>? rowid}) {
     return TToolCompanion(
       toolId: toolId ?? this.toolId,
@@ -3699,10 +3699,10 @@ class TToolCompanion extends UpdateCompanion<TToolData> {
       map['project_id'] = Variable<String>(projectId.value);
     }
     if (createAt.present) {
-      map['create_at'] = Variable<DateTime>(createAt.value);
+      map['create_at'] = Variable<String>(createAt.value);
     }
     if (updateAt.present) {
-      map['update_at'] = Variable<DateTime>(updateAt.value);
+      map['update_at'] = Variable<String>(updateAt.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);

@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:stairs/db/database.dart';
 import 'package:stairs/feature/project/model/project_detail_model.dart';
 import 'package:stairs/feature/project/model/project_list_item_model.dart';
@@ -13,13 +14,13 @@ class ProjectRepository {
   /// プロジェクト一覧取得
   Future<List<ProjectListItemModel>?> getProjectList() async {
     try {
-      _logger.i('getProjectList 通信開始');
+      _logger.i('getProjectList 開始');
       final response = await db.tProjectDao.getProjectList();
 
       _logger.i('取得データ：$response,length: ${response.length}');
       final List<ProjectListItemModel> responseData = [];
       for (final row in response) {
-        responseData.add(_convertTProjectToListModel(
+        responseData.add(_convertProjectListToModel(
             projectData: row.readTable(db.tProject),
             colorData: row.readTable(db.mColor)));
       }
@@ -29,7 +30,7 @@ class ProjectRepository {
       _logger.e(exception);
       rethrow;
     } finally {
-      _logger.i('getProjectList 通信終了');
+      _logger.i('getProjectList 終了');
     }
   }
 
@@ -38,7 +39,7 @@ class ProjectRepository {
     required String projectId,
   }) async {
     try {
-      _logger.i('getProjectDetail 通信開始');
+      _logger.i('getProjectDetail 開始');
 
       // 詳細
       final detailResponse =
@@ -64,13 +65,21 @@ class ProjectRepository {
       // タグ
       final tagResponse = await db.tTagRelDao.getTagList(projectId: projectId);
 
-      final responseData = _convertTProjectToDetailModel(
+      final responseData = _convertProjectDetailToModel(
         projectData: detailResponse.readTable(db.tProject),
         colorData: detailResponse.readTable(db.mColor),
         osData: osResponse,
         dbData: dbResponse,
-        devLangData:
-            devLangResponse.map((e) => e.readTable(db.tDevLanguage)).toList(),
+        mDevLangData: devLangResponse
+            .map((e) => e.readTableOrNull(db.mDevLanguage))
+            .toList()
+            .whereType<MDevLanguageData>()
+            .toList(),
+        devLangData: devLangResponse
+            .map((e) => e.readTableOrNull(db.tDevLanguage))
+            .toList()
+            .whereType<TDevLanguageData>()
+            .toList(),
         devLangRelData: devLangResponse
             .map((e) => e.readTable(db.tDevLanguageRel))
             .toList(),
@@ -88,12 +97,106 @@ class ProjectRepository {
       _logger.e(exception);
       rethrow;
     } finally {
-      _logger.i('getProjectDetail 通信終了');
+      _logger.i('getProjectDetail 終了');
+    }
+  }
+
+  /// プロジェクト更新
+  Future<void> updateProject({required ProjectDetailModel detailModel}) async {
+    try {
+      _logger.i('updateProject 開始');
+      _logger.i('projectId: ${detailModel.projectId}');
+      final projectData =
+          _convertProjectDetailToEntity(detailModel: detailModel);
+
+      final osDataList = detailModel.osList
+          .map((item) => db.tOsInfoDao
+              .convertOsToEntity(projectId: detailModel.projectId, model: item))
+          .toList();
+
+      final dbDataList = detailModel.dbList
+          .map((item) => db.tDbDao
+              .convertDbToEntity(projectId: detailModel.projectId, model: item))
+          .toList();
+
+      final devLangDataList = detailModel.devLanguageList
+          .map((item) => db.tDevLangRelDao.convertDevLangRelToEntity(
+              projectId: detailModel.projectId, model: item))
+          .toList();
+
+      final toolDataList = detailModel.toolList
+          .map((item) => db.tToolDao.convertToolToEntity(
+              projectId: detailModel.projectId, model: item))
+          .toList()
+          .whereType<TToolCompanion>()
+          .toList();
+
+      final devProgressDataList = detailModel.devProgressList
+          .map((item) => db.tDevProgressRelDao.convertDevProgressToEntity(
+              projectId: detailModel.projectId, model: item))
+          .toList()
+          .whereType<TDevProgressRelCompanion>()
+          .toList();
+
+      final tagDataList = detailModel.tagList
+          .map((item) => db.tTagRelDao.convertTagToEntity(
+              projectId: detailModel.projectId, model: item))
+          .toList()
+          .whereType<TTagRelCompanion>()
+          .toList();
+
+      // プロジェクト情報
+      await db.tProjectDao.updateProject(projectData: projectData);
+      // OS 削除
+      await db.tOsInfoDao.deleteOsByProjectId(projectId: detailModel.projectId);
+      // OS 作成
+      for (final item in osDataList) {
+        await db.tOsInfoDao.insertOs(osData: item);
+      }
+      // DB 削除
+      await db.tDbDao.deleteDbByProjectId(projectId: detailModel.projectId);
+      // DB 作成
+      for (final item in dbDataList) {
+        await db.tDbDao.insertDb(dbData: item);
+      }
+      // 開発言語紐付け 削除
+      await db.tDevLangRelDao
+          .deleteDevLangByProjectId(projectId: detailModel.projectId);
+      // 開発言語紐付け 作成
+      for (final item in devLangDataList) {
+        await db.tDevLangRelDao.insertDevLanguage(devLangData: item);
+      }
+      // 開発ツール 削除
+      await db.tToolDao.deleteToolByProjectId(projectId: detailModel.projectId);
+      // 開発ツール 作成
+      for (final item in toolDataList) {
+        await db.tToolDao.insertTool(toolData: item);
+      }
+      // 開発工程 削除
+      await db.tDevProgressRelDao
+          .deleteDevProgressByProjectId(projectId: detailModel.projectId);
+      // 開発工程 作成
+      for (final item in devProgressDataList) {
+        await db.tDevProgressRelDao.insertDevProgress(devProgressData: item);
+      }
+      // タグ 削除
+      await db.tTagRelDao
+          .deleteTagByProjectId(projectId: detailModel.projectId);
+      // タグ 作成
+      for (final item in tagDataList) {
+        await db.tTagRelDao.insertTag(tagData: item);
+      }
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('updateProject 終了');
     }
   }
 }
 
-ProjectListItemModel _convertTProjectToListModel({
+// プロジェクト一覧 entity to model
+ProjectListItemModel _convertProjectListToModel({
   required TProjectData projectData,
   required MColorData colorData,
 }) {
@@ -107,11 +210,13 @@ ProjectListItemModel _convertTProjectToListModel({
   );
 }
 
-ProjectDetailModel _convertTProjectToDetailModel({
+// プロジェクト詳細 entity to model
+ProjectDetailModel _convertProjectDetailToModel({
   required TProjectData projectData,
   required MColorData colorData,
   required List<TOsInfoData> osData,
   required List<TDbData> dbData,
+  required List<MDevLanguageData> mDevLangData,
   required List<TDevLanguageData> devLangData,
   required List<TDevLanguageRelData> devLangRelData,
   required List<TToolData> toolData,
@@ -130,8 +235,12 @@ ProjectDetailModel _convertTProjectToDetailModel({
     devLangList.add(
       LabelWithContent(
         id: devLangRelData[i].id.toString(),
-        labelId: devLangData[i].devLangId,
-        labelName: devLangData[i].name,
+        labelId: mDevLangData.isNotEmpty
+            ? mDevLangData[i].devLangId
+            : devLangData[i].devLangId,
+        labelName: mDevLangData.isNotEmpty
+            ? mDevLangData[i].name
+            : devLangData[i].name,
         content: devLangRelData[i].content,
       ),
     );
@@ -176,5 +285,24 @@ ProjectDetailModel _convertTProjectToDetailModel({
         .toList(),
     devSize: projectData.devSize,
     tagList: tagList,
+  );
+}
+
+// プロジェクト詳細 model to entity
+TProjectCompanion _convertProjectDetailToEntity({
+  required ProjectDetailModel detailModel,
+}) {
+  return TProjectCompanion(
+    projectId: Value(detailModel.projectId),
+    name: Value(detailModel.projectName),
+    colorId: Value(detailModel.themeColorModel.id),
+    industry: Value(detailModel.industry),
+    displayCount: Value(detailModel.displayCount),
+    startDate: Value(detailModel.startDate.toIso8601String()),
+    endDate: Value(detailModel.endDate.toIso8601String()),
+    description: Value(detailModel.description),
+    devSize: Value(detailModel.devSize),
+    accountId: const Value('1'),
+    updateAt: Value(DateTime.now().toIso8601String()),
   );
 }

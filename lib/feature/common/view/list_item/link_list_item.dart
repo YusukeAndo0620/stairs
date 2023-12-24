@@ -5,7 +5,7 @@ const _kCDeleteIconSize = 16.0;
 const _kSpaceWidth = 16.0;
 const _kContentPadding = EdgeInsets.symmetric(vertical: 16.0);
 
-/// Input text area and add link area
+/// テキスト入力＋イベントエリア
 class LinkListItem extends StatelessWidget {
   const LinkListItem({
     super.key,
@@ -16,6 +16,7 @@ class LinkListItem extends StatelessWidget {
     this.maxLength = 100,
     this.autoFocus = false,
     required this.linkedWidgets,
+    this.eventAreaWidth,
     required this.onTextSubmitted,
     required this.onTap,
     required this.onDeleteItem,
@@ -28,6 +29,7 @@ class LinkListItem extends StatelessWidget {
   final List<Widget> linkedWidgets;
   final int maxLength;
   final bool autoFocus;
+  final double? eventAreaWidth;
   final Function(String, String) onTextSubmitted;
   final Function(String) onTap;
   final Function(String) onDeleteItem;
@@ -65,6 +67,7 @@ class LinkListItem extends StatelessWidget {
             width: _kSpaceWidth,
           ),
           EventArea(
+            width: eventAreaWidth ?? MediaQuery.of(context).size.width * 0.2,
             itemList: linkedWidgets,
             hintText: linkHintText,
             trailingIconData: Icons.expand_more,

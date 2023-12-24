@@ -16,7 +16,25 @@ class ProjectList extends _$ProjectList {
     return getProjectList(database: database);
   }
 
-  /// データの取得メソッド
+  /// データセット
+  Future<void> setProjectList({required StairsDatabase database}) async {
+    _logger.d('getProjectList: プロジェクト一覧セット');
+
+    final list = await getProjectList(database: database);
+
+    update(
+      (data) {
+        state = const AsyncLoading();
+        return data = list;
+      },
+      onError: (error, stack) {
+        state = AsyncError(error, stack);
+        throw Exception(error);
+      },
+    );
+  }
+
+  /// データの取得
   Future<List<ProjectListItemModel>> getProjectList(
       {required StairsDatabase database}) async {
     _logger.d('getProjectList: プロジェクト一覧取得');

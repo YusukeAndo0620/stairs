@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:stairs/db/database.dart';
 import 'package:stairs/db/db_package.dart';
-import 'package:stairs/loom/stairs_logger.dart';
+import 'package:stairs/loom/loom_package.dart';
 
 part 't_db_dao.g.dart';
 
@@ -61,5 +61,18 @@ class TDbDao extends DatabaseAccessor<StairsDatabase> with _$TDbDaoMixin {
     } finally {
       _logger.d('deleteDbByProjectId 通信終了');
     }
+  }
+
+  // DB model to entity
+  TDbCompanion convertDbToEntity({
+    required String projectId,
+    required LabelModel model,
+  }) {
+    return TDbCompanion(
+      dbId: Value(model.id),
+      name: Value(model.labelName),
+      projectId: Value(projectId),
+      updateAt: Value(DateTime.now().toIso8601String()),
+    );
   }
 }

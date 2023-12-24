@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:stairs/db/database.dart';
 import 'package:stairs/db/db_package.dart';
-import 'package:stairs/loom/stairs_logger.dart';
+import 'package:stairs/loom/loom_package.dart';
 
 part 't_dev_lang_rel_dao.g.dart';
 
@@ -22,7 +22,11 @@ class TDevLangRelDao extends DatabaseAccessor<StairsDatabase>
         ..where((tbl) => tbl.projectId.equals(projectId));
 
       final response = await query.join([
-        innerJoin(
+        leftOuterJoin(
+          db.mDevLanguage,
+          db.mDevLanguage.devLangId.equalsExp(db.tDevLanguageRel.devLangId),
+        ),
+        leftOuterJoin(
           db.tDevLanguage,
           db.tDevLanguage.devLangId.equalsExp(db.tDevLanguageRel.devLangId),
         ),
@@ -67,5 +71,18 @@ class TDevLangRelDao extends DatabaseAccessor<StairsDatabase>
     } finally {
       _logger.d('deleteDevLangByProjectId 通信終了');
     }
+  }
+
+  // Dev lang rel model to entity
+  TDevLanguageRelCompanion convertDevLangRelToEntity({
+    required String projectId,
+    required LabelWithContent model,
+  }) {
+    return TDevLanguageRelCompanion(
+      content: Value(model.content),
+      devLangId: Value(model.labelId),
+      projectId: Value(projectId),
+      updateAt: Value(DateTime.now().toIso8601String()),
+    );
   }
 }

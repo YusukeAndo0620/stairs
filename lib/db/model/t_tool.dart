@@ -9,10 +9,10 @@ class TTool extends Table {
   TextColumn get projectId =>
       text().withLength(min: 1, max: 50).references(TProject, #projectId)();
 
-  DateTimeColumn get createAt =>
-      dateTime().clientDefault(() => DateTime.now().toLocal())();
-  DateTimeColumn get updateAt =>
-      dateTime().clientDefault(() => DateTime.now().toLocal())();
+  TextColumn get createAt =>
+      text().clientDefault(() => DateTime.now().toIso8601String())();
+  TextColumn get updateAt =>
+      text().clientDefault(() => DateTime.now().toIso8601String())();
 
   @override
   Set<Column> get primaryKey => {toolId};

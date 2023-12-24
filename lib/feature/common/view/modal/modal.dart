@@ -24,7 +24,7 @@ class Modal extends StatefulWidget {
   final Icon? trailingIcon;
   final double? iconSize;
   final double? trailingWidth;
-  final Function? onClose;
+  final VoidCallback? onClose;
 
   final Widget buildMainContent;
 
@@ -40,7 +40,7 @@ class ModalState extends State<Modal> {
 
   @override
   void dispose() {
-    // widget.onClose!();
+    widget.onClose!();
     super.dispose();
   }
 
@@ -61,6 +61,7 @@ class ModalState extends State<Modal> {
               icon: widget.trailingIcon,
               iconSize: widget.iconSize,
               trailingWidth: widget.trailingWidth,
+              onClose: () => widget.onClose,
             )
           : null,
     );
@@ -86,7 +87,7 @@ class ModalContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
     return Container(
-      height: height ?? MediaQuery.of(context).size.height * 0.95,
+      height: height ?? MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       padding: _kModalPadding,
       decoration: BoxDecoration(
@@ -156,10 +157,12 @@ class _TrailingContent extends StatelessWidget {
     this.icon,
     this.iconSize,
     this.trailingWidth,
+    this.onClose,
   });
   final Icon? icon;
   final double? iconSize;
   final double? trailingWidth;
+  final VoidCallback? onClose;
 
   @override
   Widget build(BuildContext context) {
@@ -174,6 +177,7 @@ class _TrailingContent extends StatelessWidget {
         color: theme.colorPrimary,
         iconSize: iconSize ?? _kIconSize,
         onPressed: () {
+          onClose;
           Navigator.pop(context);
         },
       ),

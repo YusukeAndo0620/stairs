@@ -1,6 +1,7 @@
 import 'package:stairs/db/provider/database_provider.dart';
 import 'package:stairs/feature/project/component/provider/dev_lang_provider.dart';
 import 'package:stairs/feature/project/provider/project_detail_provider.dart';
+import 'package:stairs/feature/project/provider/project_list_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -68,16 +69,25 @@ class ProjectEditModal extends ConsumerWidget {
     final projectDetailState = ref.watch(projectDetailProvider(
         projectId: projectId, database: ref.watch(databaseProvider)));
 
-    // Notifier
+    //プロジェクト詳細 Notifier
     final projectDetailNotifier = ref.watch(projectDetailProvider(
             projectId: projectId, database: ref.watch(databaseProvider))
         .notifier);
+
+    //プロジェクト一覧 Notifier
+    final projectListNotifier = ref.watch(
+        projectListProvider(database: ref.watch(databaseProvider)).notifier);
 
     //開発言語一覧
     final devLangState =
         ref.watch(devLangProvider(db: ref.watch(databaseProvider)));
 
     return Modal(
+      onClose: () {
+        projectDetailNotifier.updateDetail();
+        projectListNotifier.setProjectList(
+            database: ref.watch(databaseProvider));
+      },
       buildMainContent: projectDetailState.when(
         data: (detail) {
           return detail == null

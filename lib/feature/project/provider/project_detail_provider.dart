@@ -50,7 +50,20 @@ class ProjectDetail extends _$ProjectDetail {
     }
   }
 
-  Future<void> updateDetail() async {}
+  Future<void> updateDetail() async {
+    _logger.d('updateDetail: プロジェクト更新');
+    if (state.value == null) {
+      _logger.d('stateに値がないため処理終了');
+      return;
+    }
+    _logger.d('projectId: ${state.value!.projectId}');
+
+    final projectRepositoryProvider =
+        Provider((ref) => ProjectRepository(db: database));
+    // API通信開始
+    final repository = ref.read(projectRepositoryProvider);
+    await repository.updateProject(detailModel: state.value!);
+  }
 
   // state change event
   void changeProjectName({required String projectName}) {

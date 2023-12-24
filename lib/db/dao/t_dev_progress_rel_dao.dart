@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:stairs/db/database.dart';
 import 'package:stairs/db/db_package.dart';
-import 'package:stairs/loom/stairs_logger.dart';
+import 'package:stairs/loom/loom_package.dart';
 
 part 't_dev_progress_rel_dao.g.dart';
 
@@ -36,7 +36,7 @@ class TDevProgressRelDao extends DatabaseAccessor<StairsDatabase>
       _logger.d('getDevProgressList 通信終了');
     }
   }
-  
+
   /// 開発工程 追加
   Future<void> insertDevProgress({
     required TDevProgressRelCompanion devProgressData,
@@ -69,5 +69,21 @@ class TDevProgressRelDao extends DatabaseAccessor<StairsDatabase>
     } finally {
       _logger.d('deleteDevProgressByProjectId 通信終了');
     }
+  }
+
+  // Dev progress model to entity
+  TDevProgressRelCompanion? convertDevProgressToEntity({
+    required String projectId,
+    required LabelModel model,
+  }) {
+    if (int.tryParse(model.id) == null) {
+      _logger.e('LabelModelのidが数値ではありません。id: ${model.id}');
+      return null;
+    }
+    return TDevProgressRelCompanion(
+      devProgressId: Value(int.parse(model.id)),
+      projectId: Value(projectId),
+      updateAt: Value(DateTime.now().toIso8601String()),
+    );
   }
 }

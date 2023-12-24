@@ -4,6 +4,7 @@ import 'package:stairs/loom/loom_package.dart';
 const _kProjectListItemContentPadding =
     EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0);
 const _kProjectListItemTitleMaxLine = 1;
+const _kProjectIconSize = 32.0;
 const _kProjectListItemEditIconSize = 20.0;
 const _kProjectListItemBorder = 1.0;
 
@@ -35,7 +36,7 @@ class _ProjectListItemState extends State<ProjectListItem> {
       leading: Icon(
         Icons.table_chart,
         color: widget.themeColor,
-        size: 45,
+        size: _kProjectIconSize,
       ),
       title: Container(
         padding: _kProjectListItemContentPadding,

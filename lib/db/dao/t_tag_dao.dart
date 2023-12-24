@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:stairs/db/database.dart';
 import 'package:stairs/db/db_package.dart';
-import 'package:stairs/loom/stairs_logger.dart';
+import 'package:stairs/loom/loom_package.dart';
 
 part 't_tag_dao.g.dart';
 
@@ -70,5 +70,19 @@ class TTagDao extends DatabaseAccessor<StairsDatabase> with _$TTagDaoMixin {
     } finally {
       _logger.d('deleteTagByAccountId 通信終了');
     }
+  }
+
+  // Tag model to entity
+  TTagCompanion convertTagToEntity({
+    required String accountId,
+    required ColorLabelModel model,
+  }) {
+    return TTagCompanion(
+      name: Value(model.labelName),
+      colorId: Value(model.colorModel.id),
+      isReadOnly: const Value(false),
+      accountId: Value(accountId),
+      updateAt: Value(DateTime.now().toIso8601String()),
+    );
   }
 }

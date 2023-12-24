@@ -9,6 +9,7 @@ const _kEventAreaMinHeight = 40.0;
 class EventArea extends StatefulWidget {
   const EventArea({
     super.key,
+    this.width,
     this.height = _kEventAreaMinHeight,
     required this.hintText,
     required this.itemList,
@@ -16,6 +17,7 @@ class EventArea extends StatefulWidget {
     required this.onTap,
   });
 
+  final double? width;
   final double height;
   final String hintText;
   final List<Widget> itemList;
@@ -38,7 +40,8 @@ class _EventAreaState extends State<EventArea> {
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
 
-    return Expanded(
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: widget.width ?? double.infinity),
       child: GestureDetector(
         onTapDown: (_) {
           setState(() {

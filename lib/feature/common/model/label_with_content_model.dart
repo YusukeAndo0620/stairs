@@ -3,12 +3,12 @@ class LabelWithContent {
     required this.id,
     required this.labelId,
     required this.labelName,
-    this.content,
+    required this.content,
   });
   final String id;
   final String labelId;
   final String labelName;
-  final String? content;
+  final String content;
 
   LabelWithContent copyWith({
     String? id,

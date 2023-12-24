@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:stairs/db/database.dart';
 import 'package:stairs/db/db_package.dart';
-import 'package:stairs/loom/stairs_logger.dart';
+import 'package:stairs/loom/loom_package.dart';
 
 part 't_tag_rel_dao.g.dart';
 
@@ -74,5 +74,22 @@ class TTagRelDao extends DatabaseAccessor<StairsDatabase>
     } finally {
       _logger.d('deleteTagByProjectId 通信終了');
     }
+  }
+
+  // Tag rel model to entity
+  TTagRelCompanion? convertTagToEntity({
+    required String projectId,
+    required ColorLabelModel model,
+  }) {
+    if (int.tryParse(model.id) == null) {
+      _logger.e('ColorLabelModelのidが数値ではありません。id: ${model.id}');
+      return null;
+    }
+    return TTagRelCompanion(
+      colorId: Value(model.colorModel.id),
+      projectId: Value(projectId),
+      tagId: Value(int.parse(model.id)),
+      updateAt: Value(DateTime.now().toIso8601String()),
+    );
   }
 }

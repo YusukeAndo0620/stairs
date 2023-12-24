@@ -209,10 +209,15 @@ class _LabelWithIcon extends StatelessWidget {
           const SizedBox(
             width: _kLabelIconSpaceWidth,
           ),
-          Text(
-            label,
-            style: theme.textStyleBody,
-            overflow: TextOverflow.ellipsis,
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.3 -
+                _kIconWidth -
+                _kLabelIconSpaceWidth,
+            child: Text(
+              label,
+              style: theme.textStyleBody,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),
