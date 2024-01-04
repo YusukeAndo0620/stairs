@@ -1,26 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'carousel_display_provider.dart';
+part of 'board_position_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$carouselDisplayHash() => r'93c91d53f527b6fab6a38762128b94c900ae0747';
+String _$boardPositionHash() => r'7b47525a292ff1d9da13519ebe1594b555634091';
 
-/// See also [CarouselDisplay].
-@ProviderFor(CarouselDisplay)
-final carouselDisplayProvider =
-    AutoDisposeNotifierProvider<CarouselDisplay, CarouselDisplayModel>.internal(
-  CarouselDisplay.new,
-  name: r'carouselDisplayProvider',
+/// See also [BoardPosition].
+@ProviderFor(BoardPosition)
+final boardPositionProvider =
+    AutoDisposeNotifierProvider<BoardPosition, BoardPositionModel>.internal(
+  BoardPosition.new,
+  name: r'boardPositionProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$carouselDisplayHash,
+      : _$boardPositionHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$CarouselDisplay = AutoDisposeNotifier<CarouselDisplayModel>;
+typedef _$BoardPosition = AutoDisposeNotifier<BoardPositionModel>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

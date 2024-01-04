@@ -45,26 +45,26 @@ class DragItem extends _$DragItem {
     );
   }
 
-  void setItem({required String boardId, required TaskItemModel draggingItem}) {
+  void setItem({required String boardId,  TaskItemModel? draggingItem}) {
     state = DraggingItemState(
       boardId: boardId,
-      draggingItem: draggingItem,
+      draggingItem: draggingItem?? state.draggingItem!.copyWith(boardId: boardId),
       shrinkItem: getShrinkItem(
         boardId: boardId,
       ),
     );
   }
+}
 
-  /// shrink itemを生成。取得。
-  TaskItemModel getShrinkItem({required String boardId}) {
-    return TaskItemModel(
-      boardId: boardId,
-      taskItemId: kShrinkId,
-      title: '',
-      description: '',
-      startDate: DateTime.now(),
-      endDate: DateTime.now(),
-      labelList: [],
-    );
-  }
+/// shrink itemを生成。取得。
+TaskItemModel getShrinkItem({required String boardId}) {
+  return TaskItemModel(
+    boardId: boardId,
+    taskItemId: kShrinkId,
+    title: '',
+    description: '',
+    startDate: DateTime.now(),
+    dueDate: DateTime.now(),
+    labelList: [],
+  );
 }

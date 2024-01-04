@@ -1,25 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'drag_item_provider.dart';
+part of 'toast_msg_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dragItemHash() => r'd6a5f23ec3c383dd2fa54c36abc94a572f1037fd';
+String _$toastMsgHash() => r'bcc751f56567cf4dc398a41e4215bf0bc5459ff1';
 
-/// See also [DragItem].
-@ProviderFor(DragItem)
-final dragItemProvider =
-    AutoDisposeNotifierProvider<DragItem, DraggingItemState>.internal(
-  DragItem.new,
-  name: r'dragItemProvider',
+/// See also [ToastMsg].
+@ProviderFor(ToastMsg)
+final toastMsgProvider =
+    AutoDisposeNotifierProvider<ToastMsg, ToastMsgModel>.internal(
+  ToastMsg.new,
+  name: r'toastMsgProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$dragItemHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$toastMsgHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$DragItem = AutoDisposeNotifier<DraggingItemState>;
+typedef _$ToastMsg = AutoDisposeNotifier<ToastMsgModel>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

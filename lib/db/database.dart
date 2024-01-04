@@ -4,6 +4,7 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:stairs/db/dao/m_dev_lang_dao.dart';
+import 'package:stairs/db/dao/t_board_dao.dart';
 import 'package:stairs/db/dao/t_db_dao.dart';
 import 'package:stairs/db/dao/t_dev_lang_dao.dart';
 import 'package:stairs/db/dao/t_dev_lang_rel_dao.dart';
@@ -11,6 +12,7 @@ import 'package:stairs/db/dao/t_dev_progress_rel_dao.dart';
 import 'package:stairs/db/dao/t_os_info_dao.dart';
 import 'package:stairs/db/dao/t_project_dao.dart';
 import 'package:stairs/db/dao/t_tag_rel_dao.dart';
+import 'package:stairs/db/dao/t_task_dao.dart';
 import 'package:stairs/db/dao/t_tool_dao.dart';
 import 'package:stairs/db/dummy/dummy_project_detail.dart';
 import 'package:stairs/feature/common/utils.dart';
@@ -59,6 +61,8 @@ final _logger = stairsLogger(name: 'database');
     TDevProgressRelDao,
     TTagRelDao,
     TDevLangDao,
+    TBoardDao,
+    TTaskDao,
   ],
 )
 class StairsDatabase extends _$StairsDatabase {

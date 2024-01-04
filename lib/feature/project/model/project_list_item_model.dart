@@ -12,9 +12,9 @@ class ProjectListItemModel {
   final ColorModel themeColorModel;
 
   factory ProjectListItemModel.fromJson(dynamic json) {
-    final projectId = json['projectId'];
-    final projectName = json['projectName'];
-    final themeColorModel = json['themeColorModel'];
+    final projectId = json['project_id'];
+    final projectName = json['project_name'];
+    final themeColorModel = json['theme_color_model'];
 
     final model = ProjectListItemModel(
       projectId: projectId,
@@ -27,10 +27,9 @@ class ProjectListItemModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {};
-    data['projectId'] = projectId;
-    data['projectName'] = projectName;
-    data['themeColorModel'] = themeColorModel;
-
+    data['project_id'] = projectId;
+    data['project_name'] = projectName;
+    data['theme_color_model'] = themeColorModel;
     return data;
   }
 
@@ -38,9 +37,9 @@ class ProjectListItemModel {
   String toString() {
     return '''
       ProjectListItemModel{
-        projectId: $projectId, 
-        projectName: $projectName, 
-        themeColorModel: $themeColorModel,
+        project_id: $projectId, 
+        project_name: $projectName, 
+        theme_color_model: $themeColorModel,
       }
     ''';
   }

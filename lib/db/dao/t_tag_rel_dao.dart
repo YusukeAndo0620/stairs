@@ -42,6 +42,37 @@ class TTagRelDao extends DatabaseAccessor<StairsDatabase>
     }
   }
 
+  Future<TypedResult> getTagWithTagId({
+    required String projectId,
+    required int tagId,
+  }) async {
+    try {
+      _logger.d('getTagList 通信開始');
+      final query = db.select(db.tTagRel)
+        ..where(
+            (tbl) => tbl.projectId.equals(projectId) & tbl.id.equals(tagId));
+
+      final response = await query.join([
+        innerJoin(
+          db.tTag,
+          db.tTagRel.tagId.equalsExp(db.tTag.id),
+        ),
+        // カラー
+        innerJoin(
+          db.mColor,
+          db.mColor.id.equalsExp(db.tTag.colorId),
+        ),
+      ]).getSingle();
+      _logger.d('取得データ：$response');
+      return response;
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('getTagList 通信終了');
+    }
+  }
+
   /// タグ 追加
   Future<void> insertTag({
     required TTagRelCompanion tagData,

@@ -5180,11 +5180,9 @@ class $TTaskTagTable extends TTaskTag
           GeneratedColumn.constraintIsAlways('REFERENCES t_task (task_id)'));
   static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
   @override
-  late final GeneratedColumn<String> tagId = GeneratedColumn<String>(
+  late final GeneratedColumn<int> tagId = GeneratedColumn<int>(
       'tag_id', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
-      type: DriftSqlType.string,
+      type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES t_tag_rel (id)'));
@@ -5253,7 +5251,7 @@ class $TTaskTagTable extends TTaskTag
       taskId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}task_id'])!,
       tagId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}tag_id'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}tag_id'])!,
       createAt: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
       updateAt: attachedDatabase.typeMapping
@@ -5270,7 +5268,7 @@ class $TTaskTagTable extends TTaskTag
 class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
   final int id;
   final String taskId;
-  final String tagId;
+  final int tagId;
   final String createAt;
   final String updateAt;
   const TTaskTagData(
@@ -5284,7 +5282,7 @@ class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['task_id'] = Variable<String>(taskId);
-    map['tag_id'] = Variable<String>(tagId);
+    map['tag_id'] = Variable<int>(tagId);
     map['create_at'] = Variable<String>(createAt);
     map['update_at'] = Variable<String>(updateAt);
     return map;
@@ -5306,7 +5304,7 @@ class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
     return TTaskTagData(
       id: serializer.fromJson<int>(json['id']),
       taskId: serializer.fromJson<String>(json['taskId']),
-      tagId: serializer.fromJson<String>(json['tagId']),
+      tagId: serializer.fromJson<int>(json['tagId']),
       createAt: serializer.fromJson<String>(json['createAt']),
       updateAt: serializer.fromJson<String>(json['updateAt']),
     );
@@ -5317,7 +5315,7 @@ class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'taskId': serializer.toJson<String>(taskId),
-      'tagId': serializer.toJson<String>(tagId),
+      'tagId': serializer.toJson<int>(tagId),
       'createAt': serializer.toJson<String>(createAt),
       'updateAt': serializer.toJson<String>(updateAt),
     };
@@ -5326,7 +5324,7 @@ class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
   TTaskTagData copyWith(
           {int? id,
           String? taskId,
-          String? tagId,
+          int? tagId,
           String? createAt,
           String? updateAt}) =>
       TTaskTagData(
@@ -5364,7 +5362,7 @@ class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
 class TTaskTagCompanion extends UpdateCompanion<TTaskTagData> {
   final Value<int> id;
   final Value<String> taskId;
-  final Value<String> tagId;
+  final Value<int> tagId;
   final Value<String> createAt;
   final Value<String> updateAt;
   const TTaskTagCompanion({
@@ -5377,7 +5375,7 @@ class TTaskTagCompanion extends UpdateCompanion<TTaskTagData> {
   TTaskTagCompanion.insert({
     this.id = const Value.absent(),
     required String taskId,
-    required String tagId,
+    required int tagId,
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
   })  : taskId = Value(taskId),
@@ -5385,7 +5383,7 @@ class TTaskTagCompanion extends UpdateCompanion<TTaskTagData> {
   static Insertable<TTaskTagData> custom({
     Expression<int>? id,
     Expression<String>? taskId,
-    Expression<String>? tagId,
+    Expression<int>? tagId,
     Expression<String>? createAt,
     Expression<String>? updateAt,
   }) {
@@ -5401,7 +5399,7 @@ class TTaskTagCompanion extends UpdateCompanion<TTaskTagData> {
   TTaskTagCompanion copyWith(
       {Value<int>? id,
       Value<String>? taskId,
-      Value<String>? tagId,
+      Value<int>? tagId,
       Value<String>? createAt,
       Value<String>? updateAt}) {
     return TTaskTagCompanion(
@@ -5423,7 +5421,7 @@ class TTaskTagCompanion extends UpdateCompanion<TTaskTagData> {
       map['task_id'] = Variable<String>(taskId.value);
     }
     if (tagId.present) {
-      map['tag_id'] = Variable<String>(tagId.value);
+      map['tag_id'] = Variable<int>(tagId.value);
     }
     if (createAt.present) {
       map['create_at'] = Variable<String>(createAt.value);
@@ -5811,6 +5809,8 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
       TDevProgressRelDao(this as StairsDatabase);
   late final TTagRelDao tTagRelDao = TTagRelDao(this as StairsDatabase);
   late final TDevLangDao tDevLangDao = TDevLangDao(this as StairsDatabase);
+  late final TBoardDao tBoardDao = TBoardDao(this as StairsDatabase);
+  late final TTaskDao tTaskDao = TTaskDao(this as StairsDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();

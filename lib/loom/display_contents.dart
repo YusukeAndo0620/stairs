@@ -1,5 +1,10 @@
 import 'package:stairs/feature/project/view/project_screen.dart';
 import 'package:stairs/loom/loom_package.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toastification/toastification.dart';
+import 'package:stairs/feature/common/provider/view/toast_msg_provider.dart';
+
+final _logger = stairsLogger(name: 'display_contents');
 
 const _kFooterButtons = [
   _FooterInfo(
@@ -26,15 +31,15 @@ const _kFooterButtons = [
 
 const _kAppBarTitle = 'Stairs';
 
-class DisplayContents extends StatefulWidget {
+class DisplayContents extends ConsumerStatefulWidget {
   const DisplayContents({super.key, required this.screenId});
 
   final ScreenId screenId;
   @override
-  State<StatefulWidget> createState() => _DisplayContentsState();
+  ConsumerState<DisplayContents> createState() => _DisplayContentsState();
 }
 
-class _DisplayContentsState extends State<DisplayContents> {
+class _DisplayContentsState extends ConsumerState<DisplayContents> {
   var selectedScreenId = ScreenId.board;
 
   @override
@@ -50,7 +55,38 @@ class _DisplayContentsState extends State<DisplayContents> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.i('=== 画面表示 selectedScreenId: $selectedScreenId ===');
+
     final theme = LoomTheme.of(context);
+    // トーストメッセージハンドリング
+    ref.listen<ToastMsgModel>(
+      toastMsgProvider, // 購読対象のProviderを指定
+      (previous, current) {
+        if (!previous!.isShown && current.isShown) {
+          _logger.d('トースト表示 実施');
+          _logger.d('type: ${current.type}, msg: ${current.msg}');
+          toastification.show(
+            context: context,
+            title: current.msg,
+            style: ToastificationStyle.minimal,
+            type: current.type == MessageType.success
+                ? ToastificationType.success
+                : current.type == MessageType.warning
+                    ? ToastificationType.warning
+                    : ToastificationType.error,
+            autoCloseDuration: const Duration(milliseconds: 3000),
+            alignment: Alignment.topCenter,
+            dragToClose: true,
+          );
+          _logger.d('トースト表示 終了');
+          Future.delayed(const Duration(milliseconds: 3000)).then(
+            (value) => ref.watch(toastMsgProvider.notifier).init(),
+          );
+        }
+      },
+      // `onError` で何らかのエラーハンドリングが可能（任意）
+      onError: (error, stackTrace) => debugPrint('$error'),
+    );
     return Scaffold(
       appBar: AppBar(
         backgroundColor: theme.colorBgLayer1,

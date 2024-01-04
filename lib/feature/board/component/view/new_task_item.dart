@@ -29,10 +29,9 @@ class NewTaskItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = LoomTheme.of(context);
 
-    final taskItemState =
-        ref.watch(taskItemProvider(boardId: boardId, taskItemId: ''));
+    final taskItemState = ref.watch(taskItemProvider(taskItemId: ''));
     final taskItemNotifier =
-        ref.watch(taskItemProvider(boardId: boardId, taskItemId: '').notifier);
+        ref.watch(taskItemProvider(taskItemId: '').notifier);
 
     return Container(
       width: double.infinity,
@@ -66,8 +65,8 @@ class NewTaskItem extends ConsumerWidget {
                 child: TapAction(
                   widget: LabelTip(
                     type: LabelTipType.square,
-                    label: getFormattedDate(taskItemState.endDate),
-                    textColor: taskItemState.endDate
+                    label: getFormattedDate(taskItemState.dueDate),
+                    textColor: taskItemState.dueDate
                                 .difference(DateTime.now())
                                 .inDays <
                             3
@@ -80,7 +79,7 @@ class NewTaskItem extends ConsumerWidget {
                   onTap: () async {
                     DateTime? targetDate = await showDatePicker(
                       context: context,
-                      initialDate: taskItemState.endDate,
+                      initialDate: taskItemState.dueDate,
                       firstDate: DateTime.now(),
                       lastDate: DateTime.now().add(const Duration(days: 365)),
                       initialEntryMode: DatePickerEntryMode.calendar,
@@ -100,7 +99,7 @@ class NewTaskItem extends ConsumerWidget {
                       },
                     );
                     if (targetDate != null) {
-                      taskItemNotifier.updateEndDate(endDate: targetDate);
+                      taskItemNotifier.updateDueDate(dueDate: targetDate);
                     }
                   },
                 ),

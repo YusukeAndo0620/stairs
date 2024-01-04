@@ -1,6 +1,10 @@
 import 'dart:math';
 import 'package:collection/collection.dart';
+import 'package:stairs/feature/board/component/provider/board_position_provider.dart';
+import 'package:stairs/feature/board/model/task_item_model.dart';
+import 'package:stairs/feature/board/provider/task_item_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 const _kEllipsisTxt = '...';
 const _kBorderWidth = 1.0;
@@ -13,10 +17,11 @@ const _kLabelContentPadding = EdgeInsets.only(right: 8.0, bottom: 8.0);
 const _kContentMargin = EdgeInsets.symmetric(vertical: 4.0);
 
 ///ワークボードのカード内リストアイテム（ドラッグ可能）
-class TaskListItem extends StatefulWidget {
+class TaskListItem extends ConsumerStatefulWidget {
   const TaskListItem({
     super.key,
-    required this.id,
+    required this.boardId,
+    required this.taskItemId,
     required this.title,
     required this.themeColor,
     required this.dueDate,
@@ -27,22 +32,23 @@ class TaskListItem extends StatefulWidget {
     required this.onDraggableCanceled,
     required this.onDragCompleted,
   });
-  final String id;
+  final String boardId;
+  final String taskItemId;
   final String title;
   final DateTime dueDate;
   final Color themeColor;
   final List<ColorLabelModel> labelList;
-  final VoidCallback onTap;
+  final Function(TaskItemModel) onTap;
   final VoidCallback onDragStarted;
   final Function(DragUpdateDetails) onDragUpdate;
   final Function(Velocity, Offset) onDraggableCanceled;
   final VoidCallback onDragCompleted;
 
   @override
-  State<StatefulWidget> createState() => _TaskListItemState();
+  ConsumerState<TaskListItem> createState() => _TaskListItemState();
 }
 
-class _TaskListItemState extends State<TaskListItem> {
+class _TaskListItemState extends ConsumerState<TaskListItem> {
   final itemKey = GlobalKey<_TaskListItemState>();
 
   @override
@@ -57,25 +63,48 @@ class _TaskListItemState extends State<TaskListItem> {
 
   @override
   Widget build(BuildContext context) {
-    // context
-    //     .read<BoardPositionBloc>()
-    //     .add(BoardSetCardItemPosition(taskItemId: widget.id, key: itemKey));
+    final taskItemState = ref.watch(
+      TaskItemProvider(
+        taskItemId: widget.taskItemId,
+      ),
+    );
+    final taskItemNotifier = ref.watch(TaskItemProvider(
+      taskItemId: widget.taskItemId,
+    ).notifier);
+
+    // ポジション
+    final positionNotifier = ref.watch(boardPositionProvider.notifier);
+    positionNotifier.setTaskItemPosition(
+      taskItemId: widget.taskItemId,
+      key: itemKey,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (taskItemState.title.isEmpty) {
+        taskItemNotifier.setItem(
+          boardId: widget.boardId,
+          title: widget.title,
+          dueDate: widget.dueDate,
+          labelList: widget.labelList,
+        );
+      }
+    });
 
     final theme = LoomTheme.of(context);
     return Draggable<String>(
-      key: ValueKey(widget.id),
-      data: widget.id,
+      key: ValueKey(taskItemState.taskItemId),
+      data: taskItemState.taskItemId,
       onDragStarted: widget.onDragStarted,
       onDragUpdate: (detail) => widget.onDragUpdate(detail),
       onDragCompleted: () => widget.onDragCompleted,
       onDraggableCanceled: (velocity, offset) =>
           widget.onDraggableCanceled(velocity, offset),
       feedback: _DraggingListItem(
-        key: ValueKey(widget.id),
-        title: widget.title,
+        key: ValueKey(taskItemState.taskItemId),
+        title: taskItemState.title,
         themeColor: widget.themeColor,
-        dueDate: widget.dueDate,
-        labelList: widget.labelList,
+        dueDate: taskItemState.dueDate,
+        labelList: taskItemState.labelList,
       ).testSelector('task_list_item_drag_item'),
       child: TapAction(
         key: itemKey,
@@ -88,13 +117,13 @@ class _TaskListItemState extends State<TaskListItem> {
           width: _kBorderWidth,
         ),
         borderRadius: BorderRadius.circular(5.0),
-        onTap: widget.onTap,
+        onTap: () => widget.onTap(taskItemState),
         widget: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.title,
+              taskItemState.title,
               style: theme.textStyleBody,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
@@ -103,10 +132,10 @@ class _TaskListItemState extends State<TaskListItem> {
               height: _kTitleAndLabelSpace,
             ),
             _LabelArea(
-              key: ValueKey(widget.id),
+              key: ValueKey(taskItemState.taskItemId),
               themeColor: widget.themeColor,
-              dueDate: widget.dueDate,
-              labelList: widget.labelList,
+              dueDate: taskItemState.dueDate,
+              labelList: taskItemState.labelList,
             )
           ],
         ),

@@ -220,6 +220,8 @@ class ProjectEditModalState extends ConsumerState<ProjectEditModal> {
                                       .colorPrimary, // ヘッダー背景色
                                   onPrimary: LoomTheme.of(context)
                                       .colorBgLayer1, // ヘッダーテキストカラー
+                                  secondary: LoomTheme.of(context)
+                                      .colorPrimary, // カレンダー内の期間背景色
                                   onSurface: LoomTheme.of(context)
                                       .colorFgDefault, // カレンダーのテキストカラー
                                 ),
@@ -251,7 +253,7 @@ class ProjectEditModalState extends ConsumerState<ProjectEditModal> {
                             description: description);
                       },
                     ),
-                    // OS,
+                    // OS
                     CardLstItem.labeWithIcon(
                       label: _kOsTxt,
                       iconColor: theme.colorPrimary,

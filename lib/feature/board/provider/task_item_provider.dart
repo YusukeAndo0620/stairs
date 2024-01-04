@@ -8,23 +8,47 @@ part 'task_item_provider.g.dart';
 class TaskItem extends _$TaskItem {
   @override
   TaskItemModel build({
-    required String boardId,
     required String taskItemId,
+  }) =>
+      TaskItemModel(
+        boardId: '',
+        taskItemId: taskItemId,
+        title: '',
+        description: '',
+        startDate: DateTime.now(),
+        dueDate: DateTime.now().add(const Duration(days: 7)),
+        labelList: [],
+      );
+
+  void init() {
+    state = TaskItemModel(
+      boardId: '',
+      taskItemId: '',
+      title: '',
+      description: '',
+      startDate: DateTime.now(),
+      dueDate: DateTime.now().add(const Duration(days: 7)),
+      labelList: [],
+    );
+  }
+
+  void setItem({
+    String? boardId,
     String? title,
     String? description,
     DateTime? startDate,
-    DateTime? endDate,
+    DateTime? dueDate,
     List<ColorLabelModel>? labelList,
-  }) =>
-      TaskItemModel(
-        boardId: boardId,
-        taskItemId: taskItemId,
-        title: title ?? '',
-        description: description ?? '',
-        startDate: startDate ?? DateTime.now(),
-        endDate: endDate ?? DateTime.now().add(const Duration(days: 7)),
-        labelList: labelList ?? [],
-      );
+  }) {
+    state = state.copyWith(
+      boardId: boardId,
+      title: title,
+      description: description,
+      startDate: startDate,
+      dueDate: dueDate,
+      labelList: labelList,
+    );
+  }
 
   void updateTitle({required String title}) {
     state = state.copyWith(title: title);
@@ -38,8 +62,8 @@ class TaskItem extends _$TaskItem {
     state = state.copyWith(startDate: startDate);
   }
 
-  void updateEndDate({required DateTime endDate}) {
-    state = state.copyWith(endDate: endDate);
+  void updateDueDate({required DateTime dueDate}) {
+    state = state.copyWith(dueDate: dueDate);
   }
 
   void updateDoneDate({required DateTime doneDate}) {

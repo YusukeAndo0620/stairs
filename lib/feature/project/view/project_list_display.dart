@@ -1,21 +1,28 @@
+import 'package:stairs/db/provider/database_provider.dart';
+import 'package:stairs/feature/board/view/board_screen.dart';
 import 'package:stairs/feature/project/component/view/project_list_item.dart';
 import 'package:stairs/feature/project/model/project_list_item_model.dart';
+import 'package:stairs/feature/project/provider/project_detail_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'project_edit_modal.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 const _kProjectTitleTxt = 'プロジェクト一覧';
 const _kProjectListTitlePadding =
     EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0);
 const _kProjectListItemBorder = 1.0;
 
-class ProjectListDisplay extends StatelessWidget {
+final _logger = stairsLogger(name: 'project_list');
+
+class ProjectListDisplay extends ConsumerWidget {
   const ProjectListDisplay({super.key, required this.projectList});
 
   final List<ProjectListItemModel> projectList;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = LoomTheme.of(context);
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: Icon(theme.icons.add),
@@ -58,20 +65,22 @@ class ProjectListDisplay extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  for (final listItem in projectList)
+                  for (final item in projectList)
                     ProjectListItem(
-                      projectId: listItem.projectId,
-                      projectName: listItem.projectName,
-                      themeColor: listItem.themeColorModel.color,
+                      projectId: item.projectId,
+                      projectName: item.projectName,
+                      themeColor: item.themeColorModel.color,
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) {
-                            return const SizedBox();
-                            // return BoardScreen(
-                            //   projectId: listItem.projectId,
-                            //   title: listItem.projectName,
-                            //   themeColor: listItem.themeColor,
-                            // );
+                            return BoardScreen(
+                                projectId: item.projectId,
+                                title: item.projectName,
+                                themeColor: item.themeColorModel.color,
+                                devLangList: getDevLangList(
+                                    projectId: item.projectId, ref: ref),
+                                labelList: getTagList(
+                                    projectId: item.projectId, ref: ref));
                           },
                         ),
                       ),
@@ -83,5 +92,25 @@ class ProjectListDisplay extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  List<LabelWithContent> getDevLangList(
+      {required String projectId, required WidgetRef ref}) {
+    //プロジェクト詳細
+    final projectDetailState = ref.watch(projectDetailProvider(
+        projectId: projectId, database: ref.watch(databaseProvider)));
+    return projectDetailState.value == null
+        ? []
+        : projectDetailState.value!.devLanguageList;
+  }
+
+  List<ColorLabelModel> getTagList(
+      {required String projectId, required WidgetRef ref}) {
+    //プロジェクト詳細
+    final projectDetailState = ref.watch(projectDetailProvider(
+        projectId: projectId, database: ref.watch(databaseProvider)));
+    return projectDetailState.value == null
+        ? []
+        : projectDetailState.value!.tagList;
   }
 }

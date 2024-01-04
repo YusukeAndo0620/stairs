@@ -1,7 +1,7 @@
 import 'package:stairs/loom/loom_package.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'carousel_display_provider.g.dart';
+part 'carousel_provider.g.dart';
 
 class CarouselDisplayModel {
   const CarouselDisplayModel({
@@ -34,7 +34,7 @@ class CarouselDisplayModel {
 }
 
 @riverpod
-class CarouselDisplay extends _$CarouselDisplay {
+class Carousel extends _$Carousel {
   @override
   CarouselDisplayModel build() => CarouselDisplayModel(
         isReady: true,

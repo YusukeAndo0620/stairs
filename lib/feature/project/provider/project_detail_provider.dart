@@ -1,4 +1,5 @@
 import 'package:stairs/db/database.dart';
+import 'package:stairs/feature/common/provider/view/toast_msg_provider.dart';
 import 'package:stairs/feature/project/model/project_detail_model.dart';
 import 'package:stairs/feature/project/repository/project_repository.dart';
 import 'package:stairs/loom/loom_package.dart';
@@ -30,13 +31,13 @@ class ProjectDetail extends _$ProjectDetail {
   @override
   FutureOr<ProjectDetailModel?> build(
       {required String projectId, required StairsDatabase database}) async {
-    _logger.d('build実施 projectId: $projectId');
+    _logger.d('=== build実施 projectId: $projectId ===');
     return getDetail(projectId: projectId, database: database);
   }
 
   Future<ProjectDetailModel?> getDetail(
       {required String projectId, required StairsDatabase database}) async {
-    _logger.d('getProjectDetail: プロジェクト取得 projectId: $projectId');
+    _logger.d('=== プロジェクト取得 projectId: $projectId ===');
     // Repository(APIの取得)の状態を管理する
     final projectRepositoryProvider =
         Provider((ref) => ProjectRepository(db: database));
@@ -51,7 +52,8 @@ class ProjectDetail extends _$ProjectDetail {
   }
 
   Future<void> createProject() async {
-    _logger.d('createProject: プロジェクト作成');
+    _logger.d('=== プロジェクト作成 開始 ===');
+
     if (state.value == null) {
       _logger.d('stateに値がないため処理終了');
       return;
@@ -60,13 +62,25 @@ class ProjectDetail extends _$ProjectDetail {
 
     final projectRepositoryProvider =
         Provider((ref) => ProjectRepository(db: database));
+
+    // トーストプロバイダー
+    final toastMsgNotifier = ref.watch(toastMsgProvider.notifier);
     // API通信開始
     final repository = ref.read(projectRepositoryProvider);
-    await repository.createProject(detailModel: state.value!);
+    try {
+      await repository.createProject(detailModel: state.value!);
+      await toastMsgNotifier.showToast(
+          type: MessageType.success, msg: msgList['scc001']);
+    } catch (e) {
+      await toastMsgNotifier.showToast(
+          type: MessageType.error, msg: msgList['err001']);
+    } finally {
+      _logger.d('=== プロジェクト更新 終了 ===');
+    }
   }
 
   Future<void> updateProject() async {
-    _logger.d('updateProject: プロジェクト更新');
+    _logger.d('=== プロジェクト更新 開始 ===');
     if (state.value == null) {
       _logger.d('stateに値がないため処理終了');
       return;
@@ -75,9 +89,20 @@ class ProjectDetail extends _$ProjectDetail {
 
     final projectRepositoryProvider =
         Provider((ref) => ProjectRepository(db: database));
+    // トーストプロバイダー
+    final toastMsgNotifier = ref.watch(toastMsgProvider.notifier);
     // API通信開始
     final repository = ref.read(projectRepositoryProvider);
-    await repository.updateProject(detailModel: state.value!);
+    try {
+      await repository.updateProject(detailModel: state.value!);
+      await toastMsgNotifier.showToast(
+          type: MessageType.success, msg: msgList['scc002']);
+    } catch (e) {
+      await toastMsgNotifier.showToast(
+          type: MessageType.error, msg: msgList['err001']);
+    } finally {
+      _logger.d('=== プロジェクト更新 終了 ===');
+    }
   }
 
   // state change event

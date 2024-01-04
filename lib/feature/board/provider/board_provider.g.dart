@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'project_detail_provider.dart';
+part of 'board_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$projectDetailHash() => r'c6131bb649cff35f81f53f56e4cfdb96905d5e35';
+String _$boardHash() => r'23fdad24719fbcb76d12ebadf1d45d6ebedd5bde';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,40 +29,40 @@ class _SystemHash {
   }
 }
 
-abstract class _$ProjectDetail
-    extends BuildlessAutoDisposeAsyncNotifier<ProjectDetailModel?> {
+abstract class _$Board
+    extends BuildlessAutoDisposeAsyncNotifier<List<BoardModel>> {
   late final String projectId;
   late final StairsDatabase database;
 
-  FutureOr<ProjectDetailModel?> build({
+  FutureOr<List<BoardModel>> build({
     required String projectId,
     required StairsDatabase database,
   });
 }
 
-/// See also [ProjectDetail].
-@ProviderFor(ProjectDetail)
-const projectDetailProvider = ProjectDetailFamily();
+/// See also [Board].
+@ProviderFor(Board)
+const boardProvider = BoardFamily();
 
-/// See also [ProjectDetail].
-class ProjectDetailFamily extends Family<AsyncValue<ProjectDetailModel?>> {
-  /// See also [ProjectDetail].
-  const ProjectDetailFamily();
+/// See also [Board].
+class BoardFamily extends Family<AsyncValue<List<BoardModel>>> {
+  /// See also [Board].
+  const BoardFamily();
 
-  /// See also [ProjectDetail].
-  ProjectDetailProvider call({
+  /// See also [Board].
+  BoardProvider call({
     required String projectId,
     required StairsDatabase database,
   }) {
-    return ProjectDetailProvider(
+    return BoardProvider(
       projectId: projectId,
       database: database,
     );
   }
 
   @override
-  ProjectDetailProvider getProviderOverride(
-    covariant ProjectDetailProvider provider,
+  BoardProvider getProviderOverride(
+    covariant BoardProvider provider,
   ) {
     return call(
       projectId: provider.projectId,
@@ -82,34 +82,33 @@ class ProjectDetailFamily extends Family<AsyncValue<ProjectDetailModel?>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'projectDetailProvider';
+  String? get name => r'boardProvider';
 }
 
-/// See also [ProjectDetail].
-class ProjectDetailProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    ProjectDetail, ProjectDetailModel?> {
-  /// See also [ProjectDetail].
-  ProjectDetailProvider({
+/// See also [Board].
+class BoardProvider
+    extends AutoDisposeAsyncNotifierProviderImpl<Board, List<BoardModel>> {
+  /// See also [Board].
+  BoardProvider({
     required String projectId,
     required StairsDatabase database,
   }) : this._internal(
-          () => ProjectDetail()
+          () => Board()
             ..projectId = projectId
             ..database = database,
-          from: projectDetailProvider,
-          name: r'projectDetailProvider',
+          from: boardProvider,
+          name: r'boardProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$projectDetailHash,
-          dependencies: ProjectDetailFamily._dependencies,
-          allTransitiveDependencies:
-              ProjectDetailFamily._allTransitiveDependencies,
+                  : _$boardHash,
+          dependencies: BoardFamily._dependencies,
+          allTransitiveDependencies: BoardFamily._allTransitiveDependencies,
           projectId: projectId,
           database: database,
         );
 
-  ProjectDetailProvider._internal(
+  BoardProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -124,8 +123,8 @@ class ProjectDetailProvider extends AutoDisposeAsyncNotifierProviderImpl<
   final StairsDatabase database;
 
   @override
-  FutureOr<ProjectDetailModel?> runNotifierBuild(
-    covariant ProjectDetail notifier,
+  FutureOr<List<BoardModel>> runNotifierBuild(
+    covariant Board notifier,
   ) {
     return notifier.build(
       projectId: projectId,
@@ -134,10 +133,10 @@ class ProjectDetailProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  Override overrideWith(ProjectDetail Function() create) {
+  Override overrideWith(Board Function() create) {
     return ProviderOverride(
       origin: this,
-      override: ProjectDetailProvider._internal(
+      override: BoardProvider._internal(
         () => create()
           ..projectId = projectId
           ..database = database,
@@ -153,14 +152,14 @@ class ProjectDetailProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<ProjectDetail, ProjectDetailModel?>
+  AutoDisposeAsyncNotifierProviderElement<Board, List<BoardModel>>
       createElement() {
-    return _ProjectDetailProviderElement(this);
+    return _BoardProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ProjectDetailProvider &&
+    return other is BoardProvider &&
         other.projectId == projectId &&
         other.database == database;
   }
@@ -175,8 +174,7 @@ class ProjectDetailProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 }
 
-mixin ProjectDetailRef
-    on AutoDisposeAsyncNotifierProviderRef<ProjectDetailModel?> {
+mixin BoardRef on AutoDisposeAsyncNotifierProviderRef<List<BoardModel>> {
   /// The parameter `projectId` of this provider.
   String get projectId;
 
@@ -184,15 +182,15 @@ mixin ProjectDetailRef
   StairsDatabase get database;
 }
 
-class _ProjectDetailProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<ProjectDetail,
-        ProjectDetailModel?> with ProjectDetailRef {
-  _ProjectDetailProviderElement(super.provider);
+class _BoardProviderElement
+    extends AutoDisposeAsyncNotifierProviderElement<Board, List<BoardModel>>
+    with BoardRef {
+  _BoardProviderElement(super.provider);
 
   @override
-  String get projectId => (origin as ProjectDetailProvider).projectId;
+  String get projectId => (origin as BoardProvider).projectId;
   @override
-  StairsDatabase get database => (origin as ProjectDetailProvider).database;
+  StairsDatabase get database => (origin as BoardProvider).database;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

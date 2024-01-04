@@ -1,4 +1,4 @@
-import 'package:stairs/feature/board/component/provider/carousel_display_provider.dart';
+import 'package:stairs/feature/board/component/provider/carousel_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -35,9 +35,9 @@ class CarouselDisplay extends ConsumerWidget {
     final theme = LoomTheme.of(context);
     final color = indicatorColor ?? theme.colorDisabled;
 
-    final carouselDisplayState = ref.watch(carouselDisplayProvider);
+    final carouselDisplayState = ref.watch(carouselProvider);
 
-    final carouselDisplayNotifier = ref.watch(carouselDisplayProvider.notifier);
+    final carouselDisplayNotifier = ref.watch(carouselProvider.notifier);
 
     return Stack(
       fit: StackFit.loose,

@@ -12,6 +12,7 @@ export 'theme.dart';
 export 'loom_theme_data.dart';
 export 'loom_icons.dart';
 export 'package:uuid/uuid.dart';
+export 'message_map.dart';
 
 /// dummy data
 export '../db/dummy/dummy_project_list.dart';
