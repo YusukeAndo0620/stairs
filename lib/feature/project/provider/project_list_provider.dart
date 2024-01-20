@@ -1,4 +1,4 @@
-import 'package:stairs/db/database.dart';
+import 'package:stairs/db/provider/database_provider.dart';
 import 'package:stairs/feature/project/model/project_list_item_model.dart';
 import 'package:stairs/feature/project/repository/project_repository.dart';
 import 'package:stairs/loom/loom_package.dart';
@@ -11,16 +11,15 @@ class ProjectList extends _$ProjectList {
   final _logger = stairsLogger(name: 'project_list');
 
   @override
-  FutureOr<List<ProjectListItemModel>> build(
-      {required StairsDatabase database}) async {
-    return getProjectList(database: database);
+  FutureOr<List<ProjectListItemModel>> build() async {
+    return getProjectList();
   }
 
   /// データセット
-  Future<void> setProjectList({required StairsDatabase database}) async {
+  Future<void> setProjectList() async {
     _logger.d('getProjectList: プロジェクト一覧セット');
 
-    final list = await getProjectList(database: database);
+    final list = await getProjectList();
 
     update(
       (data) {
@@ -35,15 +34,15 @@ class ProjectList extends _$ProjectList {
   }
 
   /// データの取得
-  Future<List<ProjectListItemModel>> getProjectList(
-      {required StairsDatabase database}) async {
+  Future<List<ProjectListItemModel>> getProjectList() async {
     _logger.d('getProjectList: プロジェクト一覧取得');
+    final database = ref.watch(databaseProvider);
+
     final projectRepositoryProvider =
         Provider((ref) => ProjectRepository(db: database));
     // API通信開始
     final repository = ref.read(projectRepositoryProvider);
     final list = await repository.getProjectList() ?? [];
-    _logger.d('list: $list');
     return list;
   }
 }

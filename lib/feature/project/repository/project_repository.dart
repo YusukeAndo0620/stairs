@@ -17,14 +17,14 @@ class ProjectRepository {
       _logger.i('getProjectList 開始');
       final response = await db.tProjectDao.getProjectList();
 
-      _logger.i('取得データ：$response,length: ${response.length}');
+      _logger.i('取得データ length: ${response.length}');
       final List<ProjectListItemModel> responseData = [];
       for (final row in response) {
         responseData.add(_convertProjectListToModel(
             projectData: row.readTable(db.tProject),
             colorData: row.readTable(db.mColor)));
       }
-
+      _logger.d('responseData: $responseData');
       return responseData;
     } on Exception catch (exception) {
       _logger.e(exception);
@@ -92,6 +92,11 @@ class ProjectRepository {
         tagColorData: tagResponse.map((e) => e.readTable(db.mColor)).toList(),
       );
 
+      _logger.d(
+          'projectId: ${responseData.projectId}, projectName: ${responseData.projectName}');
+      _logger.d('devLanguageList: ${responseData.devLanguageList}');
+      _logger.d('devProgressList: ${responseData.devProgressList}');
+      _logger.d('tagList: ${responseData.tagList}');
       return responseData;
     } on Exception catch (exception) {
       _logger.e(exception);

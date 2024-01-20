@@ -1,6 +1,4 @@
-import 'package:stairs/feature/board/provider/task_item_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 const _kBorderWidth = 1.0;
 const _kLabelTxt = 'ラベル';
@@ -14,24 +12,50 @@ const _kDateContentPadding = EdgeInsets.only(right: 24.0);
 const _kContentMargin = EdgeInsets.symmetric(vertical: 4.0);
 
 /// 新規タスク入力アイテム
-class NewTaskItem extends ConsumerWidget {
+class NewTaskItem extends StatefulWidget {
   const NewTaskItem({
     super.key,
     required this.boardId,
     required this.themeColor,
+    required this.title,
+    required this.dueDate,
+    required this.selectedLabelList,
     required this.labelList,
+    required this.updateTitle,
+    required this.updateDueDate,
+    required this.updateLabelList,
   });
   final String boardId;
   final Color themeColor;
+  final String title;
+  final DateTime dueDate;
+  final List<ColorLabelModel> selectedLabelList;
   final List<ColorLabelModel> labelList;
+  final Function(String) updateTitle;
+  final Function(DateTime) updateDueDate;
+  final Function(List<ColorLabelModel>) updateLabelList;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = LoomTheme.of(context);
+  State<StatefulWidget> createState() => _NewTaskItemState();
+}
 
-    final taskItemState = ref.watch(taskItemProvider(taskItemId: ''));
-    final taskItemNotifier =
-        ref.watch(taskItemProvider(taskItemId: '').notifier);
+class _NewTaskItemState extends State<NewTaskItem> {
+  late TextEditingController textController;
+
+  @override
+  void initState() {
+    super.initState();
+    textController = TextEditingController(text: widget.title);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = LoomTheme.of(context);
 
     return Container(
       width: double.infinity,
@@ -49,12 +73,12 @@ class NewTaskItem extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextInput(
-              textController: TextEditingController(text: taskItemState.title),
-              hintText: _kTaskHintTxt,
-              maxLength: _kTaskMaxLength,
-              autoFocus: false,
-              onSubmitted: (value) =>
-                  taskItemNotifier.updateTitle(title: value)),
+            textController: textController,
+            hintText: _kTaskHintTxt,
+            maxLength: _kTaskMaxLength,
+            autoFocus: false,
+            onSubmitted: (value) => widget.updateTitle(value),
+          ),
           const SizedBox(
             height: _kTitleAndLabelSpace,
           ),
@@ -65,21 +89,19 @@ class NewTaskItem extends ConsumerWidget {
                 child: TapAction(
                   widget: LabelTip(
                     type: LabelTipType.square,
-                    label: getFormattedDate(taskItemState.dueDate),
-                    textColor: taskItemState.dueDate
-                                .difference(DateTime.now())
-                                .inDays <
-                            3
-                        ? theme.colorDangerBgDefault
-                        : theme.colorFgDefault,
+                    label: getFormattedDate(widget.dueDate),
+                    textColor:
+                        widget.dueDate.difference(DateTime.now()).inDays < 3
+                            ? theme.colorDangerBgDefault
+                            : theme.colorFgDefault,
                     themeColor: theme.colorDisabled,
                     iconData: Icons.date_range,
                   ),
-                  tappedColor: themeColor,
+                  tappedColor: widget.themeColor,
                   onTap: () async {
                     DateTime? targetDate = await showDatePicker(
                       context: context,
-                      initialDate: taskItemState.dueDate,
+                      initialDate: widget.dueDate,
                       firstDate: DateTime.now(),
                       lastDate: DateTime.now().add(const Duration(days: 365)),
                       initialEntryMode: DatePickerEntryMode.calendar,
@@ -87,7 +109,7 @@ class NewTaskItem extends ConsumerWidget {
                         return Theme(
                           data: Theme.of(context).copyWith(
                             colorScheme: ColorScheme.light(
-                              primary: themeColor, // ヘッダー背景色
+                              primary: widget.themeColor, // ヘッダー背景色
                               onPrimary: LoomTheme.of(context)
                                   .colorBgLayer1, // ヘッダーテキストカラー
                               onSurface: LoomTheme.of(context)
@@ -99,7 +121,7 @@ class NewTaskItem extends ConsumerWidget {
                       },
                     );
                     if (targetDate != null) {
-                      taskItemNotifier.updateDueDate(dueDate: targetDate);
+                      widget.updateDueDate(targetDate);
                     }
                   },
                 ),
@@ -108,11 +130,11 @@ class NewTaskItem extends ConsumerWidget {
                 icon: Icon(
                   Icons.label,
                   size: _kLabelIconSize,
-                  color: themeColor.withOpacity(0.6),
+                  color: widget.themeColor.withOpacity(0.6),
                 ),
-                badgeColor: themeColor,
-                tappedColor: themeColor,
-                count: taskItemState.labelList.length,
+                badgeColor: widget.themeColor,
+                tappedColor: widget.themeColor,
+                count: widget.selectedLabelList.length,
                 onTap: () => showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
@@ -122,11 +144,10 @@ class NewTaskItem extends ConsumerWidget {
                       type: DisplayType.tile,
                       title: _kLabelTxt,
                       height: MediaQuery.of(context).size.height * 0.7,
-                      labelList: labelList,
-                      selectedLabelList: taskItemState.labelList,
-                      onTapListItem: (labelList) {
-                        taskItemNotifier.updateLabelList(labelList: labelList);
-                      },
+                      labelList: widget.labelList,
+                      selectedLabelList: widget.selectedLabelList,
+                      onTapListItem: (labelList) =>
+                          widget.updateLabelList(labelList),
                     );
                   },
                 ),
@@ -138,6 +159,3 @@ class NewTaskItem extends ConsumerWidget {
     );
   }
 }
-
-String getFormattedDate(DateTime date) =>
-    '${date.year}/${date.month}/${date.day}';

@@ -1,4 +1,3 @@
-import 'package:stairs/db/provider/database_provider.dart';
 import 'package:stairs/feature/project/provider/project_list_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'project_empty_display.dart';
@@ -11,7 +10,7 @@ class ProjectScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final projectListState =
-        ref.watch(projectListProvider(database: ref.watch(databaseProvider)));
+        ref.watch(projectListProvider);
 
     return SizedBox(
       child: projectListState.when(

@@ -15,7 +15,6 @@ import 'package:stairs/db/dao/t_tag_rel_dao.dart';
 import 'package:stairs/db/dao/t_task_dao.dart';
 import 'package:stairs/db/dao/t_tool_dao.dart';
 import 'package:stairs/db/dummy/dummy_project_detail.dart';
-import 'package:stairs/feature/common/utils.dart';
 import 'package:stairs/loom/stairs_logger.dart';
 import 'package:uuid/uuid.dart';
 
@@ -85,11 +84,7 @@ class StairsDatabase extends _$StairsDatabase {
           );
           // カラー
           for (final item in colorList) {
-            await into(mColor).insert(
-              MColorCompanion(
-                colorCodeId: Value(item.color.getColorId),
-              ),
-            );
+            await into(mColor).insert(item);
           }
           // 開発言語
           for (final item in dummyDevLangList) {
@@ -97,26 +92,28 @@ class StairsDatabase extends _$StairsDatabase {
           }
           // 開発工程
           for (final item in dummyDevProgressList) {
-            await into(mDevProgressList).insert(
-              MDevProgressListCompanion(
-                name: Value(item.labelName),
-              ),
-            );
+            await into(mDevProgressList).insert(item);
           }
-          // タグ
-          for (var i = 0; i < dummyTagList.length; i++) {
-            await into(tTag).insert(
-              TTagCompanion(
-                name: Value(dummyTagList[i].labelName),
-                colorId: Value(i),
-                isReadOnly: const Value(true),
-                accountId: const Value('1'),
-              ),
-            );
+          // タグ（ラベル）
+          for (final item in dummyTagList) {
+            await into(tTag).insert(item);
           }
+          final tagListQuery = select(tTag)
+            ..where((tbl) => tbl.accountId.equals('1'));
+          final tagList = await tagListQuery.get();
+
           // プロジェクトダミーダータ
           for (final item in dummyProjectDetailList) {
             await into(tProject).insert(item);
+            for (final tagItem in tagList) {
+              await into(tTagRel).insert(
+                TTagRelCompanion(
+                  colorId: Value(tagItem.colorId),
+                  projectId: item.projectId,
+                  tagId: Value(tagItem.id),
+                ),
+              );
+            }
           }
           _logger.i('===Database: 作成終了===');
         },

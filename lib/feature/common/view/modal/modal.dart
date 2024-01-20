@@ -40,7 +40,9 @@ class ModalState extends State<Modal> {
 
   @override
   void dispose() {
-    widget.onClose!();
+    if (widget.onClose != null) {
+      widget.onClose!();
+    }
     super.dispose();
   }
 

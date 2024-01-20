@@ -1,4 +1,4 @@
-import 'package:stairs/db/database.dart';
+import 'package:stairs/db/provider/database_provider.dart';
 import 'package:stairs/feature/common/provider/view/toast_msg_provider.dart';
 import 'package:stairs/feature/project/model/project_detail_model.dart';
 import 'package:stairs/feature/project/repository/project_repository.dart';
@@ -29,15 +29,16 @@ class ProjectDetail extends _$ProjectDetail {
   final _logger = stairsLogger(name: 'project_detail');
 
   @override
-  FutureOr<ProjectDetailModel?> build(
-      {required String projectId, required StairsDatabase database}) async {
+  FutureOr<ProjectDetailModel?> build({required String projectId}) async {
     _logger.d('=== build実施 projectId: $projectId ===');
-    return getDetail(projectId: projectId, database: database);
+    return getDetail(
+      projectId: projectId,
+    );
   }
 
-  Future<ProjectDetailModel?> getDetail(
-      {required String projectId, required StairsDatabase database}) async {
+  Future<ProjectDetailModel?> getDetail({required String projectId}) async {
     _logger.d('=== プロジェクト取得 projectId: $projectId ===');
+    final database = ref.watch(databaseProvider);
     // Repository(APIの取得)の状態を管理する
     final projectRepositoryProvider =
         Provider((ref) => ProjectRepository(db: database));
@@ -59,6 +60,7 @@ class ProjectDetail extends _$ProjectDetail {
       return;
     }
     _logger.d('projectId: ${state.value!.projectId}');
+    final database = ref.watch(databaseProvider);
 
     final projectRepositoryProvider =
         Provider((ref) => ProjectRepository(db: database));
@@ -86,6 +88,7 @@ class ProjectDetail extends _$ProjectDetail {
       return;
     }
     _logger.d('projectId: ${state.value!.projectId}');
+    final database = ref.watch(databaseProvider);
 
     final projectRepositoryProvider =
         Provider((ref) => ProjectRepository(db: database));

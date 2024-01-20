@@ -85,17 +85,15 @@ class ProjectEditModalState extends ConsumerState<ProjectEditModal> {
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
     //プロジェクト詳細
-    final projectDetailState = ref.watch(projectDetailProvider(
-        projectId: widget.projectId, database: ref.watch(databaseProvider)));
+    final projectDetailState =
+        ref.watch(projectDetailProvider(projectId: widget.projectId));
 
     //プロジェクト詳細 Notifier
-    final projectDetailNotifier = ref.watch(projectDetailProvider(
-            projectId: widget.projectId, database: ref.watch(databaseProvider))
-        .notifier);
+    final projectDetailNotifier =
+        ref.watch(projectDetailProvider(projectId: widget.projectId).notifier);
 
     //プロジェクト一覧 Notifier
-    final projectListNotifier = ref.watch(
-        projectListProvider(database: ref.watch(databaseProvider)).notifier);
+    final projectListNotifier = ref.watch(projectListProvider.notifier);
 
     //開発言語一覧
     final devLangList =
@@ -110,8 +108,7 @@ class ProjectEditModalState extends ConsumerState<ProjectEditModal> {
         isNewProject
             ? projectDetailNotifier.createProject()
             : projectDetailNotifier.updateProject();
-        projectListNotifier.setProjectList(
-            database: ref.watch(databaseProvider));
+        projectListNotifier.setProjectList();
       },
       buildMainContent: projectDetailState.when(
         data: (detail) {

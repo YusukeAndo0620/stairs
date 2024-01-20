@@ -49,10 +49,14 @@ class BoardScreen extends ConsumerWidget {
     final carouselDisplayState = ref.watch(carouselProvider);
     final carouselDisplayNotifier = ref.watch(carouselProvider.notifier);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      positionNotifier.init(projectId: projectId);
-      carouselDisplayNotifier.init(maxPage: boardState.value!.length);
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        positionNotifier.init(projectId: projectId);
+        if (boardState.value != null) {
+          carouselDisplayNotifier.init(maxPage: boardState.value!.length);
+        }
+      },
+    );
 
     final theme = LoomTheme.of(context);
     return Scaffold(

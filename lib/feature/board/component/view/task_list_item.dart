@@ -74,12 +74,12 @@ class _TaskListItemState extends ConsumerState<TaskListItem> {
 
     // ポジション
     final positionNotifier = ref.watch(boardPositionProvider.notifier);
-    positionNotifier.setTaskItemPosition(
-      taskItemId: widget.taskItemId,
-      key: itemKey,
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      positionNotifier.setTaskItemPosition(
+        taskItemId: widget.taskItemId,
+        key: itemKey,
+      );
       if (taskItemState.title.isEmpty) {
         taskItemNotifier.setItem(
           boardId: widget.boardId,

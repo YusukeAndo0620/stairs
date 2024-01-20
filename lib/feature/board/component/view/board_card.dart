@@ -101,14 +101,22 @@ class _BoardCardState extends ConsumerState<BoardCard> {
 
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
+        if (taskItemState.boardId.isEmpty) {
+          taskItemNotifier.setItem(boardId: widget.boardId);
+        }
         if (_isAddedNewTask) {
-          await Future.delayed(const Duration(milliseconds: 50)).then(
-            (value) => _scrollController.animateTo(
-              _scrollController.position.maxScrollExtent,
-              duration: _kAnimatedDuration,
-              curve: Curves.easeIn,
-            ),
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: _kAnimatedDuration,
+            curve: Curves.easeIn,
           );
+          // await Future.delayed(const Duration(milliseconds: 50)).then(
+          //   (value) => _scrollController.animateTo(
+          //     _scrollController.position.maxScrollExtent,
+          //     duration: _kAnimatedDuration,
+          //     curve: Curves.easeIn,
+          //   ),
+          // );
         }
         if (_isMovingLast) {
           await Future.delayed(const Duration(milliseconds: 50)).then(
@@ -165,10 +173,6 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                             themeColor: widget.themeColor,
                             labelList: item.labelList,
                             onTap: (taskItem) async {
-                              // タスク
-                              final taskItemState = ref.watch(taskItemProvider(
-                                  taskItemId: item.taskItemId));
-
                               final result = await showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
@@ -184,13 +188,13 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                               );
                               if (result == null) {
                                 boardNotifier.updateTaskItem(
-                                  boardId: taskItemState.boardId,
-                                  taskItemId: taskItemState.taskItemId,
-                                  title: taskItemState.title,
-                                  description: taskItemState.description,
-                                  startDate: taskItemState.startDate,
-                                  dueDate: taskItemState.dueDate,
-                                  labelList: taskItemState.labelList,
+                                  boardId: taskItem.boardId,
+                                  taskItemId: taskItem.taskItemId,
+                                  title: taskItem.title,
+                                  description: taskItem.description,
+                                  startDate: taskItem.startDate,
+                                  dueDate: taskItem.dueDate,
+                                  labelList: taskItem.labelList,
                                 );
                               }
                             },
@@ -215,14 +219,23 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                               dragItemNotifier.init();
                             },
                           ),
-                        if (_isAddedNewTask) ...[
-                          NewTaskItem(
-                            boardId: widget.boardId,
-                            themeColor: widget.themeColor,
-                            labelList: widget.labelList,
-                          ),
-                        ]
                       ],
+                      if (_isAddedNewTask) ...[
+                        NewTaskItem(
+                          boardId: widget.boardId,
+                          themeColor: widget.themeColor,
+                          title: taskItemState.title,
+                          dueDate: taskItemState.dueDate,
+                          selectedLabelList: taskItemState.labelList,
+                          labelList: widget.labelList,
+                          updateTitle: (value) =>
+                              taskItemNotifier.updateTitle(title: value),
+                          updateDueDate: (dueDate) =>
+                              taskItemNotifier.updateDueDate(dueDate: dueDate),
+                          updateLabelList: (labelList) => taskItemNotifier
+                              .updateLabelList(labelList: labelList),
+                        ),
+                      ]
                     ],
                   ),
                 ),

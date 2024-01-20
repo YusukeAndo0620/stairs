@@ -1,37 +1,29 @@
-import 'package:stairs/loom/loom_package.dart';
+import 'package:drift/drift.dart';
+import 'package:stairs/db/database.dart';
 
-const _uuid = Uuid();
 final dummyDevProgressList = [
-  LabelModel(
-    id: _uuid.v4(),
-    labelName: '要件定義',
+  const MDevProgressListCompanion(
+    name: Value('要件定義'),
   ),
-  LabelModel(
-    id: _uuid.v4(),
-    labelName: '基本設計',
+  const MDevProgressListCompanion(
+    name: Value('基本設計'),
   ),
-  LabelModel(
-    id: _uuid.v4(),
-    labelName: '詳細設計',
+  const MDevProgressListCompanion(
+    name: Value('詳細設計'),
   ),
-  LabelModel(
-    id: _uuid.v4(),
-    labelName: '開発・製造',
+  const MDevProgressListCompanion(
+    name: Value('開発・製造'),
   ),
-  LabelModel(
-    id: _uuid.v4(),
-    labelName: '単体テスト',
+  const MDevProgressListCompanion(
+    name: Value('単体テスト'),
   ),
-  LabelModel(
-    id: _uuid.v4(),
-    labelName: '結合テスト',
+  const MDevProgressListCompanion(
+    name: Value('結合テスト'),
   ),
-  LabelModel(
-    id: _uuid.v4(),
-    labelName: '運用テスト',
+  const MDevProgressListCompanion(
+    name: Value('運用テスト'),
   ),
-  LabelModel(
-    id: _uuid.v4(),
-    labelName: '保守・運用',
+  const MDevProgressListCompanion(
+    name: Value('保守・運用'),
   ),
 ];

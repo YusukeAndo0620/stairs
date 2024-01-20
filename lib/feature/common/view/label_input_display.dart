@@ -79,6 +79,7 @@ class LabelInputDisplay extends ConsumerWidget {
                               id: info.id,
                               inputValue: info.labelName,
                               hintText: hintText,
+                              autoFocus: info.labelName.isEmpty,
                               onTextSubmitted: (value, id) {
                                 labelInputNotifier.updateInputValue(
                                     id: id, inputValue: value);

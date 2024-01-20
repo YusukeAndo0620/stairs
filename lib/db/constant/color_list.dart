@@ -1,64 +1,51 @@
 import 'package:stairs/loom/loom_package.dart';
+import 'package:drift/drift.dart';
+import 'package:stairs/db/database.dart';
 
 final colorList = [
-  ColorModel(
-    id: 1,
-    color: const Color.fromARGB(255, 255, 31, 31),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 255, 31, 31).getColorId),
   ),
-  ColorModel(
-    id: 2,
-    color: const Color.fromARGB(255, 7, 77, 255),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 7, 77, 255).getColorId),
   ),
-  ColorModel(
-    id: 3,
-    color: const Color.fromARGB(255, 239, 255, 8),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 239, 255, 8).getColorId),
   ),
-  ColorModel(
-    id: 4,
-    color: const Color.fromARGB(255, 11, 255, 3),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 11, 255, 3).getColorId),
   ),
-  ColorModel(
-    id: 5,
-    color: const Color.fromARGB(255, 10, 241, 161),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 10, 241, 161).getColorId),
   ),
-  ColorModel(
-    id: 6,
-    color: const Color.fromARGB(255, 0, 253, 249),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 0, 253, 249).getColorId),
   ),
-  ColorModel(
-    id: 7,
-    color: const Color.fromARGB(255, 255, 162, 1),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 255, 162, 1).getColorId),
   ),
-  ColorModel(
-    id: 8,
-    color: const Color.fromARGB(255, 228, 50, 255),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 228, 50, 255).getColorId),
   ),
-  ColorModel(
-    id: 9,
-    color: const Color.fromARGB(255, 255, 146, 146),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 255, 146, 146).getColorId),
   ),
-  ColorModel(
-    id: 10,
-    color: const Color.fromARGB(246, 255, 182, 93),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(246, 255, 182, 93).getColorId),
   ),
-  ColorModel(
-    id: 11,
-    color: const Color.fromARGB(250, 247, 229, 118),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(250, 247, 229, 118).getColorId),
   ),
-  ColorModel(
-    id: 12,
-    color: const Color.fromARGB(255, 133, 255, 120),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 133, 255, 120).getColorId),
   ),
-  ColorModel(
-    id: 13,
-    color: const Color.fromARGB(255, 123, 246, 252),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 123, 246, 252).getColorId),
   ),
-  ColorModel(
-    id: 14,
-    color: const Color.fromARGB(255, 121, 145, 254),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 121, 145, 254).getColorId),
   ),
-  ColorModel(
-    id: 15,
-    color: const Color.fromARGB(255, 255, 136, 243),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 255, 136, 243).getColorId),
   ),
 ];

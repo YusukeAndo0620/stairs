@@ -33,6 +33,7 @@ class TTagRelDao extends DatabaseAccessor<StairsDatabase>
         ),
       ]).get();
       _logger.d('取得データ：$response');
+      _logger.d('length: ${response.length}');
       return response;
     } on Exception catch (exception) {
       _logger.e(exception);

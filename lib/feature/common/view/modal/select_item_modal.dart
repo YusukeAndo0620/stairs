@@ -32,11 +32,15 @@ class SelectItemModal extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectItemState = ref.watch(selectItemProvider);
-    if (selectItemState.isEmpty) {
-      ref
-          .read(selectItemProvider.notifier)
-          .init(labelList: labelList, selectedLabelList: selectedLabelList);
-    }
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) async {
+        if (selectItemState.isEmpty) {
+          ref
+              .watch(selectItemProvider.notifier)
+              .init(labelList: labelList, selectedLabelList: selectedLabelList);
+        }
+      },
+    );
     return Modal(
       height: height,
       title: title,
@@ -47,7 +51,7 @@ class SelectItemModal extends ConsumerWidget {
         type: type,
         checkList: selectItemState,
         onTapListItem: (_) {
-          final notifier = ref.read(selectItemProvider.notifier);
+          final notifier = ref.watch(selectItemProvider.notifier);
           onTapListItem(notifier.selectedList);
         },
       ),
