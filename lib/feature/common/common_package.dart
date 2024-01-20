@@ -1,4 +1,5 @@
 /// common model
+export 'model/account_model.dart';
 export 'model/color_model.dart';
 export 'model/label_model.dart';
 export 'model/color_label_model.dart';

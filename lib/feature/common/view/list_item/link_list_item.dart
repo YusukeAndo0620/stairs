@@ -17,6 +17,7 @@ class LinkListItem extends StatelessWidget {
     this.autoFocus = false,
     required this.linkedWidgets,
     this.eventAreaWidth,
+    required this.isReadOnly,
     required this.onTextSubmitted,
     required this.onTap,
     required this.onDeleteItem,
@@ -30,6 +31,7 @@ class LinkListItem extends StatelessWidget {
   final int maxLength;
   final bool autoFocus;
   final double? eventAreaWidth;
+  final bool isReadOnly;
   final Function(String, String) onTextSubmitted;
   final Function(String) onTap;
   final Function(String) onDeleteItem;
@@ -60,6 +62,7 @@ class LinkListItem extends StatelessWidget {
               hintText: hintText,
               maxLength: maxLength,
               autoFocus: autoFocus,
+              isReadOnly: isReadOnly,
               onSubmitted: (value) => onTextSubmitted(value, id),
             ),
           ),
@@ -76,13 +79,14 @@ class LinkListItem extends StatelessWidget {
           const SizedBox(
             width: _kSpaceWidth,
           ),
-          IconButton(
-            icon: Icon(
-              theme.icons.close,
+          if (!isReadOnly)
+            IconButton(
+              icon: Icon(
+                theme.icons.close,
+              ),
+              iconSize: _kCDeleteIconSize,
+              onPressed: () => onDeleteItem(inputValue),
             ),
-            iconSize: _kCDeleteIconSize,
-            onPressed: () => onDeleteItem(inputValue),
-          ),
         ],
       ),
     );

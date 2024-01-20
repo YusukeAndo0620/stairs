@@ -7,6 +7,7 @@ class CheckedColorLabelInfo extends ColorLabelModel {
   CheckedColorLabelInfo({
     required super.id,
     required super.labelName,
+    required super.isReadOnly,
     required super.colorModel,
     required this.checked,
   });
@@ -28,6 +29,7 @@ class SelectItem extends _$SelectItem {
           (item) => CheckedColorLabelInfo(
             id: item.id,
             labelName: item.labelName,
+            isReadOnly: item.isReadOnly,
             colorModel: item.colorModel,
             checked: selectedLabelList.firstWhereOrNull(
                   (element) => element.id == item.id,
@@ -47,6 +49,7 @@ class SelectItem extends _$SelectItem {
     final editTarget = CheckedColorLabelInfo(
         id: targetItem.id,
         labelName: targetItem.labelName,
+        isReadOnly: targetItem.isReadOnly,
         colorModel: targetItem.colorModel,
         checked: !targetItem.checked);
 

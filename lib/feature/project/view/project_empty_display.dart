@@ -1,4 +1,4 @@
-import 'package:stairs/feature/project/view/project_edit_modal.dart';
+import 'package:stairs/feature/project/view/project_edit_display.dart';
 import 'package:stairs/loom/loom_package.dart';
 
 const _kProjectEmptyTxt = '表示可能なボードがありません。\nボードを作成してください。';
@@ -25,15 +25,14 @@ class ProjectEmptyDisplay extends StatelessWidget {
           ),
         ),
         IconButton(
-            onPressed: () => showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  builder: (context) {
-                    return const ProjectEditModal(
-                      projectId: '',
-                    );
-                  },
+            onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return const ProjectEditDisplay(
+                        projectId: '',
+                      );
+                    },
+                  ),
                 ),
             icon: Icon(
               theme.icons.add,

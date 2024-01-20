@@ -334,6 +334,7 @@ ProjectDetailModel _convertProjectDetailToModel({
       ColorLabelModel(
         id: tagData[i].id.toString(),
         labelName: tagData[i].name,
+        isReadOnly: tagData[i].isReadOnly,
         colorModel: ColorModel(
             id: tagColorData[i].id,
             color: getColorFromCode(code: tagColorData[i].colorCodeId)),

@@ -33,6 +33,7 @@ class Tag extends _$Tag {
     final addingColorLabelInfo = ColorLabelModel(
       id: _uuid.v4(),
       labelName: '',
+      isReadOnly: false,
       colorModel: ColorModel(
         id: 1,
         color: const Color.fromARGB(255, 255, 31, 31),
@@ -68,6 +69,7 @@ class Tag extends _$Tag {
     final editTarget = ColorLabelModel(
       id: targetId,
       labelName: inputValue ?? state[targetIndex].labelName,
+      isReadOnly: state[targetIndex].isReadOnly,
       colorModel: themeColorModel ?? state[targetIndex].colorModel,
     );
 

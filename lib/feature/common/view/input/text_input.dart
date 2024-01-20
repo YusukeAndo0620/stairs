@@ -17,6 +17,7 @@ class TextInput extends StatefulWidget {
     this.maxLines = 1,
     this.maxLength = 100,
     this.autoFocus = false,
+    this.isReadOnly = false,
     required this.onSubmitted,
   });
   final double width;
@@ -27,6 +28,7 @@ class TextInput extends StatefulWidget {
   final int maxLines;
   final int maxLength;
   final bool autoFocus;
+  final bool isReadOnly;
   final Function(String) onSubmitted;
 
   @override
@@ -64,6 +66,7 @@ class TextInputState extends State<TextInput> {
         key: ValueKey(widget.textController.hashCode),
         controller: widget.textController,
         style: theme.textStyleBody,
+        enabled: !widget.isReadOnly,
         maxLines: widget.maxLines,
         maxLength: widget.maxLength,
         cursorColor: theme.colorSecondary,

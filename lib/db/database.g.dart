@@ -5807,6 +5807,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final TToolDao tToolDao = TToolDao(this as StairsDatabase);
   late final TDevProgressRelDao tDevProgressRelDao =
       TDevProgressRelDao(this as StairsDatabase);
+  late final TTagDao tTagDao = TTagDao(this as StairsDatabase);
   late final TTagRelDao tTagRelDao = TTagRelDao(this as StairsDatabase);
   late final TDevLangDao tDevLangDao = TDevLangDao(this as StairsDatabase);
   late final TBoardDao tBoardDao = TBoardDao(this as StairsDatabase);

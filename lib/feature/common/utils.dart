@@ -41,5 +41,5 @@ extension BoolExtension on bool {
 
 extension StringExtension on String {
   /// 0: 無効（false）、1: 有効（true）
-  bool get parseBool => this == "1" ? true : false;
+  bool get parseBool => this == "1";
 }

@@ -89,6 +89,7 @@ class TagDisplay extends ConsumerWidget {
                                 ),
                               ],
                               eventAreaWidth: _kColorSelectWidth,
+                              isReadOnly: info.isReadOnly,
                               onTextSubmitted: (value, id) {
                                 tagNotifier.updateInputValue(
                                     id: id, inputValue: value);

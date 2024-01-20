@@ -1,4 +1,4 @@
-import 'package:stairs/feature/project/view/project_edit_modal.dart';
+import 'package:stairs/feature/project/view/project_edit_display.dart';
 import 'package:stairs/loom/loom_package.dart';
 
 const _kProjectListItemContentPadding =
@@ -55,13 +55,14 @@ class _ProjectListItemState extends State<ProjectListItem> {
           ),
           iconSize: _kProjectListItemEditIconSize,
           onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (context) {
-                return ProjectEditModal(projectId: widget.projectId);
-              },
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return ProjectEditDisplay(
+                    projectId: widget.projectId,
+                  );
+                },
+              ),
             );
           },
         ),

@@ -1,10 +1,11 @@
 import 'package:stairs/feature/board/view/board_screen.dart';
+import 'package:stairs/feature/common/provider/view/toast_msg_provider.dart';
 import 'package:stairs/feature/project/component/view/project_list_item.dart';
 import 'package:stairs/feature/project/model/project_detail_model.dart';
 import 'package:stairs/feature/project/model/project_list_item_model.dart';
 import 'package:stairs/feature/project/provider/project_detail_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
-import 'project_edit_modal.dart';
+import 'project_edit_display.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 const _kProjectTitleTxt = 'プロジェクト一覧';
@@ -21,20 +22,21 @@ class ProjectListDisplay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = LoomTheme.of(context);
+    // トーストプロバイダー
+    final toastMsgNotifier = ref.watch(toastMsgProvider.notifier);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: Icon(theme.icons.add),
         onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (context) {
-              return const ProjectEditModal(
-                projectId: '',
-              );
-            },
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) {
+                return const ProjectEditDisplay(
+                  projectId: '',
+                );
+              },
+            ),
           );
         },
       ),
@@ -70,6 +72,7 @@ class ProjectListDisplay extends ConsumerWidget {
                       projectName: item.projectName,
                       themeColor: item.themeColorModel.color,
                       onTap: () async {
+                        _logger.d("ボード画面へ遷移 projectId: ${item.projectId}");
                         _getProjectDetail(projectId: item.projectId, ref: ref)
                             .then(
                           (detail) => Navigator.of(context).push(
@@ -88,35 +91,14 @@ class ProjectListDisplay extends ConsumerWidget {
                               },
                             ),
                           ),
+                          onError: (error) {
+                            _logger.e(error);
+                            toastMsgNotifier.showToast(
+                              type: MessageType.error,
+                              msg: msgList['err001'],
+                            );
+                          },
                         );
-                        // final projectDetailState = ref.watch(
-                        //     projectDetailProvider(
-                        //         projectId: item.projectId,
-                        //         database: ref.watch(databaseProvider)));
-                        // projectDetailState.when(
-                        //   data: (detail) => Navigator.of(context).push(
-                        //     MaterialPageRoute(
-                        //       builder: (context) {
-                        //         _logger.d('detail');
-                        //         return BoardScreen(
-                        //           projectId: item.projectId,
-                        //           title: item.projectName,
-                        //           themeColor: item.themeColorModel.color,
-                        //           devLangList: detail != null
-                        //               ? detail.devLanguageList
-                        //               : [],
-                        //           labelList:
-                        //               detail != null ? detail.tagList : [],
-                        //         );
-                        //       },
-                        //     ),
-                        //   ),
-                        //   error: (error, _) =>
-                        //       Align(child: Text(error.toString())),
-                        //   loading: () => const Align(
-                        //     child: CircularProgressIndicator(),
-                        //   ),
-                        // );
                       },
                     ),
                 ],

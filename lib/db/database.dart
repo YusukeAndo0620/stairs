@@ -11,6 +11,7 @@ import 'package:stairs/db/dao/t_dev_lang_rel_dao.dart';
 import 'package:stairs/db/dao/t_dev_progress_rel_dao.dart';
 import 'package:stairs/db/dao/t_os_info_dao.dart';
 import 'package:stairs/db/dao/t_project_dao.dart';
+import 'package:stairs/db/dao/t_tag_dao.dart';
 import 'package:stairs/db/dao/t_tag_rel_dao.dart';
 import 'package:stairs/db/dao/t_task_dao.dart';
 import 'package:stairs/db/dao/t_tool_dao.dart';
@@ -58,6 +59,7 @@ final _logger = stairsLogger(name: 'database');
     TDevLangRelDao,
     TToolDao,
     TDevProgressRelDao,
+    TTagDao,
     TTagRelDao,
     TDevLangDao,
     TBoardDao,

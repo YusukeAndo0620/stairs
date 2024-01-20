@@ -1,4 +1,5 @@
 import 'package:stairs/db/database.dart';
+import 'package:stairs/feature/common/provider/account_provider.dart';
 import 'package:stairs/feature/common/repository/common_repository.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -22,7 +23,10 @@ class DevLang extends _$DevLang {
 
     // API通信開始
     final repository = ref.read(commonRepositoryProvider);
-    final list = await repository.getDevLanguageList() ?? [];
+    final accountState = ref.read(accountProvider(db: db));
+    final list = await repository.getDevLanguageList(
+            accountId: accountState.value!.accountId) ??
+        [];
     return list;
   }
 }

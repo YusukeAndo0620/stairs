@@ -124,6 +124,7 @@ class BoardRepository {
         ColorLabelModel(
           id: tagData[i].id.toString(),
           labelName: tagData[i].name,
+          isReadOnly: tagData[i].isReadOnly,
           colorModel: ColorModel(
               id: colorData[i].id,
               color: getColorFromCode(code: colorData[i].colorCodeId)),

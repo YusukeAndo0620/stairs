@@ -1,5 +1,7 @@
 import 'package:stairs/db/provider/database_provider.dart';
+import 'package:stairs/feature/common/provider/account_provider.dart';
 import 'package:stairs/feature/common/provider/view/toast_msg_provider.dart';
+import 'package:stairs/feature/common/repository/common_repository.dart';
 import 'package:stairs/feature/project/model/project_detail_model.dart';
 import 'package:stairs/feature/project/repository/project_repository.dart';
 import 'package:stairs/loom/loom_package.dart';
@@ -7,22 +9,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'project_detail_provider.g.dart';
 
-const _uuid = Uuid();
-final _initialProjectDetailModel = ProjectDetailModel(
-  projectId: _uuid.v4(),
-  projectName: '',
-  themeColorModel:
-      ColorModel(id: 1, color: const Color.fromARGB(255, 255, 31, 31)),
-  industry: '',
-  displayCount: 145,
-  startDate: DateTime(2010, 1, 1),
-  endDate: DateTime.now(),
-  devLanguageList: const [],
-  toolList: [],
-  devProgressList: [],
-  devSize: 100,
-  tagList: [],
-);
+ProjectDetailModel? _initialProjectDetailModel;
 
 @riverpod
 class ProjectDetail extends _$ProjectDetail {
@@ -31,8 +18,45 @@ class ProjectDetail extends _$ProjectDetail {
   @override
   FutureOr<ProjectDetailModel?> build({required String projectId}) async {
     _logger.d('=== build実施 projectId: $projectId ===');
+    if (projectId.isEmpty) {
+      if (_initialProjectDetailModel == null) {
+        await _setInitialProjectDetailModel();
+      }
+      return _initialProjectDetailModel;
+    }
     return getDetail(
       projectId: projectId,
+    );
+  }
+
+  // プロジェクトモデルの初期値を設定する
+  Future<void> _setInitialProjectDetailModel() async {
+    // タグリストを取得し初期値に追加
+    final database = ref.watch(databaseProvider);
+    final commonRepository = Provider((ref) => CommonRepository(db: database));
+    final account = ref.watch(accountProvider(db: database));
+    final repository = ref.read(commonRepository);
+    final tagList =
+        await repository.getDefaultTagList(accountId: account.value!.accountId);
+
+    const uuid = Uuid();
+    DateTime now = DateTime.now();
+
+    _initialProjectDetailModel = ProjectDetailModel(
+      projectId: uuid.v4(),
+      projectName: '',
+      themeColorModel:
+          ColorModel(id: 1, color: const Color.fromARGB(255, 255, 31, 31)),
+      industry: '',
+      displayCount: 50,
+      startDate: DateTime(now.year, now.month, 1),
+      endDate:
+          DateTime(now.year, now.month + 7, 1).add(const Duration(days: -1)),
+      devLanguageList: const [],
+      toolList: [],
+      devProgressList: [],
+      devSize: 100,
+      tagList: tagList!,
     );
   }
 

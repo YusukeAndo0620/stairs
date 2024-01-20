@@ -1,3 +1,5 @@
+import 'package:stairs/db/provider/database_provider.dart';
+import 'package:stairs/feature/common/provider/account_provider.dart';
 import 'package:stairs/feature/project/view/project_screen.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -58,6 +60,9 @@ class _DisplayContentsState extends ConsumerState<DisplayContents> {
     _logger.i('=== 画面表示 selectedScreenId: $selectedScreenId ===');
 
     final theme = LoomTheme.of(context);
+    // アカウント情報取得
+    ref.watch(accountProvider(db: ref.watch(databaseProvider)));
+
     // トーストメッセージハンドリング
     ref.listen<ToastMsgModel>(
       toastMsgProvider, // 購読対象のProviderを指定

@@ -11,7 +11,7 @@ class TTagDao extends DatabaseAccessor<StairsDatabase> with _$TTagDaoMixin {
 
   final _logger = stairsLogger(name: 't_tag_dao');
 
-  /// タグ取得
+  /// 全てのタグ取得
   Future<List<TypedResult>> getTagList({
     required String accountId,
   }) async {
@@ -19,6 +19,32 @@ class TTagDao extends DatabaseAccessor<StairsDatabase> with _$TTagDaoMixin {
       _logger.d('getTagList 通信開始');
       final query = db.select(db.tTag)
         ..where((tbl) => tbl.accountId.equals(accountId));
+
+      final response = await query.join([
+        // カラー
+        innerJoin(
+          db.mColor,
+          db.mColor.id.equalsExp(db.tTag.colorId),
+        ),
+      ]).get();
+      _logger.d('取得データ：$response');
+      return response;
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('getTagList 通信終了');
+    }
+  }
+
+  /// デフォルトのタグ取得
+  Future<List<TypedResult>> getDefaultTagList({
+    required String accountId,
+  }) async {
+    try {
+      _logger.d('getTagList 通信開始');
+      final query = db.select(db.tTag)
+        ..where((tbl) => tbl.accountId.equals(accountId) & tbl.isReadOnly);
 
       final response = await query.join([
         // カラー

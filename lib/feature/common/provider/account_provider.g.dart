@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'dev_lang_provider.dart';
+part of 'account_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$devLangHash() => r'032a7dea2dfbe05c3df5ef216f3421ac83c3e0fc';
+String _$accountHash() => r'da7e1a2b2da3535db63aaf23835e17a330150718';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,36 +29,35 @@ class _SystemHash {
   }
 }
 
-abstract class _$DevLang
-    extends BuildlessAutoDisposeAsyncNotifier<List<LabelModel>> {
+abstract class _$Account extends BuildlessAsyncNotifier<AccountModel?> {
   late final StairsDatabase db;
 
-  FutureOr<List<LabelModel>> build({
+  FutureOr<AccountModel?> build({
     required StairsDatabase db,
   });
 }
 
-/// See also [DevLang].
-@ProviderFor(DevLang)
-const devLangProvider = DevLangFamily();
+/// See also [Account].
+@ProviderFor(Account)
+const accountProvider = AccountFamily();
 
-/// See also [DevLang].
-class DevLangFamily extends Family<AsyncValue<List<LabelModel>>> {
-  /// See also [DevLang].
-  const DevLangFamily();
+/// See also [Account].
+class AccountFamily extends Family<AsyncValue<AccountModel?>> {
+  /// See also [Account].
+  const AccountFamily();
 
-  /// See also [DevLang].
-  DevLangProvider call({
+  /// See also [Account].
+  AccountProvider call({
     required StairsDatabase db,
   }) {
-    return DevLangProvider(
+    return AccountProvider(
       db: db,
     );
   }
 
   @override
-  DevLangProvider getProviderOverride(
-    covariant DevLangProvider provider,
+  AccountProvider getProviderOverride(
+    covariant AccountProvider provider,
   ) {
     return call(
       db: provider.db,
@@ -77,29 +76,29 @@ class DevLangFamily extends Family<AsyncValue<List<LabelModel>>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'devLangProvider';
+  String? get name => r'accountProvider';
 }
 
-/// See also [DevLang].
-class DevLangProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<DevLang, List<LabelModel>> {
-  /// See also [DevLang].
-  DevLangProvider({
+/// See also [Account].
+class AccountProvider
+    extends AsyncNotifierProviderImpl<Account, AccountModel?> {
+  /// See also [Account].
+  AccountProvider({
     required StairsDatabase db,
   }) : this._internal(
-          () => DevLang()..db = db,
-          from: devLangProvider,
-          name: r'devLangProvider',
+          () => Account()..db = db,
+          from: accountProvider,
+          name: r'accountProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$devLangHash,
-          dependencies: DevLangFamily._dependencies,
-          allTransitiveDependencies: DevLangFamily._allTransitiveDependencies,
+                  : _$accountHash,
+          dependencies: AccountFamily._dependencies,
+          allTransitiveDependencies: AccountFamily._allTransitiveDependencies,
           db: db,
         );
 
-  DevLangProvider._internal(
+  AccountProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -112,8 +111,8 @@ class DevLangProvider
   final StairsDatabase db;
 
   @override
-  FutureOr<List<LabelModel>> runNotifierBuild(
-    covariant DevLang notifier,
+  FutureOr<AccountModel?> runNotifierBuild(
+    covariant Account notifier,
   ) {
     return notifier.build(
       db: db,
@@ -121,10 +120,10 @@ class DevLangProvider
   }
 
   @override
-  Override overrideWith(DevLang Function() create) {
+  Override overrideWith(Account Function() create) {
     return ProviderOverride(
       origin: this,
-      override: DevLangProvider._internal(
+      override: AccountProvider._internal(
         () => create()..db = db,
         from: from,
         name: null,
@@ -137,14 +136,13 @@ class DevLangProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<DevLang, List<LabelModel>>
-      createElement() {
-    return _DevLangProviderElement(this);
+  AsyncNotifierProviderElement<Account, AccountModel?> createElement() {
+    return _AccountProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is DevLangProvider && other.db == db;
+    return other is AccountProvider && other.db == db;
   }
 
   @override
@@ -156,18 +154,18 @@ class DevLangProvider
   }
 }
 
-mixin DevLangRef on AutoDisposeAsyncNotifierProviderRef<List<LabelModel>> {
+mixin AccountRef on AsyncNotifierProviderRef<AccountModel?> {
   /// The parameter `db` of this provider.
   StairsDatabase get db;
 }
 
-class _DevLangProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<DevLang, List<LabelModel>>
-    with DevLangRef {
-  _DevLangProviderElement(super.provider);
+class _AccountProviderElement
+    extends AsyncNotifierProviderElement<Account, AccountModel?>
+    with AccountRef {
+  _AccountProviderElement(super.provider);
 
   @override
-  StairsDatabase get db => (origin as DevLangProvider).db;
+  StairsDatabase get db => (origin as AccountProvider).db;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

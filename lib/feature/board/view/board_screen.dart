@@ -71,7 +71,7 @@ class BoardScreen extends ConsumerWidget {
         backgroundColor: theme.colorBgLayer1,
         title: Text(
           title,
-          style: theme.textStyleHeading
+          style: theme.textStyleSubHeading
               .copyWith(color: theme.colorFgDefault.withOpacity(0.9)),
         ),
       ),

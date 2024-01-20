@@ -1,7 +1,6 @@
 import 'package:stairs/loom/loom_package.dart';
 
 const _kListItemContentPadding = EdgeInsets.all(8.0);
-const _kListItemPadding = EdgeInsets.only(bottom: 8.0);
 const _kLabelWidth = 150.0;
 const _kIconWidth = 20.0;
 const _kLabelIconSpaceWidth = 8.0;
@@ -43,7 +42,7 @@ class CardLstItem extends StatelessWidget {
     required Function(String) onSubmitted,
   }) : this._(
           key: key,
-          primaryItem: _LabelWithIcon(
+          primaryItem: _PrimaryItem(
             label: label,
             iconColor: iconColor,
             iconData: iconData,
@@ -72,7 +71,7 @@ class CardLstItem extends StatelessWidget {
     required VoidCallback onTap,
   }) : this._(
           key: key,
-          primaryItem: _LabelWithIcon(
+          primaryItem: _PrimaryItem(
             label: label,
             iconColor: iconColor,
             iconData: iconData,
@@ -163,26 +162,8 @@ class _Label extends StatelessWidget {
   }
 }
 
-class _SecondaryItem extends StatelessWidget {
-  const _SecondaryItem({
-    this.width,
-    required this.widget,
-  });
-  final double? width;
-  final Widget widget;
-
-  @override
-  Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-          maxWidth: width ?? MediaQuery.of(context).size.width * 0.55),
-      child: widget,
-    );
-  }
-}
-
-class _LabelWithIcon extends StatelessWidget {
-  const _LabelWithIcon({
+class _PrimaryItem extends StatelessWidget {
+  const _PrimaryItem({
     required this.label,
     required this.iconColor,
     required this.iconData,
@@ -219,6 +200,24 @@ class _LabelWithIcon extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SecondaryItem extends StatelessWidget {
+  const _SecondaryItem({
+    this.width,
+    required this.widget,
+  });
+  final double? width;
+  final Widget widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+          maxWidth: width ?? MediaQuery.of(context).size.width * 0.6),
+      child: widget,
     );
   }
 }
