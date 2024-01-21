@@ -39,9 +39,6 @@ class BoardScreen extends ConsumerWidget {
             projectId: projectId, database: ref.watch(databaseProvider))
         .notifier);
 
-    // ポジション
-    final positionNotifier = ref.watch(boardPositionProvider.notifier);
-
     // ドラッグアイテム
     final dragItemNotifier = ref.watch(dragItemProvider.notifier);
 
@@ -51,6 +48,8 @@ class BoardScreen extends ConsumerWidget {
 
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
+        // ポジション
+        final positionNotifier = ref.watch(boardPositionProvider.notifier);
         positionNotifier.init(projectId: projectId);
         if (boardState.value != null) {
           carouselDisplayNotifier.init(maxPage: boardState.value!.length);

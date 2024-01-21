@@ -45,10 +45,11 @@ class DragItem extends _$DragItem {
     );
   }
 
-  void setItem({required String boardId,  TaskItemModel? draggingItem}) {
+  void setItem({required String boardId, TaskItemModel? draggingItem}) {
     state = DraggingItemState(
       boardId: boardId,
-      draggingItem: draggingItem?? state.draggingItem!.copyWith(boardId: boardId),
+      draggingItem:
+          draggingItem ?? state.draggingItem?.copyWith(boardId: boardId),
       shrinkItem: getShrinkItem(
         boardId: boardId,
       ),

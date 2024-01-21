@@ -247,7 +247,10 @@ class Board extends _$Board {
   }) async {
     _logger.d("=== deleteAndAddShrinkItem ===");
     _logger.d(
-      "insertingBoardId: $insertingBoardId, insertingTaskIndex: $insertingTaskIndex",
+      "対象ボードID: $insertingBoardId",
+    );
+    _logger.d(
+      "タスクアイテム挿入位置: $insertingTaskIndex",
     );
     var targetList = _getCopiedList();
     // 追加するshrink item
@@ -296,7 +299,7 @@ class Board extends _$Board {
         targetBoard.taskItemList.isNotEmpty) {
       if (insertingBoardId == targetList[currentShrinkItemBoardIndex].boardId) {
         targetBoard.taskItemList.removeAt(
-            currentShrinkItemBoardIndex < insertingTaskIndex
+            currentShrinkItemTaskItemIndex < insertingTaskIndex
                 ? currentShrinkItemTaskItemIndex
                 : currentShrinkItemTaskItemIndex + 1);
         //別ワークボード内で移動した場合
@@ -327,14 +330,21 @@ class Board extends _$Board {
 
     var targetList = _getCopiedList();
 
-    final currentShrinkItemBoardIndex = getBoardIndex(boardId: kShrinkId);
-    if (currentShrinkItemBoardIndex == -1) return;
+    final currentShrinkItemBoardIndex =
+        getBoardIndexByTaskId(taskItemId: kShrinkId);
+    if (currentShrinkItemBoardIndex == -1) {
+      _logger.e("shrink itemがボード内に存在しません。");
+      return;
+    }
 
     final currentShrinkItemTaskItemIndex = getTaskItemIndex(
       boardId: targetList[currentShrinkItemBoardIndex].boardId,
       taskItemId: kShrinkId,
     );
-    if (currentShrinkItemTaskItemIndex == -1) return;
+    if (currentShrinkItemTaskItemIndex == -1) {
+      _logger.e("shrink itemのindexが取得できません。");
+      return;
+    }
 
     // drag完了時に別ボードカード内にshrink itemがある場合
     targetList[currentShrinkItemBoardIndex]

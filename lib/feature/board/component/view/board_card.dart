@@ -86,17 +86,12 @@ class _BoardCardState extends ConsumerState<BoardCard> {
             projectId: widget.projectId, database: ref.watch(databaseProvider))
         .notifier);
 
-    // ポジション
-    final positionState = ref.watch(boardPositionProvider);
-    final positionNotifier = ref.watch(boardPositionProvider.notifier);
-
     // 新規タスク
     final taskItemState = ref.watch(taskItemProvider(taskItemId: ''));
     final taskItemNotifier =
         ref.watch(taskItemProvider(taskItemId: '').notifier);
 
     // ドラッグアイテム
-    final dragItemState = ref.watch(dragItemProvider);
     final dragItemNotifier = ref.watch(dragItemProvider.notifier);
 
     WidgetsBinding.instance.addPostFrameCallback(
@@ -105,18 +100,13 @@ class _BoardCardState extends ConsumerState<BoardCard> {
           taskItemNotifier.setItem(boardId: widget.boardId);
         }
         if (_isAddedNewTask) {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: _kAnimatedDuration,
-            curve: Curves.easeIn,
+          await Future.delayed(const Duration(milliseconds: 50)).then(
+            (value) => _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: _kAnimatedDuration,
+              curve: Curves.easeIn,
+            ),
           );
-          // await Future.delayed(const Duration(milliseconds: 50)).then(
-          //   (value) => _scrollController.animateTo(
-          //     _scrollController.position.maxScrollExtent,
-          //     duration: _kAnimatedDuration,
-          //     curve: Curves.easeIn,
-          //   ),
-          // );
         }
         if (_isMovingLast) {
           await Future.delayed(const Duration(milliseconds: 50)).then(
@@ -207,12 +197,14 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                                 taskItemId: item.taskItemId,
                               );
 
-                              positionNotifier.setTaskItemPosition(
-                                  taskItemId: kShrinkId, key: boardCardKey);
+                              // positionNotifier.setTaskItemPosition(
+                              //     taskItemId: kShrinkId, key: boardCardKey);
                             },
                             onDragUpdate: (detail) async {},
                             onDragCompleted: () {},
                             onDraggableCanceled: (velocity, offset) {
+                              // ドラッグアイテム
+                              final dragItemState = ref.watch(dragItemProvider);
                               boardNotifier.replaceDraggedItem(
                                   draggingItem: dragItemState.draggingItem!);
 
@@ -297,20 +289,25 @@ class _BoardCardState extends ConsumerState<BoardCard> {
           ),
         );
       },
-      onMove: (details) async {
+      onMove: (details) {
         final carouselDisplayState = ref.watch(carouselProvider);
+        // ポジション
+        final positionState = ref.watch(boardPositionProvider);
+        final positionNotifier = ref.watch(boardPositionProvider.notifier);
+
         if (!carouselDisplayState.isReady) return;
         _logger.i('====Drag開始 {board id:${widget.boardId}}====');
         final cardWidth = boardCardKey.currentContext!.size!.width;
         const previousCriteria = 60.0;
-        final nextCriteria = cardWidth - 240.0;
+        final nextCriteria = cardWidth * 0.4;
 
         // positionを更新
         positionNotifier.setBoardPosition(
             boardId: widget.boardId, key: boardCardKey);
 
-        _logger.d("dx:${details.offset.dx}");
-        _logger.d("nextCriteria:$nextCriteria");
+        _logger.d("ドラッグアイテム dx:${details.offset.dx}");
+        _logger.d("次ページ遷移基準 dx:$nextCriteria");
+        _logger.d("前ページ遷移基準 dx:$previousCriteria");
         // カード内移動
         if (details.offset.dx < nextCriteria &&
             previousCriteria < details.offset.dx) {
@@ -334,6 +331,9 @@ class _BoardCardState extends ConsumerState<BoardCard> {
         }
       },
       onAcceptWithDetails: (details) {
+        // ドラッグアイテム
+        final dragItemState = ref.watch(dragItemProvider);
+
         boardNotifier.replaceDraggedItem(
             draggingItem: dragItemState.draggingItem!);
         dragItemNotifier.init();
@@ -393,8 +393,10 @@ class _BoardCardState extends ConsumerState<BoardCard> {
     required Board boardNotifier,
   }) async {
     if (criteriaMovingNext < dx) {
+      _logger.i('=次ページ移動=');
       widget.onPageChanged(PageAction.next);
     } else if (dx < criteriaMovingNext) {
+      _logger.i('=前ページ移動=');
       widget.onPageChanged(PageAction.previous);
     }
     replaceShrinkItem(

@@ -36,7 +36,6 @@ class CarouselDisplay extends ConsumerWidget {
     final color = indicatorColor ?? theme.colorDisabled;
 
     final carouselDisplayState = ref.watch(carouselProvider);
-
     final carouselDisplayNotifier = ref.watch(carouselProvider.notifier);
 
     return Stack(

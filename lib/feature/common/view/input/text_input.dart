@@ -19,6 +19,7 @@ class TextInput extends StatefulWidget {
     this.autoFocus = false,
     this.isReadOnly = false,
     required this.onSubmitted,
+    this.onChanged,
   });
   final double width;
   final Icon? icon;
@@ -30,6 +31,7 @@ class TextInput extends StatefulWidget {
   final bool autoFocus;
   final bool isReadOnly;
   final Function(String) onSubmitted;
+  final Function(String)? onChanged;
 
   @override
   State<StatefulWidget> createState() => TextInputState();
@@ -74,6 +76,11 @@ class TextInputState extends State<TextInput> {
         textInputAction: TextInputAction.done,
         autofocus: widget.autoFocus,
         focusNode: focusNode,
+        onChanged: (value) {
+          if (widget.onChanged != null) {
+            widget.onChanged!(value);
+          }
+        },
         onSubmitted: (value) {
           widget.onSubmitted(value);
           FocusScope.of(context).unfocus();

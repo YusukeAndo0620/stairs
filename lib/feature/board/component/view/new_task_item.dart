@@ -76,8 +76,9 @@ class _NewTaskItemState extends State<NewTaskItem> {
             textController: textController,
             hintText: _kTaskHintTxt,
             maxLength: _kTaskMaxLength,
-            autoFocus: false,
+            autoFocus: true,
             onSubmitted: (value) => widget.updateTitle(value),
+            onChanged: (value) => widget.updateTitle(value),
           ),
           const SizedBox(
             height: _kTitleAndLabelSpace,

@@ -37,7 +37,7 @@ class CarouselDisplayModel {
 class Carousel extends _$Carousel {
   @override
   CarouselDisplayModel build() => CarouselDisplayModel(
-        isReady: true,
+        isReady: false,
         maxPage: 1,
         pageController: PageController(initialPage: 0, viewportFraction: 0.8),
       );

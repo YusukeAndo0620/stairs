@@ -18,10 +18,12 @@ class ShrinkTaskListItem extends ConsumerWidget {
 
     // ポジション
     final positionNotifier = ref.watch(boardPositionProvider.notifier);
-    positionNotifier.setTaskItemPosition(
-      taskItemId: taskItemId,
-      key: itemKey,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      positionNotifier.setTaskItemPosition(
+        taskItemId: taskItemId,
+        key: itemKey,
+      );
+    });
 
     return Container(
       key: itemKey,

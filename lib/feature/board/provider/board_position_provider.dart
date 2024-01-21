@@ -13,14 +13,7 @@ class BoardPosition extends _$BoardPosition {
         taskItemPositionMap: {},
       );
 
-  void init({
-    String? projectId,
-    String? title,
-    String? description,
-    DateTime? startDate,
-    DateTime? dueDate,
-    List<ColorLabelModel>? labelList,
-  }) {
+  void init({String? projectId}) {
     state = state.copyWith(
       projectId: projectId,
       boardPositionMap: {},
