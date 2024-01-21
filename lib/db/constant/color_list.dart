@@ -48,4 +48,28 @@ final colorList = [
   MColorCompanion(
     colorCodeId: Value(const Color.fromARGB(255, 255, 136, 243).getColorId),
   ),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 0, 0, 0).getColorId),
+  ),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 251, 243, 140).getColorId),
+  ),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 195, 0, 255).getColorId),
+  ),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 255, 120, 120).getColorId),
+  ),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 206, 202, 255).getColorId),
+  ),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 255, 183, 124).getColorId),
+  ),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 136, 255, 150).getColorId),
+  ),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 178, 178, 178).getColorId),
+  ),
 ];

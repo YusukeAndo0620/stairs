@@ -216,7 +216,7 @@ class _SecondaryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: BoxConstraints(
-          maxWidth: width ?? MediaQuery.of(context).size.width * 0.6),
+          maxWidth: width ?? MediaQuery.of(context).size.width * 0.55),
       child: widget,
     );
   }
