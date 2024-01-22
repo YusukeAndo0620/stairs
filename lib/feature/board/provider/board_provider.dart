@@ -245,13 +245,9 @@ class Board extends _$Board {
     required String insertingBoardId,
     required int insertingTaskIndex,
   }) async {
-    _logger.d("=== deleteAndAddShrinkItem ===");
-    _logger.d(
-      "対象ボードID: $insertingBoardId",
-    );
-    _logger.d(
-      "タスクアイテム挿入位置: $insertingTaskIndex",
-    );
+    _logger.d("=== ShrinkItem  置換処理実施 ===");
+    _logger.d("対象ボードID: $insertingBoardId");
+    _logger.d("タスクアイテム挿入位置: $insertingTaskIndex");
     var targetList = _getCopiedList();
     // 追加するshrink item
     final shrinkItem = getShrinkItem(boardId: insertingBoardId);
@@ -276,6 +272,7 @@ class Board extends _$Board {
       taskItemId: shrinkItem.taskItemId,
     );
 
+    // ボードにShrinkItemを追加。
     if (targetList[boardIndex].taskItemList.isEmpty) {
       final replaceBoard = BoardModel(
           projectId: targetBoard.projectId,
@@ -289,11 +286,8 @@ class Board extends _$Board {
           shrinkItem);
     }
 
-    // TODO: position mapに別ボードに残っているshrink itemがないため、削除できない
-    // TODO: 一度ページ移動して戻ると、別ボードの要素が消されていく。
-    // TODO: ページ移動していないのに、他ボードにアイテムを移動できてしまう。
-
-    //同じワークボード内で移動した場合、それぞれのindexで削除対象を判定
+    // 追加したShrinkItemと既存のShrinkItemがあるため、既存の要素削除
+    // 同じボード内で移動した場合、それぞれのindexで削除対象を判定
     if (currentShrinkItemBoardIndex != -1 &&
         currentShrinkItemTaskItemIndex != -1 &&
         targetBoard.taskItemList.isNotEmpty) {
@@ -302,11 +296,23 @@ class Board extends _$Board {
             currentShrinkItemTaskItemIndex < insertingTaskIndex
                 ? currentShrinkItemTaskItemIndex
                 : currentShrinkItemTaskItemIndex + 1);
-        //別ワークボード内で移動した場合
+        // 別ボードに移動した場合
       } else {
+        // Drag前のボードにShrinkItemが残らないよう削除
         targetList[currentShrinkItemBoardIndex]
             .taskItemList
             .removeAt(currentShrinkItemTaskItemIndex);
+      }
+    }
+
+    // 別ボード内に残っているShrinkItemを削除する。
+    for (final item in targetList) {
+      if (hasShrinkItem(item.boardId) && item.boardId != insertingBoardId) {
+        final delTargetIndex =
+            getTaskItemIndex(boardId: item.boardId, taskItemId: kShrinkId);
+        targetList[getBoardIndex(boardId: item.boardId)]
+            .taskItemList
+            .removeAt(delTargetIndex);
       }
     }
 
@@ -326,7 +332,7 @@ class Board extends _$Board {
   Future<void> replaceDraggedItem({
     required TaskItemModel draggingItem,
   }) async {
-    _logger.d("=== replaceDraggedItem ===");
+    _logger.d("=== DragItem置き換え実施 ===");
 
     var targetList = _getCopiedList();
 

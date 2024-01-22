@@ -6,7 +6,7 @@ part of 'dev_lang_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$devLangHash() => r'032a7dea2dfbe05c3df5ef216f3421ac83c3e0fc';
+String _$devLangHash() => r'd62c1c9925bb9f9e6639b72a87d3cf20acfc43fb';
 
 /// Copied from Dart SDK
 class _SystemHash {

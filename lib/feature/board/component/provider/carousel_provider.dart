@@ -28,6 +28,8 @@ class CarouselDisplayModel {
   int get currentPage {
     if (pageController.positions.isEmpty || pageController.page == null) {
       return 0;
+    } else if (pageController.page!.toInt() >= maxPage) {
+      return maxPage == 0 ? 0 : maxPage - 1;
     }
     return pageController.page!.toInt();
   }
@@ -37,8 +39,8 @@ class CarouselDisplayModel {
 class Carousel extends _$Carousel {
   @override
   CarouselDisplayModel build() => CarouselDisplayModel(
-        isReady: false,
-        maxPage: 1,
+        isReady: true,
+        maxPage: 0,
         pageController: PageController(initialPage: 0, viewportFraction: 0.8),
       );
 
@@ -46,8 +48,7 @@ class Carousel extends _$Carousel {
     state = CarouselDisplayModel(
       isReady: true,
       maxPage: maxPage,
-      pageController:
-          PageController(initialPage: state.currentPage, viewportFraction: 0.8),
+      pageController: state.pageController,
     );
   }
 
@@ -59,8 +60,7 @@ class Carousel extends _$Carousel {
   }
 
   void setReady() async {
-    await Future.delayed(const Duration(milliseconds: 500))
-        .then((value) => state = state.copyWith(isReady: true));
+    state = state.copyWith(isReady: true);
   }
 
   void moveNextPage() {
@@ -71,7 +71,7 @@ class Carousel extends _$Carousel {
 
       state.pageController.animateToPage(
         state.pageController.page!.toInt() + 1,
-        duration: const Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
       setReady();
@@ -84,7 +84,7 @@ class Carousel extends _$Carousel {
 
     state.pageController.animateToPage(
       state.pageController.page!.toInt() - 1,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
     setReady();

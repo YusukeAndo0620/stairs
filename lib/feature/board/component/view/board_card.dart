@@ -92,6 +92,7 @@ class _BoardCardState extends ConsumerState<BoardCard> {
         ref.watch(taskItemProvider(taskItemId: '').notifier);
 
     // ドラッグアイテム
+    ref.watch(dragItemProvider);
     final dragItemNotifier = ref.watch(dragItemProvider.notifier);
 
     WidgetsBinding.instance.addPostFrameCallback(
@@ -196,15 +197,13 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                                 boardId: widget.boardId,
                                 taskItemId: item.taskItemId,
                               );
-
-                              // positionNotifier.setTaskItemPosition(
-                              //     taskItemId: kShrinkId, key: boardCardKey);
                             },
                             onDragUpdate: (detail) async {},
                             onDragCompleted: () {},
                             onDraggableCanceled: (velocity, offset) {
                               // ドラッグアイテム
                               final dragItemState = ref.watch(dragItemProvider);
+
                               boardNotifier.replaceDraggedItem(
                                   draggingItem: dragItemState.draggingItem!);
 
@@ -291,27 +290,30 @@ class _BoardCardState extends ConsumerState<BoardCard> {
       },
       onMove: (details) {
         final carouselDisplayState = ref.watch(carouselProvider);
+        if (!carouselDisplayState.isReady) {
+          _logger.d('==== Drag中止 ====');
+          return;
+        }
+
         // ポジション
         final positionState = ref.watch(boardPositionProvider);
         final positionNotifier = ref.watch(boardPositionProvider.notifier);
 
-        if (!carouselDisplayState.isReady) return;
-        _logger.i('====Drag開始 {board id:${widget.boardId}}====');
-        final cardWidth = boardCardKey.currentContext!.size!.width;
-        const previousCriteria = 60.0;
-        final nextCriteria = cardWidth * 0.4;
+        _logger.i('==== Drag開始 {board id:${widget.boardId}} ====');
+        const previousCriteria = -20.0;
+        const nextCriteria = 250.0;
 
         // positionを更新
         positionNotifier.setBoardPosition(
             boardId: widget.boardId, key: boardCardKey);
 
-        _logger.d("ドラッグアイテム dx:${details.offset.dx}");
+        _logger.d("DragItem dx:${details.offset.dx}");
         _logger.d("次ページ遷移基準 dx:$nextCriteria");
         _logger.d("前ページ遷移基準 dx:$previousCriteria");
         // カード内移動
         if (details.offset.dx < nextCriteria &&
             previousCriteria < details.offset.dx) {
-          _logger.i('=縦スクロール移動=');
+          _logger.i('== 縦スクロール移動 ==');
           onMoveVertical(
             boardCardKey: boardCardKey,
             dy: details.offset.dy,
@@ -319,7 +321,7 @@ class _BoardCardState extends ConsumerState<BoardCard> {
             boardNotifier: boardNotifier,
           );
         } else {
-          _logger.i('=横ページ移動=');
+          _logger.i('== 横ページ移動 ==');
           // 横ページ移動
           onMoveHorizontal(
             dx: details.offset.dx,
@@ -333,6 +335,7 @@ class _BoardCardState extends ConsumerState<BoardCard> {
       onAcceptWithDetails: (details) {
         // ドラッグアイテム
         final dragItemState = ref.watch(dragItemProvider);
+        final dragItemNotifier = ref.watch(dragItemProvider.notifier);
 
         boardNotifier.replaceDraggedItem(
             draggingItem: dragItemState.draggingItem!);
@@ -393,10 +396,10 @@ class _BoardCardState extends ConsumerState<BoardCard> {
     required Board boardNotifier,
   }) async {
     if (criteriaMovingNext < dx) {
-      _logger.i('=次ページ移動=');
+      _logger.i('= 次ページ移動 =');
       widget.onPageChanged(PageAction.next);
     } else if (dx < criteriaMovingNext) {
-      _logger.i('=前ページ移動=');
+      _logger.i('= 前ページ移動 =');
       widget.onPageChanged(PageAction.previous);
     }
     replaceShrinkItem(

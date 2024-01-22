@@ -6,7 +6,7 @@ part of 'carousel_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$carouselHash() => r'e83b5e9d82c0a9ab682c57fe9d63a9608292a5d3';
+String _$carouselHash() => r'325fefd12d967871c407244f4308fe2f8c6437d5';
 
 /// See also [Carousel].
 @ProviderFor(Carousel)

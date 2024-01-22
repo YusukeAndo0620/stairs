@@ -6,7 +6,7 @@ part of 'board_position_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$boardPositionHash() => r'f940a23c73b31bef4a9d780bb46c78bbd1e44c38';
+String _$boardPositionHash() => r'2b1b6e9fb0f2c96739b13ff966b5f7469c2592fb';
 
 /// See also [BoardPosition].
 @ProviderFor(BoardPosition)
