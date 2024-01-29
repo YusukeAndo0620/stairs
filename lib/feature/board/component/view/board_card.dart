@@ -33,13 +33,14 @@ const _kContentMargin = EdgeInsets.only(
   right: 40.0,
 );
 
+final _logger = stairsLogger(name: 'board_card');
+
 ///ボードカード
 class BoardCard extends ConsumerStatefulWidget {
   const BoardCard({
     super.key,
     required this.projectId,
     required this.boardId,
-    required this.displayedBoardId,
     required this.title,
     required this.themeColor,
     required this.devLangList,
@@ -49,7 +50,6 @@ class BoardCard extends ConsumerStatefulWidget {
   });
   final String projectId;
   final String boardId;
-  final String displayedBoardId;
   final String title;
   final Color themeColor;
   final List<LabelWithContent> devLangList;
@@ -66,7 +66,6 @@ class _BoardCardState extends ConsumerState<BoardCard> {
   bool _isMovingLast = false;
   final _scrollController = ScrollController();
   final boardCardKey = GlobalKey<_BoardCardState>();
-  final _logger = stairsLogger(name: 'board_card');
 
   @override
   void initState() {
@@ -80,6 +79,8 @@ class _BoardCardState extends ConsumerState<BoardCard> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.d('==== ビルド開始 {board_title:${widget.title}} ====');
+
     final theme = LoomTheme.of(context);
     // ボード
     final boardNotifier = ref.watch(boardProvider(
@@ -92,7 +93,6 @@ class _BoardCardState extends ConsumerState<BoardCard> {
         ref.watch(taskItemProvider(taskItemId: '').notifier);
 
     // ドラッグアイテム
-    ref.watch(dragItemProvider);
     final dragItemNotifier = ref.watch(dragItemProvider.notifier);
 
     WidgetsBinding.instance.addPostFrameCallback(
@@ -199,8 +199,17 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                               );
                             },
                             onDragUpdate: (detail) async {},
-                            onDragCompleted: () {},
+                            onDragCompleted: () {
+                              _logger.d(
+                                  '==== Drag Completed {board_title:${widget.title}} ====');
+                            },
+                            onDragEnd: (_) {
+                              _logger.d(
+                                  '==== Drag End {board_title:${widget.title}} ====');
+                            },
                             onDraggableCanceled: (velocity, offset) {
+                              _logger.d(
+                                  '==== Drag Canceled {board_title:${widget.title}} ====');
                               // ドラッグアイテム
                               final dragItemState = ref.watch(dragItemProvider);
 
@@ -299,7 +308,7 @@ class _BoardCardState extends ConsumerState<BoardCard> {
         final positionState = ref.watch(boardPositionProvider);
         final positionNotifier = ref.watch(boardPositionProvider.notifier);
 
-        _logger.i('==== Drag開始 {board id:${widget.boardId}} ====');
+        _logger.d('==== Drag開始 {board id:${widget.boardId}} ====');
         const previousCriteria = -20.0;
         const nextCriteria = 250.0;
 
@@ -313,7 +322,7 @@ class _BoardCardState extends ConsumerState<BoardCard> {
         // カード内移動
         if (details.offset.dx < nextCriteria &&
             previousCriteria < details.offset.dx) {
-          _logger.i('== 縦スクロール移動 ==');
+          _logger.d('== 縦スクロール移動 ==');
           onMoveVertical(
             boardCardKey: boardCardKey,
             dy: details.offset.dy,
@@ -321,7 +330,7 @@ class _BoardCardState extends ConsumerState<BoardCard> {
             boardNotifier: boardNotifier,
           );
         } else {
-          _logger.i('== 横ページ移動 ==');
+          _logger.d('== 横ページ移動 ==');
           // 横ページ移動
           onMoveHorizontal(
             dx: details.offset.dx,
@@ -333,6 +342,7 @@ class _BoardCardState extends ConsumerState<BoardCard> {
         }
       },
       onAcceptWithDetails: (details) {
+        _logger.d('==== Drag完了 {対象のboard title:${widget.title}} ====');
         // ドラッグアイテム
         final dragItemState = ref.watch(dragItemProvider);
         final dragItemNotifier = ref.watch(dragItemProvider.notifier);
@@ -396,10 +406,10 @@ class _BoardCardState extends ConsumerState<BoardCard> {
     required Board boardNotifier,
   }) async {
     if (criteriaMovingNext < dx) {
-      _logger.i('= 次ページ移動 =');
+      _logger.d('= 次ページ移動 =');
       widget.onPageChanged(PageAction.next);
     } else if (dx < criteriaMovingNext) {
-      _logger.i('= 前ページ移動 =');
+      _logger.d('= 前ページ移動 =');
       widget.onPageChanged(PageAction.previous);
     }
     replaceShrinkItem(

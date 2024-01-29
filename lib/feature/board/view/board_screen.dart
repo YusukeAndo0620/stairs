@@ -14,6 +14,8 @@ enum PageAction {
   previous,
 }
 
+final _logger = stairsLogger(name: 'board_screen');
+
 class BoardScreen extends ConsumerWidget {
   const BoardScreen({
     super.key,
@@ -32,6 +34,8 @@ class BoardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    _logger.d('==== ビルド開始 {project_title:$title} ====');
+
     // ボード
     final boardState = ref.watch(boardProvider(
         projectId: projectId, database: ref.watch(databaseProvider)));
@@ -43,7 +47,6 @@ class BoardScreen extends ConsumerWidget {
     final dragItemNotifier = ref.watch(dragItemProvider.notifier);
 
     // Carousel Display
-    final carouselDisplayState = ref.watch(carouselProvider);
     final carouselDisplayNotifier = ref.watch(carouselProvider.notifier);
 
     WidgetsBinding.instance.addPostFrameCallback(
@@ -84,14 +87,13 @@ class BoardScreen extends ConsumerWidget {
                   BoardCard(
                     projectId: projectId,
                     boardId: item.boardId,
-                    displayedBoardId:
-                        list[carouselDisplayState.currentPage].boardId,
                     title: item.title,
                     themeColor: themeColor,
                     taskItemList: item.taskItemList,
                     devLangList: devLangList,
                     labelList: labelList,
                     onPageChanged: (pageAction) {
+                      final carouselDisplayState = ref.watch(carouselProvider);
                       //すでにページ番号が更新されていた場合、処理を行わない
                       if (list[carouselDisplayState.currentPage].boardId !=
                           item.boardId) {

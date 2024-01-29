@@ -16,6 +16,8 @@ const _kContentPadding = EdgeInsets.all(8.0);
 const _kLabelContentPadding = EdgeInsets.only(right: 8.0, bottom: 8.0);
 const _kContentMargin = EdgeInsets.symmetric(vertical: 4.0);
 
+final _logger = stairsLogger(name: 'task_list_item');
+
 ///ワークボードのカード内リストアイテム（ドラッグ可能）
 class TaskListItem extends ConsumerStatefulWidget {
   const TaskListItem({
@@ -31,6 +33,7 @@ class TaskListItem extends ConsumerStatefulWidget {
     required this.onDragUpdate,
     required this.onDraggableCanceled,
     required this.onDragCompleted,
+    required this.onDragEnd,
   });
   final String boardId;
   final String taskItemId;
@@ -43,6 +46,7 @@ class TaskListItem extends ConsumerStatefulWidget {
   final Function(DragUpdateDetails) onDragUpdate;
   final Function(Velocity, Offset) onDraggableCanceled;
   final VoidCallback onDragCompleted;
+  final Function(DraggableDetails) onDragEnd;
 
   @override
   ConsumerState<TaskListItem> createState() => _TaskListItemState();
@@ -63,6 +67,8 @@ class _TaskListItemState extends ConsumerState<TaskListItem> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.d('==== ビルド開始 {task_title:${widget.title}} ====');
+
     final taskItemState = ref.watch(
       TaskItemProvider(
         taskItemId: widget.taskItemId,
@@ -97,6 +103,7 @@ class _TaskListItemState extends ConsumerState<TaskListItem> {
       onDragStarted: widget.onDragStarted,
       onDragUpdate: (detail) => widget.onDragUpdate(detail),
       onDragCompleted: () => widget.onDragCompleted,
+      onDragEnd: (details) => widget.onDragEnd,
       onDraggableCanceled: (velocity, offset) =>
           widget.onDraggableCanceled(velocity, offset),
       feedback: _DraggingListItem(
