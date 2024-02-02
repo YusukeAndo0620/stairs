@@ -28,6 +28,7 @@ class TaskListItem extends ConsumerWidget {
     required this.themeColor,
     required this.dueDate,
     required this.labelList,
+    required this.isReadOnly,
     required this.onTap,
     required this.onDragStarted,
     required this.onDragUpdate,
@@ -41,6 +42,7 @@ class TaskListItem extends ConsumerWidget {
   final DateTime dueDate;
   final Color themeColor;
   final List<ColorLabelModel> labelList;
+  final bool isReadOnly;
   final Function(TaskItemModel) onTap;
   final VoidCallback onDragStarted;
   final Function(DragUpdateDetails) onDragUpdate;
@@ -81,54 +83,57 @@ class TaskListItem extends ConsumerWidget {
     });
 
     final theme = LoomTheme.of(context);
-    return Draggable<String>(
-      key: ValueKey(taskItemState.taskItemId),
-      data: taskItemState.taskItemId,
-      onDragStarted: onDragStarted,
-      onDragUpdate: (detail) => onDragUpdate(detail),
-      onDragCompleted: () => onDragCompleted,
-      onDragEnd: (details) => onDragEnd,
-      onDraggableCanceled: (velocity, offset) =>
-          onDraggableCanceled(velocity, offset),
-      feedback: _DraggingListItem(
+    return AbsorbPointer(
+      absorbing: isReadOnly,
+      child: Draggable<String>(
         key: ValueKey(taskItemState.taskItemId),
-        title: taskItemState.title,
-        themeColor: themeColor,
-        dueDate: taskItemState.dueDate,
-        labelList: taskItemState.labelList,
-      ).testSelector('task_list_item_drag_item'),
-      child: TapAction(
-        key: itemKey,
-        width: double.infinity,
-        tappedColor: themeColor.withOpacity(0.7),
-        margin: _kContentMargin,
-        padding: _kContentPadding,
-        border: Border.all(
-          color: themeColor,
-          width: _kBorderWidth,
-        ),
-        borderRadius: BorderRadius.circular(5.0),
-        onTap: () => onTap(taskItemState),
-        widget: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              taskItemState.title,
-              style: theme.textStyleBody,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
-            const SizedBox(
-              height: _kTitleAndLabelSpace,
-            ),
-            _LabelArea(
-              key: ValueKey(taskItemState.taskItemId),
-              themeColor: themeColor,
-              dueDate: taskItemState.dueDate,
-              labelList: taskItemState.labelList,
-            )
-          ],
+        data: taskItemState.taskItemId,
+        onDragStarted: onDragStarted,
+        onDragUpdate: (detail) => onDragUpdate(detail),
+        onDragCompleted: () => onDragCompleted,
+        onDragEnd: (details) => onDragEnd,
+        onDraggableCanceled: (velocity, offset) =>
+            onDraggableCanceled(velocity, offset),
+        feedback: _DraggingListItem(
+          key: ValueKey(taskItemState.taskItemId),
+          title: taskItemState.title,
+          themeColor: themeColor,
+          dueDate: taskItemState.dueDate,
+          labelList: taskItemState.labelList,
+        ).testSelector('task_list_item_drag_item'),
+        child: TapAction(
+          key: itemKey,
+          width: double.infinity,
+          tappedColor: themeColor.withOpacity(0.7),
+          margin: _kContentMargin,
+          padding: _kContentPadding,
+          border: Border.all(
+            color: themeColor,
+            width: _kBorderWidth,
+          ),
+          borderRadius: BorderRadius.circular(5.0),
+          onTap: () => onTap(taskItemState),
+          widget: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                taskItemState.title,
+                style: theme.textStyleBody,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
+              const SizedBox(
+                height: _kTitleAndLabelSpace,
+              ),
+              _LabelArea(
+                key: ValueKey(taskItemState.taskItemId),
+                themeColor: themeColor,
+                dueDate: taskItemState.dueDate,
+                labelList: taskItemState.labelList,
+              )
+            ],
+          ),
         ),
       ).testSelector('task_list_item_list_item'),
     ).testSelector('task_list_item');

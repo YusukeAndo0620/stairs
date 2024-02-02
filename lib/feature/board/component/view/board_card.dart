@@ -24,7 +24,12 @@ const _kAddBtnTxt = '追加';
 
 const _kAnimatedDuration = Duration(milliseconds: 300);
 const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
-
+const _kContentMargin = EdgeInsets.only(
+  top: 24,
+  bottom: 48.0,
+  left: 16.0,
+  right: 40.0,
+);
 final _logger = stairsLogger(name: 'board_card');
 
 ///ボードカード
@@ -181,9 +186,8 @@ class _BoardCardState extends ConsumerState<BoardCard> {
       builder: (context, accepted, rejected) {
         return Container(
           width: MediaQuery.of(context).size.width * 0.7,
-          constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.8),
           padding: _kContentPadding,
+          margin: _kContentMargin,
           decoration: BoxDecoration(
             color: theme.colorFgDefaultWhite,
             border: Border.all(
@@ -220,6 +224,7 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                             dueDate: item.dueDate,
                             themeColor: widget.themeColor,
                             labelList: item.labelList,
+                            isReadOnly: _isNewTaskShown,
                             onTap: (taskItem) async {
                               final result = await showModalBottomSheet(
                                 context: context,

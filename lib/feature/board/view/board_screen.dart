@@ -34,8 +34,8 @@ class BoardScreen extends ConsumerStatefulWidget {
 }
 
 class _BoardScreenState extends ConsumerState<BoardScreen> {
-  int currentDisplayBoardIdx = 0;
-  final ScrollController controller = ScrollController();
+  final PageController controller =
+      PageController(initialPage: 0, viewportFraction: 0.8);
 
   @override
   void initState() {
@@ -87,7 +87,6 @@ class _BoardScreenState extends ConsumerState<BoardScreen> {
         child: boardState.when(
           data: (list) {
             return CarouselDisplay(
-              displayedWidgetIdx: currentDisplayBoardIdx,
               controller: controller,
               widgets: [
                 for (final item in list)
@@ -100,16 +99,16 @@ class _BoardScreenState extends ConsumerState<BoardScreen> {
                     devLangList: widget.devLangList,
                     labelList: widget.labelList,
                     onPageChanged: (pageAction) async {
-                      setState(() {
-                        currentDisplayBoardIdx = list.indexOf(list.firstWhere(
-                            (element) => element.boardId == item.boardId));
-                      });
-
                       switch (pageAction) {
                         case PageAction.next:
-                          await _moveNext();
+                          if (controller.positions.isEmpty) return;
+                          if (controller.page!.toInt() < list.length - 1) {
+                            _moveNext();
+                          }
                         case PageAction.previous:
-                          await _movePrevious();
+                          if (controller.positions.isEmpty ||
+                              controller.page!.toInt() == 0) return;
+                          _movePrevious();
                       }
                     },
                   ),
@@ -138,17 +137,19 @@ class _BoardScreenState extends ConsumerState<BoardScreen> {
   }
 
   Future<void> _moveNext() async {
-    if (controller.position.pixels < controller.position.maxScrollExtent) {
-      await controller.animateTo(controller.position.pixels + 20,
-          duration: const Duration(milliseconds: 1), curve: Curves.linear);
-    }
+    controller.animateToPage(
+      controller.page!.toInt() + 1,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+    );
   }
 
   Future<void> _movePrevious() async {
-    if (controller.position.pixels != 0) {
-      await controller.animateTo(controller.position.pixels - 20,
-          duration: const Duration(milliseconds: 1), curve: Curves.linear);
-    }
+    controller.animateToPage(
+      controller.page!.toInt() - 1,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeOut,
+    );
   }
 
   void _moveLastPage() {
