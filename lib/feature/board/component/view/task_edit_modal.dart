@@ -14,6 +14,8 @@ const _kTaskItemEndDateHintTxt = '期日を入力';
 const _kLabelTxt = 'ラベル';
 const _kLabelHintTxt = 'ラベルを設定';
 
+final _logger = stairsLogger(name: 'task_edit_modal');
+
 /// タスク編集モーダル
 class TaskEditModal extends ConsumerWidget {
   const TaskEditModal({
@@ -31,22 +33,26 @@ class TaskEditModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    _logger.d('===================================');
+    _logger.d('ビルド開始 {board_title:${taskItem.title}}');
     final taskItemState =
         ref.watch(taskItemProvider(taskItemId: taskItem.taskItemId));
+
     final taskItemNotifier =
         ref.watch(taskItemProvider(taskItemId: taskItem.taskItemId).notifier);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (taskItemState.title.isEmpty) {
-        taskItemNotifier.setItem(
-          boardId: taskItem.boardId,
-          title: taskItem.title,
-          description: taskItem.description,
-          startDate: taskItem.startDate,
-          dueDate: taskItem.dueDate,
-          labelList: taskItem.labelList,
-        );
-      }
-    });
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if (taskItemState.title.isEmpty) {
+    //     taskItemNotifier.setItem(
+    //       boardId: taskItem.boardId,
+    //       title: taskItem.title,
+    //       description: taskItem.description,
+    //       startDate: taskItem.startDate,
+    //       dueDate: taskItem.dueDate,
+    //       labelList: taskItem.labelList,
+    //     );
+    //   }
+    // });
 
     final theme = LoomTheme.of(context);
     final titleTxtController = TextEditingController(text: taskItemState.title);
@@ -84,7 +90,7 @@ class TaskEditModal extends ConsumerWidget {
             hintText: _kTaskItemStartDateHintTxt,
             itemList: [
               Text(
-                _getFormattedDate(taskItemState.startDate),
+                getFormattedDate(taskItemState.startDate),
                 style: theme.textStyleBody,
               )
             ],
@@ -123,7 +129,7 @@ class TaskEditModal extends ConsumerWidget {
             hintText: _kTaskItemEndDateHintTxt,
             itemList: [
               Text(
-                _getFormattedDate(taskItemState.dueDate),
+                getFormattedDate(taskItemState.dueDate),
                 style: theme.textStyleBody,
               )
             ],
@@ -191,6 +197,3 @@ class TaskEditModal extends ConsumerWidget {
     );
   }
 }
-
-String _getFormattedDate(DateTime date) =>
-    '${date.year}/${date.month}/${date.day}';

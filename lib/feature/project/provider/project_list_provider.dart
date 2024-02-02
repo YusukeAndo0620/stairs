@@ -8,7 +8,7 @@ part 'project_list_provider.g.dart';
 
 @riverpod
 class ProjectList extends _$ProjectList {
-  final _logger = stairsLogger(name: 'project_list');
+  final _logger = stairsLogger(name: 'project_list_provider');
 
   @override
   FutureOr<List<ProjectListItemModel>> build() async {

@@ -13,7 +13,7 @@ ProjectDetailModel? _initialProjectDetailModel;
 
 @riverpod
 class ProjectDetail extends _$ProjectDetail {
-  final _logger = stairsLogger(name: 'project_detail');
+  final _logger = stairsLogger(name: 'project_detail_provider');
 
   @override
   FutureOr<ProjectDetailModel?> build({required String projectId}) async {

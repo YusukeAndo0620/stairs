@@ -1,88 +1,95 @@
-import 'package:stairs/feature/board/component/provider/carousel_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'dart:async';
+const _kIndicatorSpaceWidth = 12.0;
+const _kIndicatorSize = 10.0;
 
-const _kCircleWidth = 12.0;
-const _kCircleHeight = 12.0;
-
-class CarouselDisplay extends ConsumerWidget {
+class CarouselDisplay extends StatelessWidget {
   const CarouselDisplay({
     Key? key,
-    required this.pages,
+    required this.displayedWidgetIdx,
+    required this.widgets,
+    required this.controller,
     this.indicatorColor,
-    this.indicatorAlignment,
   }) : super(key: key);
-  final List<Widget> pages;
+  final int displayedWidgetIdx;
+  final List<Widget> widgets;
+  final ScrollController controller;
   final Color? indicatorColor;
-  final Alignment? indicatorAlignment;
-
-  /// Used to trigger an event when the widget has been built
-  Future<bool> initializeController() {
-    Completer<bool> completer = Completer<bool>();
-
-    /// Callback called after widget has been fully built
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      completer.complete(true);
-    });
-
-    return completer.future;
-  }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
+    final spaceWidth = MediaQuery.of(context).size.width * 0.05;
     final color = indicatorColor ?? theme.colorDisabled;
 
-    final carouselDisplayState = ref.watch(carouselProvider);
-    final carouselDisplayNotifier = ref.watch(carouselProvider.notifier);
-
-    return Stack(
-      fit: StackFit.loose,
-      alignment: Alignment.center,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        PageView(
-          controller: carouselDisplayState.pageController,
-          onPageChanged: (index) =>
-              carouselDisplayNotifier.updatePageIndex(pageIndex: index),
-          children: pages,
-        ),
-        FutureBuilder(
-          future: initializeController(),
-          builder: (BuildContext context, AsyncSnapshot<void> snap) {
-            //If we do not have data as we wait for the future to complete,
-            //show any widget, eg. empty Container
-            if (!snap.hasData) {
-              return Container();
-            }
-            return Align(
-              alignment: indicatorAlignment ??
-                  const Alignment(0, 0.95), // 相対的な表示位置を決める。
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  pages.length,
-                  (index) {
-                    return Container(
-                      margin: const EdgeInsets.all(4),
-                      width: _kCircleWidth,
-                      height: _kCircleHeight,
-                      decoration: BoxDecoration(
-                        color: index == carouselDisplayState.currentPage
-                            ? color
-                            : null,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: color),
-                      ),
-                    );
-                  },
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          controller: controller,
+          child: Row(
+            children: [
+              if (widgets.length == 1)
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: widgets[0],
+                )
+              else ...[
+                SizedBox(
+                  width: spaceWidth * 3,
                 ),
-              ),
-            );
-          },
+                for (final item in widgets) ...[
+                  item,
+                  SizedBox(
+                    width: spaceWidth,
+                  ),
+                ]
+              ],
+              if (widgets.length != 1)
+                SizedBox(
+                  width: spaceWidth * 2,
+                ),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (int i = 0; i < widgets.length; i++) ...[
+                _Indicator(
+                  indicatorColor:
+                      i == displayedWidgetIdx ? color : theme.colorFgDisabled,
+                ),
+                if (i != widgets.length - 1)
+                  const SizedBox(
+                    width: _kIndicatorSpaceWidth,
+                  ),
+              ]
+            ],
+          ),
         ),
       ],
+    );
+  }
+}
+
+class _Indicator extends StatelessWidget {
+  const _Indicator({
+    Key? key,
+    this.indicatorColor,
+  }) : super(key: key);
+  final Color? indicatorColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = LoomTheme.of(context);
+    final color = indicatorColor ?? theme.colorDisabled;
+    return ColorBox(
+      color: color,
+      size: _kIndicatorSize,
     );
   }
 }

@@ -1,11 +1,9 @@
 import 'package:stairs/db/provider/database_provider.dart';
 import 'package:stairs/feature/board/component/provider/board_position_provider.dart';
-import 'package:stairs/feature/board/component/provider/carousel_provider.dart';
 import 'package:stairs/feature/board/component/view/board_adding_card.dart';
 import 'package:stairs/feature/board/component/view/board_card.dart';
 import 'package:stairs/feature/board/component/view/carousel_display.dart';
 import 'package:stairs/feature/board/provider/board_provider.dart';
-import 'package:stairs/feature/board/provider/drag_item_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,7 +14,7 @@ enum PageAction {
 
 final _logger = stairsLogger(name: 'board_screen');
 
-class BoardScreen extends ConsumerWidget {
+class BoardScreen extends ConsumerStatefulWidget {
   const BoardScreen({
     super.key,
     required this.projectId,
@@ -31,36 +29,42 @@ class BoardScreen extends ConsumerWidget {
   final Color themeColor;
   final List<LabelWithContent> devLangList;
   final List<ColorLabelModel> labelList;
+  @override
+  ConsumerState<BoardScreen> createState() => _BoardScreenState();
+}
+
+class _BoardScreenState extends ConsumerState<BoardScreen> {
+  int currentDisplayBoardIdx = 0;
+  final ScrollController controller = ScrollController();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    _logger.d('==== ビルド開始 {project_title:$title} ====');
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _logger.d('===================================');
+    _logger.d('ビルド開始 {project_title:${widget.title}}');
+    final theme = LoomTheme.of(context);
 
     // ボード
     final boardState = ref.watch(boardProvider(
-        projectId: projectId, database: ref.watch(databaseProvider)));
-    final boardNotifier = ref.watch(boardProvider(
-            projectId: projectId, database: ref.watch(databaseProvider))
-        .notifier);
-
-    // ドラッグアイテム
-    final dragItemNotifier = ref.watch(dragItemProvider.notifier);
-
-    // Carousel Display
-    final carouselDisplayNotifier = ref.watch(carouselProvider.notifier);
+        projectId: widget.projectId, database: ref.watch(databaseProvider)));
 
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
         // ポジション
-        final positionNotifier = ref.watch(boardPositionProvider.notifier);
-        positionNotifier.init(projectId: projectId);
-        if (boardState.value != null) {
-          carouselDisplayNotifier.init(maxPage: boardState.value!.length);
-        }
+        final positionNotifier = ref.read(boardPositionProvider.notifier);
+        positionNotifier.init(projectId: widget.projectId);
       },
     );
 
-    final theme = LoomTheme.of(context);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -72,61 +76,53 @@ class BoardScreen extends ConsumerWidget {
         ),
         backgroundColor: theme.colorBgLayer1,
         title: Text(
-          title,
+          widget.title,
           style: theme.textStyleSubHeading
               .copyWith(color: theme.colorFgDefault.withOpacity(0.9)),
         ),
       ),
       body: Container(
-        color: themeColor.withOpacity(0.1),
+        width: MediaQuery.of(context).size.width,
+        color: widget.themeColor.withOpacity(0.1),
         child: boardState.when(
           data: (list) {
             return CarouselDisplay(
-              pages: [
+              displayedWidgetIdx: currentDisplayBoardIdx,
+              controller: controller,
+              widgets: [
                 for (final item in list)
                   BoardCard(
-                    projectId: projectId,
+                    projectId: widget.projectId,
                     boardId: item.boardId,
                     title: item.title,
-                    themeColor: themeColor,
+                    themeColor: widget.themeColor,
                     taskItemList: item.taskItemList,
-                    devLangList: devLangList,
-                    labelList: labelList,
-                    onPageChanged: (pageAction) {
-                      final carouselDisplayState = ref.watch(carouselProvider);
-                      //すでにページ番号が更新されていた場合、処理を行わない
-                      if (list[carouselDisplayState.currentPage].boardId !=
-                          item.boardId) {
-                        return;
-                      }
-                      final currentBoardIdIndex = list.indexOf(list.firstWhere(
-                          (element) => element.boardId == item.boardId));
+                    devLangList: widget.devLangList,
+                    labelList: widget.labelList,
+                    onPageChanged: (pageAction) async {
+                      setState(() {
+                        currentDisplayBoardIdx = list.indexOf(list.firstWhere(
+                            (element) => element.boardId == item.boardId));
+                      });
 
                       switch (pageAction) {
                         case PageAction.next:
-                          if (carouselDisplayState.currentPage <
-                              list.length - 1) {
-                            carouselDisplayNotifier.moveNextPage();
-                            dragItemNotifier.setItem(
-                              boardId: list[currentBoardIdIndex + 1].boardId,
-                            );
-                          }
+                          await _moveNext();
                         case PageAction.previous:
-                          if (carouselDisplayState.currentPage > 0) {
-                            carouselDisplayNotifier.movePreviousPage();
-                            dragItemNotifier.setItem(
-                              boardId: list[currentBoardIdIndex - 1].boardId,
-                            );
-                          }
+                          await _movePrevious();
                       }
                     },
                   ),
                 BoardAddingCard(
-                  themeColor: themeColor,
-                  onOpenCard: () => carouselDisplayNotifier.moveLastPage(),
+                  themeColor: widget.themeColor,
+                  onOpenCard: () => _moveLastPage(),
                   onTapAddingBtn: (inputValue) {
+                    final boardNotifier = ref.watch(boardProvider(
+                            projectId: widget.projectId,
+                            database: ref.watch(databaseProvider))
+                        .notifier);
                     boardNotifier.addBoard(
-                        projectId: projectId, title: inputValue);
+                        projectId: widget.projectId, title: inputValue);
                   },
                 ),
               ],
@@ -139,5 +135,24 @@ class BoardScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _moveNext() async {
+    if (controller.position.pixels < controller.position.maxScrollExtent) {
+      await controller.animateTo(controller.position.pixels + 20,
+          duration: const Duration(milliseconds: 1), curve: Curves.linear);
+    }
+  }
+
+  Future<void> _movePrevious() async {
+    if (controller.position.pixels != 0) {
+      await controller.animateTo(controller.position.pixels - 20,
+          duration: const Duration(milliseconds: 1), curve: Curves.linear);
+    }
+  }
+
+  void _moveLastPage() {
+    controller.animateTo(controller.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300), curve: Curves.linear);
   }
 }

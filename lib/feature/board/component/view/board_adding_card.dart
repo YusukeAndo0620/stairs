@@ -13,12 +13,6 @@ const _kCancelBtnTxt = 'キャンセル';
 const _kAddBtnTxt = '追加';
 
 const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
-const _kContentMargin = EdgeInsets.only(
-  top: 200,
-  bottom: 200.0,
-  left: 16.0,
-  right: 40.0,
-);
 
 ///ボード追加カード画面
 class BoardAddingCard extends StatefulWidget {
@@ -37,7 +31,10 @@ class BoardAddingCard extends StatefulWidget {
 }
 
 class _BoardAddingCardState extends State<BoardAddingCard> {
-  bool _isAddedNewCard = false;
+  // 新規ボード入力画面 表示状態
+  bool _isNewBoardCardShown = false;
+  // 新規ボードが追加されたかどうか
+  bool _isNewBoardAdded = false;
   final textController = TextEditingController(text: '');
 
   @override
@@ -52,54 +49,67 @@ class _BoardAddingCardState extends State<BoardAddingCard> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isNewBoardAdded) {
+      setState(() {
+        textController.text = '';
+        _isNewBoardAdded = false;
+      });
+    }
+
     final theme = LoomTheme.of(context);
-    return _isAddedNewCard
-        ? Container(
-            padding: _kContentPadding,
-            margin: _kContentMargin,
-            decoration: BoxDecoration(
-              color: theme.colorFgDefaultWhite,
-              border: Border.all(
-                color: theme.colorFgDisabled,
-                width: _kBorderWidth,
+    return Container(
+      alignment: Alignment.center,
+      width: MediaQuery.of(context).size.width * 0.7,
+      height: MediaQuery.of(context).size.height * 0.8,
+      padding: _kContentPadding,
+      child: _isNewBoardCardShown
+          ? Container(
+              height: MediaQuery.of(context).size.height * 0.4,
+              padding: _kContentPadding,
+              decoration: BoxDecoration(
+                color: theme.colorFgDefaultWhite,
+                border: Border.all(
+                  color: theme.colorFgDisabled,
+                  width: _kBorderWidth,
+                ),
               ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextInput(
-                  textController: textController,
-                  hintText: _kAddingTitleHintTxt,
-                  maxLength: _kMaxLength,
-                  autoFocus: true,
-                  onSubmitted: (value) {},
-                ),
-                const SizedBox(
-                  height: _kInputTextAndButtonSpace,
-                ),
-                _FooterButtonArea(
-                  key: widget.key,
-                  themeColor: widget.themeColor,
-                  disabled: false,
-                  onTapAdd: () {
-                    setState(
-                      () {
-                        _isAddedNewCard = false;
-                      },
-                    );
-                    widget.onTapAddingBtn(textController.text);
-                  },
-                  onTapCancel: () => setState(
-                    () {
-                      _isAddedNewCard = false;
-                    },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextInput(
+                    textController: textController,
+                    hintText: _kAddingTitleHintTxt,
+                    maxLength: _kMaxLength,
+                    autoFocus: true,
+                    onSubmitted: (value) {},
                   ),
-                )
-              ],
-            ),
-          )
-        : Align(
-            child: CustomTextButton(
+                  const SizedBox(
+                    height: _kInputTextAndButtonSpace,
+                  ),
+                  _FooterButtonArea(
+                    key: widget.key,
+                    themeColor: widget.themeColor,
+                    disabled: false,
+                    onTapAdd: () {
+                      setState(
+                        () {
+                          _isNewBoardCardShown = false;
+                          _isNewBoardAdded = true;
+                        },
+                      );
+                      widget.onTapAddingBtn(textController.text);
+                    },
+                    onTapCancel: () => setState(
+                      () {
+                        _isNewBoardCardShown = false;
+                      },
+                    ),
+                  )
+                ],
+              ),
+            )
+          : CustomTextButton(
               title: _kAddingTitleTxt,
               height: _kAddingButtonHeight,
               icon: Icon(
@@ -112,12 +122,12 @@ class _BoardAddingCardState extends State<BoardAddingCard> {
                 widget.onOpenCard();
                 setState(
                   () {
-                    _isAddedNewCard = true;
+                    _isNewBoardCardShown = true;
                   },
                 );
               },
             ),
-          );
+    );
   }
 }
 

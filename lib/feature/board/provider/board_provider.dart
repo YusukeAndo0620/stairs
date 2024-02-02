@@ -11,12 +11,11 @@ part 'board_provider.g.dart';
 
 @riverpod
 class Board extends _$Board {
-  final _logger = stairsLogger(name: 'board');
+  final _logger = stairsLogger(name: 'board_provider');
 
   @override
   FutureOr<List<BoardModel>> build(
       {required String projectId, required StairsDatabase database}) async {
-    _logger.d('=== build実施 ===');
     return getList(projectId: projectId, database: database);
   }
 
@@ -69,7 +68,7 @@ class Board extends _$Board {
 
   Future<List<BoardModel>> getList(
       {required String projectId, required StairsDatabase database}) async {
-    _logger.d('=== ボード一覧取得 projectId: $projectId ===');
+    _logger.d('ボード一覧取得 projectId: $projectId');
     // Repository(APIの取得)の状態を管理する
     final boardRepositoryProvider =
         Provider((ref) => BoardRepository(db: database));
@@ -245,8 +244,8 @@ class Board extends _$Board {
     required String insertingBoardId,
     required int insertingTaskIndex,
   }) async {
-    _logger.d("=== ShrinkItem  置換処理実施 ===");
-    _logger.d("対象ボードID: $insertingBoardId");
+    _logger.d("[ShrinkItem置換]");
+    _logger.d("対象board id: $insertingBoardId");
     _logger.d("タスクアイテム挿入位置: $insertingTaskIndex");
     var targetList = _getCopiedList();
     // 追加するshrink item
@@ -332,7 +331,7 @@ class Board extends _$Board {
   Future<void> replaceDraggedItem({
     required TaskItemModel draggingItem,
   }) async {
-    _logger.d("=== DragItem置き換え実施 ===");
+    _logger.d("DragItem置き換え実施 {task item title: ${draggingItem.title}}");
 
     var targetList = _getCopiedList();
 

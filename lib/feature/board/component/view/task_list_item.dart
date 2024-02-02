@@ -19,8 +19,8 @@ const _kContentMargin = EdgeInsets.symmetric(vertical: 4.0);
 final _logger = stairsLogger(name: 'task_list_item');
 
 ///ワークボードのカード内リストアイテム（ドラッグ可能）
-class TaskListItem extends ConsumerStatefulWidget {
-  const TaskListItem({
+class TaskListItem extends ConsumerWidget {
+  TaskListItem({
     super.key,
     required this.boardId,
     required this.taskItemId,
@@ -47,51 +47,35 @@ class TaskListItem extends ConsumerStatefulWidget {
   final Function(Velocity, Offset) onDraggableCanceled;
   final VoidCallback onDragCompleted;
   final Function(DraggableDetails) onDragEnd;
+  final itemKey = GlobalKey();
 
   @override
-  ConsumerState<TaskListItem> createState() => _TaskListItemState();
-}
-
-class _TaskListItemState extends ConsumerState<TaskListItem> {
-  final itemKey = GlobalKey<_TaskListItemState>();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _logger.d('==== ビルド開始 {task_title:${widget.title}} ====');
+  Widget build(BuildContext context, WidgetRef ref) {
+    _logger.d('===================================');
+    _logger.d('ビルド開始 {task_title:$title}');
 
     final taskItemState = ref.watch(
       TaskItemProvider(
-        taskItemId: widget.taskItemId,
+        taskItemId: taskItemId,
       ),
     );
-    final taskItemNotifier = ref.watch(TaskItemProvider(
-      taskItemId: widget.taskItemId,
-    ).notifier);
-
-    // ポジション
-    final positionNotifier = ref.watch(boardPositionProvider.notifier);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // ポジション
+      final positionNotifier = ref.read(boardPositionProvider.notifier);
       positionNotifier.setTaskItemPosition(
-        taskItemId: widget.taskItemId,
+        taskItemId: taskItemId,
         key: itemKey,
       );
       if (taskItemState.title.isEmpty) {
+        final taskItemNotifier = ref.read(TaskItemProvider(
+          taskItemId: taskItemId,
+        ).notifier);
         taskItemNotifier.setItem(
-          boardId: widget.boardId,
-          title: widget.title,
-          dueDate: widget.dueDate,
-          labelList: widget.labelList,
+          boardId: boardId,
+          title: title,
+          dueDate: dueDate,
+          labelList: labelList,
         );
       }
     });
@@ -100,31 +84,31 @@ class _TaskListItemState extends ConsumerState<TaskListItem> {
     return Draggable<String>(
       key: ValueKey(taskItemState.taskItemId),
       data: taskItemState.taskItemId,
-      onDragStarted: widget.onDragStarted,
-      onDragUpdate: (detail) => widget.onDragUpdate(detail),
-      onDragCompleted: () => widget.onDragCompleted,
-      onDragEnd: (details) => widget.onDragEnd,
+      onDragStarted: onDragStarted,
+      onDragUpdate: (detail) => onDragUpdate(detail),
+      onDragCompleted: () => onDragCompleted,
+      onDragEnd: (details) => onDragEnd,
       onDraggableCanceled: (velocity, offset) =>
-          widget.onDraggableCanceled(velocity, offset),
+          onDraggableCanceled(velocity, offset),
       feedback: _DraggingListItem(
         key: ValueKey(taskItemState.taskItemId),
         title: taskItemState.title,
-        themeColor: widget.themeColor,
+        themeColor: themeColor,
         dueDate: taskItemState.dueDate,
         labelList: taskItemState.labelList,
       ).testSelector('task_list_item_drag_item'),
       child: TapAction(
         key: itemKey,
         width: double.infinity,
-        tappedColor: widget.themeColor.withOpacity(0.7),
+        tappedColor: themeColor.withOpacity(0.7),
         margin: _kContentMargin,
         padding: _kContentPadding,
         border: Border.all(
-          color: widget.themeColor,
+          color: themeColor,
           width: _kBorderWidth,
         ),
         borderRadius: BorderRadius.circular(5.0),
-        onTap: () => widget.onTap(taskItemState),
+        onTap: () => onTap(taskItemState),
         widget: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +124,7 @@ class _TaskListItemState extends ConsumerState<TaskListItem> {
             ),
             _LabelArea(
               key: ValueKey(taskItemState.taskItemId),
-              themeColor: widget.themeColor,
+              themeColor: themeColor,
               dueDate: taskItemState.dueDate,
               labelList: taskItemState.labelList,
             )

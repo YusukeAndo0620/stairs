@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 const _kItemHeight = 120.0;
 
+final _logger = stairsLogger(name: 'shrink_list_item');
+
 class ShrinkTaskListItem extends ConsumerWidget {
   const ShrinkTaskListItem({
     super.key,
@@ -13,12 +15,16 @@ class ShrinkTaskListItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    _logger.d('===================================');
+    _logger.d('ビルド開始');
     final itemKey = GlobalKey();
     final theme = LoomTheme.of(context);
 
     // ポジション
     final positionNotifier = ref.watch(boardPositionProvider.notifier);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _logger.d('shrink item: position更新');
       positionNotifier.setTaskItemPosition(
         taskItemId: taskItemId,
         key: itemKey,

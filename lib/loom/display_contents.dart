@@ -1,6 +1,7 @@
 import 'package:stairs/db/provider/database_provider.dart';
 import 'package:stairs/feature/common/provider/account_provider.dart';
 import 'package:stairs/feature/project/view/project_screen.dart';
+import 'package:stairs/feature/status/view/status_screen.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
@@ -17,7 +18,7 @@ const _kFooterButtons = [
   _FooterInfo(
     screenId: ScreenId.status,
     title: 'ステータス',
-    buildWidget: SizedBox(),
+    buildWidget: StatusScreen(),
   ),
   _FooterInfo(
     screenId: ScreenId.resume,
@@ -57,7 +58,7 @@ class _DisplayContentsState extends ConsumerState<DisplayContents> {
 
   @override
   Widget build(BuildContext context) {
-    _logger.i('=== 画面表示 selectedScreenId: $selectedScreenId ===');
+    _logger.i('画面表示 {selectedScreenId: $selectedScreenId}');
 
     final theme = LoomTheme.of(context);
     // アカウント情報取得
