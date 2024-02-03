@@ -47,13 +47,9 @@ class CommonRepository {
       {required String accountId}) async {
     try {
       _logger.i('getDevLanguageList 通信開始');
-      final mDevLangList = await db.mDevLangDao.getDevLangList();
       final tDevLangList =
           await db.tDevLangDao.getDevLangList(accountId: accountId);
       List<LabelModel> responseData = [];
-      for (final item in mDevLangList) {
-        responseData.add(LabelModel(id: item.devLangId, labelName: item.name));
-      }
       for (final item in tDevLangList) {
         responseData.add(LabelModel(id: item.devLangId, labelName: item.name));
       }

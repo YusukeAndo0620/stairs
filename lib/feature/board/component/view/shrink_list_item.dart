@@ -2,7 +2,7 @@ import 'package:stairs/feature/board/component/provider/board_position_provider.
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const _kItemHeight = 120.0;
+const _kItemHeight = 100.0;
 
 final _logger = stairsLogger(name: 'shrink_list_item');
 

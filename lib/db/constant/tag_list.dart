@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:stairs/db/database.dart';
 
-final dummyTagList = [
+final defaultTagList = [
  const TTagCompanion(
     name: Value('要件定義'),
     colorId:  Value(1),

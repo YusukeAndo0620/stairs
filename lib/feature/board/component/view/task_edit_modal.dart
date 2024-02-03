@@ -41,23 +41,11 @@ class TaskEditModal extends ConsumerWidget {
     final taskItemNotifier =
         ref.watch(taskItemProvider(taskItemId: taskItem.taskItemId).notifier);
 
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   if (taskItemState.title.isEmpty) {
-    //     taskItemNotifier.setItem(
-    //       boardId: taskItem.boardId,
-    //       title: taskItem.title,
-    //       description: taskItem.description,
-    //       startDate: taskItem.startDate,
-    //       dueDate: taskItem.dueDate,
-    //       labelList: taskItem.labelList,
-    //     );
-    //   }
-    // });
-
     final theme = LoomTheme.of(context);
     final titleTxtController = TextEditingController(text: taskItemState.title);
 
     return Modal(
+      height: MediaQuery.of(context).size.height * 0.7,
       onClose: onChangeTaskItem(taskItemState),
       buildMainContent: Column(
         mainAxisAlignment: MainAxisAlignment.start,

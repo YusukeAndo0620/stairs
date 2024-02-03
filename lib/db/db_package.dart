@@ -1,7 +1,6 @@
 // model
 export 'model/m_color.dart';
 export 'model/m_account.dart';
-export 'model/m_dev_language.dart';
 export 'model/m_dev_progress_list.dart';
 
 export 'model/t_dev_language.dart';

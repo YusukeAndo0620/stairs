@@ -561,317 +561,6 @@ class MAccountCompanion extends UpdateCompanion<MAccountData> {
   }
 }
 
-class $MDevLanguageTable extends MDevLanguage
-    with TableInfo<$MDevLanguageTable, MDevLanguageData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $MDevLanguageTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _devLangIdMeta =
-      const VerificationMeta('devLangId');
-  @override
-  late final GeneratedColumn<String> devLangId = GeneratedColumn<String>(
-      'dev_lang_id', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  static const VerificationMeta _isReadOnlyMeta =
-      const VerificationMeta('isReadOnly');
-  @override
-  late final GeneratedColumn<bool> isReadOnly = GeneratedColumn<bool>(
-      'is_read_only', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_read_only" IN (0, 1))'),
-      defaultValue: const Constant(true));
-  static const VerificationMeta _createAtMeta =
-      const VerificationMeta('createAt');
-  @override
-  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
-      'create_at', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      clientDefault: () => DateTime.now().toIso8601String());
-  static const VerificationMeta _updateAtMeta =
-      const VerificationMeta('updateAt');
-  @override
-  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
-      'update_at', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      clientDefault: () => DateTime.now().toIso8601String());
-  @override
-  List<GeneratedColumn> get $columns =>
-      [devLangId, name, isReadOnly, createAt, updateAt];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'm_dev_language';
-  @override
-  VerificationContext validateIntegrity(Insertable<MDevLanguageData> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('dev_lang_id')) {
-      context.handle(
-          _devLangIdMeta,
-          devLangId.isAcceptableOrUnknown(
-              data['dev_lang_id']!, _devLangIdMeta));
-    } else if (isInserting) {
-      context.missing(_devLangIdMeta);
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('is_read_only')) {
-      context.handle(
-          _isReadOnlyMeta,
-          isReadOnly.isAcceptableOrUnknown(
-              data['is_read_only']!, _isReadOnlyMeta));
-    }
-    if (data.containsKey('create_at')) {
-      context.handle(_createAtMeta,
-          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
-    }
-    if (data.containsKey('update_at')) {
-      context.handle(_updateAtMeta,
-          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {devLangId};
-  @override
-  MDevLanguageData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return MDevLanguageData(
-      devLangId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}dev_lang_id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      isReadOnly: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_read_only'])!,
-      createAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
-      updateAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
-    );
-  }
-
-  @override
-  $MDevLanguageTable createAlias(String alias) {
-    return $MDevLanguageTable(attachedDatabase, alias);
-  }
-}
-
-class MDevLanguageData extends DataClass
-    implements Insertable<MDevLanguageData> {
-  final String devLangId;
-  final String name;
-  final bool isReadOnly;
-  final String createAt;
-  final String updateAt;
-  const MDevLanguageData(
-      {required this.devLangId,
-      required this.name,
-      required this.isReadOnly,
-      required this.createAt,
-      required this.updateAt});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['dev_lang_id'] = Variable<String>(devLangId);
-    map['name'] = Variable<String>(name);
-    map['is_read_only'] = Variable<bool>(isReadOnly);
-    map['create_at'] = Variable<String>(createAt);
-    map['update_at'] = Variable<String>(updateAt);
-    return map;
-  }
-
-  MDevLanguageCompanion toCompanion(bool nullToAbsent) {
-    return MDevLanguageCompanion(
-      devLangId: Value(devLangId),
-      name: Value(name),
-      isReadOnly: Value(isReadOnly),
-      createAt: Value(createAt),
-      updateAt: Value(updateAt),
-    );
-  }
-
-  factory MDevLanguageData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return MDevLanguageData(
-      devLangId: serializer.fromJson<String>(json['devLangId']),
-      name: serializer.fromJson<String>(json['name']),
-      isReadOnly: serializer.fromJson<bool>(json['isReadOnly']),
-      createAt: serializer.fromJson<String>(json['createAt']),
-      updateAt: serializer.fromJson<String>(json['updateAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'devLangId': serializer.toJson<String>(devLangId),
-      'name': serializer.toJson<String>(name),
-      'isReadOnly': serializer.toJson<bool>(isReadOnly),
-      'createAt': serializer.toJson<String>(createAt),
-      'updateAt': serializer.toJson<String>(updateAt),
-    };
-  }
-
-  MDevLanguageData copyWith(
-          {String? devLangId,
-          String? name,
-          bool? isReadOnly,
-          String? createAt,
-          String? updateAt}) =>
-      MDevLanguageData(
-        devLangId: devLangId ?? this.devLangId,
-        name: name ?? this.name,
-        isReadOnly: isReadOnly ?? this.isReadOnly,
-        createAt: createAt ?? this.createAt,
-        updateAt: updateAt ?? this.updateAt,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('MDevLanguageData(')
-          ..write('devLangId: $devLangId, ')
-          ..write('name: $name, ')
-          ..write('isReadOnly: $isReadOnly, ')
-          ..write('createAt: $createAt, ')
-          ..write('updateAt: $updateAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(devLangId, name, isReadOnly, createAt, updateAt);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is MDevLanguageData &&
-          other.devLangId == this.devLangId &&
-          other.name == this.name &&
-          other.isReadOnly == this.isReadOnly &&
-          other.createAt == this.createAt &&
-          other.updateAt == this.updateAt);
-}
-
-class MDevLanguageCompanion extends UpdateCompanion<MDevLanguageData> {
-  final Value<String> devLangId;
-  final Value<String> name;
-  final Value<bool> isReadOnly;
-  final Value<String> createAt;
-  final Value<String> updateAt;
-  final Value<int> rowid;
-  const MDevLanguageCompanion({
-    this.devLangId = const Value.absent(),
-    this.name = const Value.absent(),
-    this.isReadOnly = const Value.absent(),
-    this.createAt = const Value.absent(),
-    this.updateAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  MDevLanguageCompanion.insert({
-    required String devLangId,
-    required String name,
-    this.isReadOnly = const Value.absent(),
-    this.createAt = const Value.absent(),
-    this.updateAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  })  : devLangId = Value(devLangId),
-        name = Value(name);
-  static Insertable<MDevLanguageData> custom({
-    Expression<String>? devLangId,
-    Expression<String>? name,
-    Expression<bool>? isReadOnly,
-    Expression<String>? createAt,
-    Expression<String>? updateAt,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (devLangId != null) 'dev_lang_id': devLangId,
-      if (name != null) 'name': name,
-      if (isReadOnly != null) 'is_read_only': isReadOnly,
-      if (createAt != null) 'create_at': createAt,
-      if (updateAt != null) 'update_at': updateAt,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  MDevLanguageCompanion copyWith(
-      {Value<String>? devLangId,
-      Value<String>? name,
-      Value<bool>? isReadOnly,
-      Value<String>? createAt,
-      Value<String>? updateAt,
-      Value<int>? rowid}) {
-    return MDevLanguageCompanion(
-      devLangId: devLangId ?? this.devLangId,
-      name: name ?? this.name,
-      isReadOnly: isReadOnly ?? this.isReadOnly,
-      createAt: createAt ?? this.createAt,
-      updateAt: updateAt ?? this.updateAt,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (devLangId.present) {
-      map['dev_lang_id'] = Variable<String>(devLangId.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (isReadOnly.present) {
-      map['is_read_only'] = Variable<bool>(isReadOnly.value);
-    }
-    if (createAt.present) {
-      map['create_at'] = Variable<String>(createAt.value);
-    }
-    if (updateAt.present) {
-      map['update_at'] = Variable<String>(updateAt.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('MDevLanguageCompanion(')
-          ..write('devLangId: $devLangId, ')
-          ..write('name: $name, ')
-          ..write('isReadOnly: $isReadOnly, ')
-          ..write('createAt: $createAt, ')
-          ..write('updateAt: $updateAt, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $MDevProgressListTable extends MDevProgressList
     with TableInfo<$MDevProgressListTable, MDevProgressListData> {
   @override
@@ -4734,8 +4423,8 @@ class $TTaskTable extends TTask with TableInfo<$TTaskTable, TTaskData> {
       const VerificationMeta('dueDate');
   @override
   late final GeneratedColumn<String> dueDate = GeneratedColumn<String>(
-      'due_date', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      'due_date', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _boardIdMeta =
       const VerificationMeta('boardId');
   @override
@@ -4816,6 +4505,8 @@ class $TTaskTable extends TTask with TableInfo<$TTaskTable, TTaskData> {
     if (data.containsKey('due_date')) {
       context.handle(_dueDateMeta,
           dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta));
+    } else if (isInserting) {
+      context.missing(_dueDateMeta);
     }
     if (data.containsKey('board_id')) {
       context.handle(_boardIdMeta,
@@ -4851,7 +4542,7 @@ class $TTaskTable extends TTask with TableInfo<$TTaskTable, TTaskData> {
       endDate: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}end_date']),
       dueDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}due_date']),
+          .read(DriftSqlType.string, data['${effectivePrefix}due_date'])!,
       boardId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}board_id'])!,
       createAt: attachedDatabase.typeMapping
@@ -4873,7 +4564,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
   final String description;
   final String startDate;
   final String? endDate;
-  final String? dueDate;
+  final String dueDate;
   final String boardId;
   final String createAt;
   final String updateAt;
@@ -4883,7 +4574,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
       required this.description,
       required this.startDate,
       this.endDate,
-      this.dueDate,
+      required this.dueDate,
       required this.boardId,
       required this.createAt,
       required this.updateAt});
@@ -4897,9 +4588,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
     if (!nullToAbsent || endDate != null) {
       map['end_date'] = Variable<String>(endDate);
     }
-    if (!nullToAbsent || dueDate != null) {
-      map['due_date'] = Variable<String>(dueDate);
-    }
+    map['due_date'] = Variable<String>(dueDate);
     map['board_id'] = Variable<String>(boardId);
     map['create_at'] = Variable<String>(createAt);
     map['update_at'] = Variable<String>(updateAt);
@@ -4915,9 +4604,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
       endDate: endDate == null && nullToAbsent
           ? const Value.absent()
           : Value(endDate),
-      dueDate: dueDate == null && nullToAbsent
-          ? const Value.absent()
-          : Value(dueDate),
+      dueDate: Value(dueDate),
       boardId: Value(boardId),
       createAt: Value(createAt),
       updateAt: Value(updateAt),
@@ -4933,7 +4620,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
       description: serializer.fromJson<String>(json['description']),
       startDate: serializer.fromJson<String>(json['startDate']),
       endDate: serializer.fromJson<String?>(json['endDate']),
-      dueDate: serializer.fromJson<String?>(json['dueDate']),
+      dueDate: serializer.fromJson<String>(json['dueDate']),
       boardId: serializer.fromJson<String>(json['boardId']),
       createAt: serializer.fromJson<String>(json['createAt']),
       updateAt: serializer.fromJson<String>(json['updateAt']),
@@ -4948,7 +4635,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
       'description': serializer.toJson<String>(description),
       'startDate': serializer.toJson<String>(startDate),
       'endDate': serializer.toJson<String?>(endDate),
-      'dueDate': serializer.toJson<String?>(dueDate),
+      'dueDate': serializer.toJson<String>(dueDate),
       'boardId': serializer.toJson<String>(boardId),
       'createAt': serializer.toJson<String>(createAt),
       'updateAt': serializer.toJson<String>(updateAt),
@@ -4961,7 +4648,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
           String? description,
           String? startDate,
           Value<String?> endDate = const Value.absent(),
-          Value<String?> dueDate = const Value.absent(),
+          String? dueDate,
           String? boardId,
           String? createAt,
           String? updateAt}) =>
@@ -4971,7 +4658,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
         description: description ?? this.description,
         startDate: startDate ?? this.startDate,
         endDate: endDate.present ? endDate.value : this.endDate,
-        dueDate: dueDate.present ? dueDate.value : this.dueDate,
+        dueDate: dueDate ?? this.dueDate,
         boardId: boardId ?? this.boardId,
         createAt: createAt ?? this.createAt,
         updateAt: updateAt ?? this.updateAt,
@@ -5016,7 +4703,7 @@ class TTaskCompanion extends UpdateCompanion<TTaskData> {
   final Value<String> description;
   final Value<String> startDate;
   final Value<String?> endDate;
-  final Value<String?> dueDate;
+  final Value<String> dueDate;
   final Value<String> boardId;
   final Value<String> createAt;
   final Value<String> updateAt;
@@ -5039,7 +4726,7 @@ class TTaskCompanion extends UpdateCompanion<TTaskData> {
     required String description,
     this.startDate = const Value.absent(),
     this.endDate = const Value.absent(),
-    this.dueDate = const Value.absent(),
+    required String dueDate,
     required String boardId,
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
@@ -5047,6 +4734,7 @@ class TTaskCompanion extends UpdateCompanion<TTaskData> {
   })  : taskId = Value(taskId),
         name = Value(name),
         description = Value(description),
+        dueDate = Value(dueDate),
         boardId = Value(boardId);
   static Insertable<TTaskData> custom({
     Expression<String>? taskId,
@@ -5080,7 +4768,7 @@ class TTaskCompanion extends UpdateCompanion<TTaskData> {
       Value<String>? description,
       Value<String>? startDate,
       Value<String?>? endDate,
-      Value<String?>? dueDate,
+      Value<String>? dueDate,
       Value<String>? boardId,
       Value<String>? createAt,
       Value<String>? updateAt,
@@ -5178,10 +4866,11 @@ class $TTaskTagTable extends TTaskTag
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES t_task (task_id)'));
-  static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
+  static const VerificationMeta _tagRelIdMeta =
+      const VerificationMeta('tagRelId');
   @override
-  late final GeneratedColumn<int> tagId = GeneratedColumn<int>(
-      'tag_id', aliasedName, false,
+  late final GeneratedColumn<int> tagRelId = GeneratedColumn<int>(
+      'tag_rel_id', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
       defaultConstraints:
@@ -5203,7 +4892,8 @@ class $TTaskTagTable extends TTaskTag
       requiredDuringInsert: false,
       clientDefault: () => DateTime.now().toIso8601String());
   @override
-  List<GeneratedColumn> get $columns => [id, taskId, tagId, createAt, updateAt];
+  List<GeneratedColumn> get $columns =>
+      [id, taskId, tagRelId, createAt, updateAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -5223,11 +4913,11 @@ class $TTaskTagTable extends TTaskTag
     } else if (isInserting) {
       context.missing(_taskIdMeta);
     }
-    if (data.containsKey('tag_id')) {
-      context.handle(
-          _tagIdMeta, tagId.isAcceptableOrUnknown(data['tag_id']!, _tagIdMeta));
+    if (data.containsKey('tag_rel_id')) {
+      context.handle(_tagRelIdMeta,
+          tagRelId.isAcceptableOrUnknown(data['tag_rel_id']!, _tagRelIdMeta));
     } else if (isInserting) {
-      context.missing(_tagIdMeta);
+      context.missing(_tagRelIdMeta);
     }
     if (data.containsKey('create_at')) {
       context.handle(_createAtMeta,
@@ -5250,8 +4940,8 @@ class $TTaskTagTable extends TTaskTag
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       taskId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}task_id'])!,
-      tagId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}tag_id'])!,
+      tagRelId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}tag_rel_id'])!,
       createAt: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
       updateAt: attachedDatabase.typeMapping
@@ -5268,13 +4958,13 @@ class $TTaskTagTable extends TTaskTag
 class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
   final int id;
   final String taskId;
-  final int tagId;
+  final int tagRelId;
   final String createAt;
   final String updateAt;
   const TTaskTagData(
       {required this.id,
       required this.taskId,
-      required this.tagId,
+      required this.tagRelId,
       required this.createAt,
       required this.updateAt});
   @override
@@ -5282,7 +4972,7 @@ class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['task_id'] = Variable<String>(taskId);
-    map['tag_id'] = Variable<int>(tagId);
+    map['tag_rel_id'] = Variable<int>(tagRelId);
     map['create_at'] = Variable<String>(createAt);
     map['update_at'] = Variable<String>(updateAt);
     return map;
@@ -5292,7 +4982,7 @@ class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
     return TTaskTagCompanion(
       id: Value(id),
       taskId: Value(taskId),
-      tagId: Value(tagId),
+      tagRelId: Value(tagRelId),
       createAt: Value(createAt),
       updateAt: Value(updateAt),
     );
@@ -5304,7 +4994,7 @@ class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
     return TTaskTagData(
       id: serializer.fromJson<int>(json['id']),
       taskId: serializer.fromJson<String>(json['taskId']),
-      tagId: serializer.fromJson<int>(json['tagId']),
+      tagRelId: serializer.fromJson<int>(json['tagRelId']),
       createAt: serializer.fromJson<String>(json['createAt']),
       updateAt: serializer.fromJson<String>(json['updateAt']),
     );
@@ -5315,7 +5005,7 @@ class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'taskId': serializer.toJson<String>(taskId),
-      'tagId': serializer.toJson<int>(tagId),
+      'tagRelId': serializer.toJson<int>(tagRelId),
       'createAt': serializer.toJson<String>(createAt),
       'updateAt': serializer.toJson<String>(updateAt),
     };
@@ -5324,13 +5014,13 @@ class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
   TTaskTagData copyWith(
           {int? id,
           String? taskId,
-          int? tagId,
+          int? tagRelId,
           String? createAt,
           String? updateAt}) =>
       TTaskTagData(
         id: id ?? this.id,
         taskId: taskId ?? this.taskId,
-        tagId: tagId ?? this.tagId,
+        tagRelId: tagRelId ?? this.tagRelId,
         createAt: createAt ?? this.createAt,
         updateAt: updateAt ?? this.updateAt,
       );
@@ -5339,7 +5029,7 @@ class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
     return (StringBuffer('TTaskTagData(')
           ..write('id: $id, ')
           ..write('taskId: $taskId, ')
-          ..write('tagId: $tagId, ')
+          ..write('tagRelId: $tagRelId, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
           ..write(')'))
@@ -5347,14 +5037,14 @@ class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
   }
 
   @override
-  int get hashCode => Object.hash(id, taskId, tagId, createAt, updateAt);
+  int get hashCode => Object.hash(id, taskId, tagRelId, createAt, updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TTaskTagData &&
           other.id == this.id &&
           other.taskId == this.taskId &&
-          other.tagId == this.tagId &&
+          other.tagRelId == this.tagRelId &&
           other.createAt == this.createAt &&
           other.updateAt == this.updateAt);
 }
@@ -5362,35 +5052,35 @@ class TTaskTagData extends DataClass implements Insertable<TTaskTagData> {
 class TTaskTagCompanion extends UpdateCompanion<TTaskTagData> {
   final Value<int> id;
   final Value<String> taskId;
-  final Value<int> tagId;
+  final Value<int> tagRelId;
   final Value<String> createAt;
   final Value<String> updateAt;
   const TTaskTagCompanion({
     this.id = const Value.absent(),
     this.taskId = const Value.absent(),
-    this.tagId = const Value.absent(),
+    this.tagRelId = const Value.absent(),
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
   });
   TTaskTagCompanion.insert({
     this.id = const Value.absent(),
     required String taskId,
-    required int tagId,
+    required int tagRelId,
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
   })  : taskId = Value(taskId),
-        tagId = Value(tagId);
+        tagRelId = Value(tagRelId);
   static Insertable<TTaskTagData> custom({
     Expression<int>? id,
     Expression<String>? taskId,
-    Expression<int>? tagId,
+    Expression<int>? tagRelId,
     Expression<String>? createAt,
     Expression<String>? updateAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (taskId != null) 'task_id': taskId,
-      if (tagId != null) 'tag_id': tagId,
+      if (tagRelId != null) 'tag_rel_id': tagRelId,
       if (createAt != null) 'create_at': createAt,
       if (updateAt != null) 'update_at': updateAt,
     });
@@ -5399,13 +5089,13 @@ class TTaskTagCompanion extends UpdateCompanion<TTaskTagData> {
   TTaskTagCompanion copyWith(
       {Value<int>? id,
       Value<String>? taskId,
-      Value<int>? tagId,
+      Value<int>? tagRelId,
       Value<String>? createAt,
       Value<String>? updateAt}) {
     return TTaskTagCompanion(
       id: id ?? this.id,
       taskId: taskId ?? this.taskId,
-      tagId: tagId ?? this.tagId,
+      tagRelId: tagRelId ?? this.tagRelId,
       createAt: createAt ?? this.createAt,
       updateAt: updateAt ?? this.updateAt,
     );
@@ -5420,8 +5110,8 @@ class TTaskTagCompanion extends UpdateCompanion<TTaskTagData> {
     if (taskId.present) {
       map['task_id'] = Variable<String>(taskId.value);
     }
-    if (tagId.present) {
-      map['tag_id'] = Variable<int>(tagId.value);
+    if (tagRelId.present) {
+      map['tag_rel_id'] = Variable<int>(tagRelId.value);
     }
     if (createAt.present) {
       map['create_at'] = Variable<String>(createAt.value);
@@ -5437,7 +5127,7 @@ class TTaskTagCompanion extends UpdateCompanion<TTaskTagData> {
     return (StringBuffer('TTaskTagCompanion(')
           ..write('id: $id, ')
           ..write('taskId: $taskId, ')
-          ..write('tagId: $tagId, ')
+          ..write('tagRelId: $tagRelId, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
           ..write(')'))
@@ -5480,7 +5170,7 @@ class $TTaskDevTable extends TTaskDev
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES t_dev_language_rel (id)'));
+          'REFERENCES t_dev_language (dev_lang_id)'));
   static const VerificationMeta _createAtMeta =
       const VerificationMeta('createAt');
   @override
@@ -5747,7 +5437,6 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   _$StairsDatabase(QueryExecutor e) : super(e);
   late final $MColorTable mColor = $MColorTable(this);
   late final $MAccountTable mAccount = $MAccountTable(this);
-  late final $MDevLanguageTable mDevLanguage = $MDevLanguageTable(this);
   late final $MDevProgressListTable mDevProgressList =
       $MDevProgressListTable(this);
   late final $TDevLanguageTable tDevLanguage = $TDevLanguageTable(this);
@@ -5769,8 +5458,6 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
       Index('color_id', 'CREATE INDEX color_id ON m_color (id)');
   late final Index accountId =
       Index('account_id', 'CREATE INDEX account_id ON m_account (account_id)');
-  late final Index devLangId = Index('dev_lang_id',
-      'CREATE INDEX dev_lang_id ON m_dev_language (dev_lang_id)');
   late final Index devProgressId = Index('dev_progress_id',
       'CREATE INDEX dev_progress_id ON m_dev_progress_list (id)');
   late final Index tDevLangId = Index('t_dev_lang_id',
@@ -5798,7 +5485,6 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final Index taskDevId =
       Index('task_dev_id', 'CREATE INDEX task_dev_id ON t_task_dev (id)');
   late final MAccountDao mAccountDao = MAccountDao(this as StairsDatabase);
-  late final MDevLangDao mDevLangDao = MDevLangDao(this as StairsDatabase);
   late final TProjectDao tProjectDao = TProjectDao(this as StairsDatabase);
   late final TOsInfoDao tOsInfoDao = TOsInfoDao(this as StairsDatabase);
   late final TDbDao tDbDao = TDbDao(this as StairsDatabase);
@@ -5812,6 +5498,8 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final TDevLangDao tDevLangDao = TDevLangDao(this as StairsDatabase);
   late final TBoardDao tBoardDao = TBoardDao(this as StairsDatabase);
   late final TTaskDao tTaskDao = TTaskDao(this as StairsDatabase);
+  late final TTaskTagDao tTaskTagDao = TTaskTagDao(this as StairsDatabase);
+  late final TTaskDevDao tTaskDevDao = TTaskDevDao(this as StairsDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5819,7 +5507,6 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
         mColor,
         mAccount,
-        mDevLanguage,
         mDevProgressList,
         tDevLanguage,
         tProject,
@@ -5836,7 +5523,6 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         tTaskDev,
         colorId,
         accountId,
-        devLangId,
         devProgressId,
         tDevLangId,
         devLangRelId,

@@ -75,7 +75,12 @@ class Board extends _$Board {
 
     // API通信開始
     final repository = ref.read(boardRepositoryProvider);
-    final list = await repository.getBoardList(projectId: projectId);
+    List<BoardModel> list = [];
+    try {
+      list = await repository.getBoardList(projectId: projectId);
+    } catch (e) {
+      _logger.e(e);
+    }
     return list;
   }
 

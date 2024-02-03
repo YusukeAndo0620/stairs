@@ -27,8 +27,8 @@ const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
 const _kContentMargin = EdgeInsets.only(
   top: 24,
   bottom: 48.0,
-  left: 16.0,
-  right: 40.0,
+  left: 0.0,
+  right: 10.0,
 );
 final _logger = stairsLogger(name: 'board_card');
 

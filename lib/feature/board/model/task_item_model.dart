@@ -6,6 +6,7 @@ class TaskItemModel {
     required this.taskItemId,
     required this.title,
     required this.description,
+     this.devLangName,
     required this.startDate,
     required this.dueDate,
     this.doneDate,
@@ -16,6 +17,7 @@ class TaskItemModel {
   final String taskItemId;
   final String title;
   final String description;
+  final String? devLangName;
   final DateTime startDate;
   final DateTime dueDate;
   final DateTime? doneDate;
@@ -26,6 +28,7 @@ class TaskItemModel {
     String? taskItemId,
     String? title,
     String? description,
+    String? devLangName,
     DateTime? startDate,
     DateTime? dueDate,
     DateTime? doneDate,
@@ -36,6 +39,7 @@ class TaskItemModel {
         taskItemId: taskItemId ?? this.taskItemId,
         title: title ?? this.title,
         description: description ?? this.description,
+        devLangName: devLangName ?? this.devLangName,
         startDate: startDate ?? this.startDate,
         dueDate: dueDate ?? this.dueDate,
         doneDate: doneDate ?? this.doneDate,
@@ -44,12 +48,13 @@ class TaskItemModel {
 
   factory TaskItemModel.fromJson(dynamic json) {
     final boardId = json['boardId'];
-    final taskItemId = json['taskItemId'];
+    final taskItemId = json['task_item_id'];
     final title = json['title'];
     final description = json['description'];
-    final startDate = DateTime.parse(json['startDate']);
-    final dueDate = DateTime.parse(json['dueDate']);
-    final doneDate = DateTime.parse(json['doneDate']);
+    final devLangName = json['dev_lang_name'];
+    final startDate = DateTime.parse(json['start_date']);
+    final dueDate = DateTime.parse(json['done_date']);
+    final doneDate = DateTime.parse(json['end_date']);
     final List<ColorLabelModel> labelList = [];
     for (final item in labelList) {
       final colorLabelInfo = ColorLabelModel.fromJson(item);
@@ -61,6 +66,7 @@ class TaskItemModel {
       taskItemId: taskItemId,
       title: title,
       description: description,
+      devLangName: devLangName,
       startDate: startDate,
       dueDate: dueDate,
       doneDate: doneDate,
@@ -76,6 +82,7 @@ class TaskItemModel {
     data['task_item_id'] = taskItemId;
     data['title'] = title;
     data['description'] = description;
+    data['dev_lang_name'] = devLangName;
     data['start_date'] = startDate.toIso8601String();
     data['end_date'] = dueDate.toIso8601String();
     data['done_date'] = doneDate!.toIso8601String();
@@ -91,6 +98,7 @@ class TaskItemModel {
         task_item_id: $taskItemId,
         title: $title,
         description: $description,
+        dev_lang_name: $devLangName,
         start_date: ${startDate.toString()},
         due_date: ${dueDate.toString()},
         done_date: ${doneDate.toString()},

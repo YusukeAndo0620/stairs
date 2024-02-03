@@ -23,10 +23,6 @@ class TDevLangRelDao extends DatabaseAccessor<StairsDatabase>
 
       final response = await query.join([
         leftOuterJoin(
-          db.mDevLanguage,
-          db.mDevLanguage.devLangId.equalsExp(db.tDevLanguageRel.devLangId),
-        ),
-        leftOuterJoin(
           db.tDevLanguage,
           db.tDevLanguage.devLangId.equalsExp(db.tDevLanguageRel.devLangId),
         ),

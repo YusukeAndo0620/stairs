@@ -11,8 +11,9 @@ class TTaskDao extends DatabaseAccessor<StairsDatabase> with _$TTaskDaoMixin {
 
   final _logger = stairsLogger(name: 't_task_dao');
 
-  /// ボード詳細取得
-  Future<List<TypedResult>> getTaskDetail({
+  /// タスク詳細取得
+  /// return {task}
+  Future<List<TTaskData>> getTaskDetail({
     required String boardId,
   }) async {
     try {
@@ -21,18 +22,7 @@ class TTaskDao extends DatabaseAccessor<StairsDatabase> with _$TTaskDaoMixin {
       final detailQuery = db.select(db.tTask)
         ..where((tbl) => tbl.boardId.equals(boardId));
       // 詳細
-      final response = await detailQuery.join(
-        [
-          leftOuterJoin(
-            db.tTaskTag,
-            db.tTask.taskId.equalsExp(db.tTaskTag.taskId),
-          ),
-          leftOuterJoin(
-            db.tTaskDev,
-            db.tTask.taskId.equalsExp(db.tTaskDev.taskId),
-          ),
-        ],
-      ).get();
+      final response = await detailQuery.get();
 
       _logger.d('取得データ：$response');
 
@@ -77,7 +67,7 @@ class TTaskDao extends DatabaseAccessor<StairsDatabase> with _$TTaskDaoMixin {
     }
   }
 
-  /// タスク 削除
+  /// タスク taskIdで削除
   Future<void> deleteTaskById({
     required String taskId,
   }) async {
@@ -92,6 +82,24 @@ class TTaskDao extends DatabaseAccessor<StairsDatabase> with _$TTaskDaoMixin {
       rethrow;
     } finally {
       _logger.d('deleteTaskById 通信終了');
+    }
+  }
+
+  /// タスク boardIdで削除
+  Future<void> deleteTaskByBoardId({
+    required String boardId,
+  }) async {
+    try {
+      _logger.d('deleteTaskByBoardId 通信開始');
+      _logger.d('boardId: $boardId');
+      final query = db.delete(db.tTask)
+        ..where((tbl) => tbl.boardId.equals(boardId));
+      await query.go();
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('deleteTaskByBoardId 通信終了');
     }
   }
 }

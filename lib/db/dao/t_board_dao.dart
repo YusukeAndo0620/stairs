@@ -12,16 +12,12 @@ class TBoardDao extends DatabaseAccessor<StairsDatabase> with _$TBoardDaoMixin {
   final _logger = stairsLogger(name: 't_board_dao');
 
   /// ボード一覧取得
-  Future<List<TypedResult>> getBoardList({required String projectId}) async {
+  Future<List<TBoardData>> getBoardList({required String projectId}) async {
     try {
       _logger.d('getBoardList 通信開始');
       final listQuery = db.select(db.tBoard)
         ..where((tbl) => tbl.projectId.equals(projectId));
-      final response = await listQuery.join(
-        [
-          innerJoin(db.tTask, db.tTask.boardId.equalsExp(db.tBoard.boardId)),
-        ],
-      ).get();
+      final response = await listQuery.get();
       _logger.d('取得データ：$response');
       return response;
     } on Exception catch (exception) {
@@ -33,7 +29,7 @@ class TBoardDao extends DatabaseAccessor<StairsDatabase> with _$TBoardDaoMixin {
   }
 
   /// ボード詳細取得
-  Future<List<TypedResult>> getBoardDetail({
+  Future<TBoardData> getBoardDetail({
     required String boardId,
   }) async {
     try {
@@ -42,11 +38,7 @@ class TBoardDao extends DatabaseAccessor<StairsDatabase> with _$TBoardDaoMixin {
       final detailQuery = db.select(db.tBoard)
         ..where((tbl) => tbl.boardId.equals(boardId));
       // 詳細
-      final response = await detailQuery.join(
-        [
-          innerJoin(db.tTask, db.tTask.boardId.equalsExp(db.tBoard.boardId)),
-        ],
-      ).get();
+      final response = await detailQuery.getSingle();
 
       _logger.d('取得データ：$response');
 

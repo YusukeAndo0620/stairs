@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:stairs/db/database.dart';
 
-final dummyDevProgressList = [
+final defaultDevProgressList = [
   const MDevProgressListCompanion(
     name: Value('要件定義'),
   ),

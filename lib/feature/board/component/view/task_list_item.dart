@@ -9,18 +9,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 const _kEllipsisTxt = '...';
 const _kBorderWidth = 1.0;
 const _kTitleMaxLine = 2;
-const _kTitleAndLabelSpace = 24.0;
-const kDraggedItemHeight = 120.0;
+const _kTitleAndLabelSpace = 5.0;
+const kDraggedItemHeight = 100.0;
 
 const _kContentPadding = EdgeInsets.all(8.0);
-const _kLabelContentPadding = EdgeInsets.only(right: 8.0, bottom: 8.0);
+const _kLabelContentPadding = EdgeInsets.only(right: 8.0);
 const _kContentMargin = EdgeInsets.symmetric(vertical: 4.0);
 
 final _logger = stairsLogger(name: 'task_list_item');
 
 ///ワークボードのカード内リストアイテム（ドラッグ可能）
-class TaskListItem extends ConsumerWidget {
-  TaskListItem({
+class TaskListItem extends ConsumerStatefulWidget {
+  const TaskListItem({
     super.key,
     required this.boardId,
     required this.taskItemId,
@@ -49,16 +49,32 @@ class TaskListItem extends ConsumerWidget {
   final Function(Velocity, Offset) onDraggableCanceled;
   final VoidCallback onDragCompleted;
   final Function(DraggableDetails) onDragEnd;
-  final itemKey = GlobalKey();
+  @override
+  ConsumerState<TaskListItem> createState() => _TaskListItemState();
+}
+
+class _TaskListItemState extends ConsumerState<TaskListItem> {
+  final itemKey = GlobalKey<_TaskListItemState>();
+  final labelListController = ScrollController();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     _logger.d('===================================');
-    _logger.d('ビルド開始 {task_title:$title}');
+    _logger.d('ビルド開始 {task_title:$widget.title}');
 
     final taskItemState = ref.watch(
       TaskItemProvider(
-        taskItemId: taskItemId,
+        taskItemId: widget.taskItemId,
       ),
     );
 
@@ -66,71 +82,85 @@ class TaskListItem extends ConsumerWidget {
       // ポジション
       final positionNotifier = ref.read(boardPositionProvider.notifier);
       positionNotifier.setTaskItemPosition(
-        taskItemId: taskItemId,
+        taskItemId: widget.taskItemId,
         key: itemKey,
       );
       if (taskItemState.title.isEmpty) {
         final taskItemNotifier = ref.read(TaskItemProvider(
-          taskItemId: taskItemId,
+          taskItemId: widget.taskItemId,
         ).notifier);
         taskItemNotifier.setItem(
-          boardId: boardId,
-          title: title,
-          dueDate: dueDate,
-          labelList: labelList,
+          boardId: widget.boardId,
+          title: widget.title,
+          dueDate: widget.dueDate,
+          labelList: widget.labelList,
         );
       }
     });
 
     final theme = LoomTheme.of(context);
     return AbsorbPointer(
-      absorbing: isReadOnly,
+      absorbing: widget.isReadOnly,
       child: Draggable<String>(
         key: ValueKey(taskItemState.taskItemId),
         data: taskItemState.taskItemId,
-        onDragStarted: onDragStarted,
-        onDragUpdate: (detail) => onDragUpdate(detail),
-        onDragCompleted: () => onDragCompleted,
-        onDragEnd: (details) => onDragEnd,
+        onDragStarted: widget.onDragStarted,
+        onDragUpdate: (detail) => widget.onDragUpdate(detail),
+        onDragCompleted: () => widget.onDragCompleted,
+        onDragEnd: (details) => widget.onDragEnd,
         onDraggableCanceled: (velocity, offset) =>
-            onDraggableCanceled(velocity, offset),
+            widget.onDraggableCanceled(velocity, offset),
         feedback: _DraggingListItem(
           key: ValueKey(taskItemState.taskItemId),
           title: taskItemState.title,
-          themeColor: themeColor,
+          themeColor: widget.themeColor,
           dueDate: taskItemState.dueDate,
           labelList: taskItemState.labelList,
+          labelListController: labelListController,
         ).testSelector('task_list_item_drag_item'),
         child: TapAction(
           key: itemKey,
           width: double.infinity,
-          tappedColor: themeColor.withOpacity(0.7),
+          tappedColor: widget.themeColor.withOpacity(0.7),
           margin: _kContentMargin,
           padding: _kContentPadding,
           border: Border.all(
-            color: themeColor,
+            color: widget.themeColor,
             width: _kBorderWidth,
           ),
           borderRadius: BorderRadius.circular(5.0),
-          onTap: () => onTap(taskItemState),
+          onTap: () => widget.onTap(taskItemState),
           widget: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                taskItemState.title,
-                style: theme.textStyleBody,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: Text(
+                      taskItemState.title,
+                      style: theme.textStyleBody,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: _kTitleMaxLine,
+                    ),
+                  ),
+                  _DueDateLabel(
+                    key: widget.key,
+                    dueDate: widget.dueDate,
+                  ),
+                ],
               ),
               const SizedBox(
                 height: _kTitleAndLabelSpace,
               ),
               _LabelArea(
                 key: ValueKey(taskItemState.taskItemId),
-                themeColor: themeColor,
-                dueDate: taskItemState.dueDate,
+                themeColor: widget.themeColor,
                 labelList: taskItemState.labelList,
+                labelListController: labelListController,
               )
             ],
           ),
@@ -148,12 +178,14 @@ class _DraggingListItem extends StatelessWidget {
     required this.themeColor,
     required this.dueDate,
     required this.labelList,
+    required this.labelListController,
   });
 
   final String title;
   final DateTime dueDate;
   final Color themeColor;
   final List<ColorLabelModel> labelList;
+  final ScrollController labelListController;
 
   @override
   Widget build(BuildContext context) {
@@ -178,11 +210,24 @@ class _DraggingListItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: theme.textStyleBody,
-              overflow: TextOverflow.ellipsis,
-              maxLines: _kTitleMaxLine,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  child: Text(
+                    title,
+                    style: theme.textStyleBody,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: _kTitleMaxLine,
+                  ),
+                ),
+                _DueDateLabel(
+                  key: key,
+                  dueDate: dueDate,
+                ),
+              ],
             ),
             const SizedBox(
               height: _kTitleAndLabelSpace,
@@ -190,9 +235,9 @@ class _DraggingListItem extends StatelessWidget {
             _LabelArea(
               key: key,
               themeColor: themeColor,
-              dueDate: dueDate,
               labelList: labelList,
-              maxLength: 3,
+              labelListController: labelListController,
+              isEllipsis: true,
             )
           ],
         ),
@@ -206,57 +251,69 @@ class _LabelArea extends StatelessWidget {
   const _LabelArea({
     super.key,
     required this.themeColor,
-    required this.dueDate,
     required this.labelList,
-    this.maxLength = 4,
+    required this.labelListController,
+    this.isEllipsis = false,
   });
 
   final Color themeColor;
-  final DateTime dueDate;
   final List<ColorLabelModel> labelList;
-  final int maxLength;
+  final ScrollController labelListController;
+  final bool isEllipsis;
 
   @override
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
-    final isEllipsis = labelList.length >= maxLength;
     final displayLabelList = isEllipsis
-        ? labelList.whereIndexed((index, element) => index < maxLength).toList()
+        ? labelList.whereIndexed((index, element) => index < 3).toList()
         : labelList;
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        Padding(
-          padding: _kLabelContentPadding,
-          child: LabelTip(
-            type: LabelTipType.square,
-            label: _getFormattedDate(dueDate),
-            textColor: dueDate.difference(DateTime.now()).inDays < 3
-                ? theme.colorDangerBgDefault
-                : theme.colorFgDefault,
-            themeColor: theme.colorDisabled,
-            iconData: Icons.date_range,
-          ),
-        ),
-        for (final label in displayLabelList)
-          Padding(
-            padding: _kLabelContentPadding,
-            child: LabelTip(
-              label: label.labelName,
-              themeColor: label.colorModel.color,
+    return SingleChildScrollView(
+      controller: labelListController,
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          for (final label in displayLabelList)
+            Padding(
+              padding: _kLabelContentPadding,
+              child: LabelTip(
+                label: label.labelName,
+                themeColor: label.colorModel.color,
+              ),
             ),
-          ),
-        if (isEllipsis)
-          Text(
-            _kEllipsisTxt,
-            textAlign: TextAlign.center,
-            style:
-                theme.textStyleFootnote.copyWith(color: theme.colorFgDefault),
-          )
-      ],
+          if (isEllipsis && labelList.isNotEmpty)
+            Text(
+              _kEllipsisTxt,
+              textAlign: TextAlign.center,
+              style:
+                  theme.textStyleFootnote.copyWith(color: theme.colorFgDefault),
+            )
+        ],
+      ),
     );
   }
 }
 
-String _getFormattedDate(DateTime date) =>
-    '${date.year}/${date.month}/${date.day}';
+///期日ラベル
+class _DueDateLabel extends StatelessWidget {
+  const _DueDateLabel({
+    super.key,
+    required this.dueDate,
+  });
+
+  final DateTime dueDate;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = LoomTheme.of(context);
+    return LabelTip(
+      type: LabelTipType.square,
+      label: getFormattedDate(dueDate),
+      textColor: dueDate.difference(DateTime.now()).inDays < 3
+          ? theme.colorDangerBgDefault
+          : theme.colorFgDefault,
+      themeColor: theme.colorDisabled,
+      iconData: Icons.date_range,
+    );
+  }
+}

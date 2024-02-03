@@ -43,15 +43,14 @@ class TTagRelDao extends DatabaseAccessor<StairsDatabase>
     }
   }
 
-  Future<TypedResult> getTagWithTagId({
-    required String projectId,
-    required int tagId,
+  Future<TypedResult> getTagWithTagRelId({
+    required int tagRelId,
   }) async {
     try {
       _logger.d('getTagList 通信開始');
       final query = db.select(db.tTagRel)
         ..where(
-            (tbl) => tbl.projectId.equals(projectId) & tbl.id.equals(tagId));
+            (tbl) =>  tbl.id.equals(tagRelId));
 
       final response = await query.join([
         innerJoin(

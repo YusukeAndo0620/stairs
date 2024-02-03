@@ -42,7 +42,12 @@ class ProjectList extends _$ProjectList {
         Provider((ref) => ProjectRepository(db: database));
     // API通信開始
     final repository = ref.read(projectRepositoryProvider);
-    final list = await repository.getProjectList() ?? [];
+    List<ProjectListItemModel> list = [];
+    try {
+      list = await repository.getProjectList() ?? [];
+    } catch (e) {
+      _logger.e(e);
+    }
     return list;
   }
 }

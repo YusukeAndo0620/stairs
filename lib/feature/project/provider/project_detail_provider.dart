@@ -71,7 +71,12 @@ class ProjectDetail extends _$ProjectDetail {
     } else {
       // API通信開始
       final repository = ref.read(projectRepositoryProvider);
-      final detail = await repository.getProjectDetail(projectId: projectId);
+      ProjectDetailModel? detail;
+      try {
+        detail = await repository.getProjectDetail(projectId: projectId);
+      } catch (e) {
+        _logger.e(e);
+      }
       return detail;
     }
   }

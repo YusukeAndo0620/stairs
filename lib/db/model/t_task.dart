@@ -10,7 +10,7 @@ class TTask extends Table {
   TextColumn get startDate =>
       text().clientDefault(() => DateTime.now().toIso8601String())();
   TextColumn get endDate => text().nullable()();
-  TextColumn get dueDate => text().nullable()();
+  TextColumn get dueDate => text()();
   TextColumn get boardId =>
       text().withLength(min: 1, max: 50).references(TBoard, #boardId)();
 

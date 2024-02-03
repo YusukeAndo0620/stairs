@@ -8,7 +8,7 @@ class TTaskTag extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get taskId =>
       text().withLength(min: 1, max: 50).references(TTask, #taskId)();
-  IntColumn get tagId => integer().references(TTagRel, #id)();
+  IntColumn get tagRelId => integer().references(TTagRel, #id)();
 
   TextColumn get createAt =>
       text().clientDefault(() => DateTime.now().toIso8601String())();

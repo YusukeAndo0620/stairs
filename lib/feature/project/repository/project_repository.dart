@@ -70,11 +70,6 @@ class ProjectRepository {
         colorData: detailResponse.readTable(db.mColor),
         osData: osResponse,
         dbData: dbResponse,
-        mDevLangData: devLangResponse
-            .map((e) => e.readTableOrNull(db.mDevLanguage))
-            .toList()
-            .whereType<MDevLanguageData>()
-            .toList(),
         devLangData: devLangResponse
             .map((e) => e.readTableOrNull(db.tDevLanguage))
             .toList()
@@ -299,7 +294,6 @@ ProjectDetailModel _convertProjectDetailToModel({
   required MColorData colorData,
   required List<TOsInfoData> osData,
   required List<TDbData> dbData,
-  required List<MDevLanguageData> mDevLangData,
   required List<TDevLanguageData> devLangData,
   required List<TDevLanguageRelData> devLangRelData,
   required List<TToolData> toolData,
@@ -318,12 +312,8 @@ ProjectDetailModel _convertProjectDetailToModel({
     devLangList.add(
       LabelWithContent(
         id: devLangRelData[i].id.toString(),
-        labelId: mDevLangData.isNotEmpty
-            ? mDevLangData[i].devLangId
-            : devLangData[i].devLangId,
-        labelName: mDevLangData.isNotEmpty
-            ? mDevLangData[i].name
-            : devLangData[i].name,
+        labelId: devLangData[i].devLangId,
+        labelName: devLangData[i].name,
         content: devLangRelData[i].content,
       ),
     );
