@@ -6,11 +6,18 @@ const _kIconWidth = 20.0;
 const _kLabelIconSpaceWidth = 8.0;
 const _kItemSpaceWidth = 16.0;
 const _kListBottomBorder = 1.0;
+const _kNoSelectedName = "-";
+
+enum RowType {
+  single,
+  double,
+}
 
 class CardLstItem extends StatelessWidget {
   const CardLstItem._({
     super.key,
     this.boardId,
+    this.rowType = RowType.single,
     required this.primaryItem,
     this.secondaryItem,
   }) : super();
@@ -61,6 +68,64 @@ class CardLstItem extends StatelessWidget {
           ),
         );
 
+  CardLstItem.inputArea({
+    Key? key,
+    double? width,
+    required String label,
+    required Color iconColor,
+    required IconData iconData,
+    String inputValue = '',
+    required String hintText,
+    TextInputType inputType = TextInputType.text,
+    int maxLines = 3,
+    int maxLength = 100,
+    bool autoFocus = false,
+    required Function(String) onSubmitted,
+  }) : this._(
+          key: key,
+          rowType: RowType.double,
+          primaryItem: _PrimaryItem(
+            label: label,
+            iconColor: iconColor,
+            iconData: iconData,
+          ),
+          secondaryItem: _SecondaryItem(
+            width: width,
+            widget: TextInput(
+              maxLines: maxLines,
+              textController: TextEditingController(text: inputValue),
+              hintText: hintText,
+              inputType: inputType,
+              maxLength: maxLength,
+              autoFocus: autoFocus,
+              onSubmitted: onSubmitted,
+            ),
+          ),
+        );
+
+  CardLstItem.dropDown({
+    Key? key,
+    required String label,
+    required Color iconColor,
+    required IconData iconData,
+    required String selectedItemId,
+    required List<LabelModel> itemList,
+    required Function(String) onChange,
+  }) : this._(
+          key: key,
+          primaryItem: _PrimaryItem(
+            label: label,
+            iconColor: iconColor,
+            iconData: iconData,
+          ),
+          secondaryItem: _SecondaryItem(
+            widget: _DropDown(
+              selectedItemId: selectedItemId,
+              itemList: itemList,
+              onChange: (id) => onChange(id),
+            ),
+          ),
+        );
   CardLstItem.labeWithIcon({
     Key? key,
     required String label,
@@ -86,6 +151,7 @@ class CardLstItem extends StatelessWidget {
         );
 
   final String? boardId;
+  final RowType rowType;
   final Widget primaryItem;
   final Widget? secondaryItem;
 
@@ -95,7 +161,8 @@ class CardLstItem extends StatelessWidget {
     final theme = LoomTheme.of(context);
 
     return Container(
-      alignment: Alignment.center,
+      alignment:
+          rowType == RowType.single ? Alignment.center : Alignment.topLeft,
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -105,18 +172,30 @@ class CardLstItem extends StatelessWidget {
         ),
       ),
       padding: _kListItemContentPadding,
-      child: secondaryItem == null
-          ? primaryItem
-          : Row(
+      child: rowType == RowType.double
+          ? Column(
               mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 primaryItem,
                 const SizedBox(
-                  width: _kItemSpaceWidth,
+                  height: _kItemSpaceWidth,
                 ),
                 secondaryItem!,
               ],
-            ),
+            )
+          : secondaryItem == null
+              ? primaryItem
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    primaryItem,
+                    const SizedBox(
+                      width: _kItemSpaceWidth,
+                    ),
+                    secondaryItem!,
+                  ],
+                ),
     );
   }
 }
@@ -144,6 +223,7 @@ class _Header extends StatelessWidget {
   }
 }
 
+// ラベル
 class _Label extends StatelessWidget {
   const _Label({required this.label});
   final String label;
@@ -158,6 +238,53 @@ class _Label extends StatelessWidget {
         style: theme.textStyleBody,
         overflow: TextOverflow.ellipsis,
       ),
+    );
+  }
+}
+
+// ドロップダウン
+class _DropDown extends StatelessWidget {
+  const _DropDown({
+    required this.selectedItemId,
+    required this.itemList,
+    required this.onChange,
+  });
+  final String selectedItemId;
+  final List<LabelModel> itemList;
+  final Function(String) onChange;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = LoomTheme.of(context);
+    return DropdownButton(
+      value: selectedItemId,
+      items: [
+        DropdownMenuItem(
+          value: '',
+          child: SizedBox(
+            width: MediaQuery.of(context).size.height * 0.32,
+            child: Text(
+              _kNoSelectedName,
+              style: theme.textStyleBody,
+            ),
+          ),
+        ),
+        ...itemList
+            .map(
+              (item) => DropdownMenuItem(
+                value: item.id,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.height * 0.32,
+                  child: Text(
+                    item.labelName,
+                    style: theme.textStyleBody,
+                  ),
+                ),
+              ),
+            )
+            .toList(),
+      ],
+      onChanged: (id) => onChange(id!),
     );
   }
 }

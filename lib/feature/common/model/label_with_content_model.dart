@@ -1,13 +1,13 @@
-class LabelWithContent {
+import 'package:stairs/loom/loom_package.dart';
+
+class LabelWithContent extends LabelModel {
   LabelWithContent({
-    required this.id,
+    required super.id,
     required this.labelId,
-    required this.labelName,
+    required super.labelName,
     required this.content,
   });
-  final String id;
   final String labelId;
-  final String labelName;
   final String content;
 
   LabelWithContent copyWith({

@@ -81,6 +81,7 @@ class _DisplayContentsState extends ConsumerState<DisplayContents> {
                     ? ToastificationType.warning
                     : ToastificationType.error,
             autoCloseDuration: const Duration(milliseconds: 3000),
+            showProgressBar: false,
             alignment: Alignment.topCenter,
             dragToClose: true,
           );

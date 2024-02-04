@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 const _kBottomSpaceHeight = 30.0;
 const _kTaskItemTitleHintTxt = 'タスク名を入力';
 const _kTaskItemDescriptionTxt = '説明';
+const _kTaskItemDevLangTxt = '開発言語';
 const _kTaskItemDescriptionHintTxt = '説明を入力';
 const _kTaskItemStartDateTxt = '開始日';
 const _kTaskItemStartDateHintTxt = '開始日を入力';
@@ -22,12 +23,14 @@ class TaskEditModal extends ConsumerWidget {
     super.key,
     required this.themeColor,
     required this.taskItem,
+    required this.devLangList,
     required this.labelList,
     required this.onChangeTaskItem,
   });
 
   final Color themeColor;
   final TaskItemModel taskItem;
+  final List<LabelWithContent> devLangList;
   final List<ColorLabelModel> labelList;
   final Function(TaskItemModel) onChangeTaskItem;
 
@@ -45,12 +48,12 @@ class TaskEditModal extends ConsumerWidget {
     final titleTxtController = TextEditingController(text: taskItemState.title);
 
     return Modal(
-      height: MediaQuery.of(context).size.height * 0.7,
+      height: MediaQuery.of(context).size.height * 0.75,
       onClose: onChangeTaskItem(taskItemState),
       buildMainContent: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         children: [
           // タスク名
           TextInput(
@@ -62,14 +65,25 @@ class TaskEditModal extends ConsumerWidget {
             },
           ),
           // 説明
-          CardLstItem.input(
+          CardLstItem.inputArea(
+              width: double.infinity,
               label: _kTaskItemDescriptionTxt,
-              iconData: theme.icons.trash,
+              iconData: theme.icons.resume,
               iconColor: themeColor,
               inputValue: taskItemState.description,
               hintText: _kTaskItemDescriptionHintTxt,
               onSubmitted: (value) =>
                   taskItemNotifier.updateDescription(description: value)),
+          // 開発言語
+          CardLstItem.dropDown(
+            label: _kTaskItemDevLangTxt,
+            iconData: theme.icons.resume,
+            iconColor: themeColor,
+            selectedItemId: taskItemState.devLangId,
+            itemList: devLangList,
+            onChange: (value) =>
+                taskItemNotifier.updateDevLang(devLangId: value),
+          ),
           //開始日
           CardLstItem.labeWithIcon(
             label: _kTaskItemStartDateTxt,
@@ -124,8 +138,8 @@ class TaskEditModal extends ConsumerWidget {
             onTap: () async {
               DateTime? targetDate = await showDatePicker(
                 context: context,
-                initialDate: taskItemState.doneDate,
-                firstDate: DateTime.now(),
+                initialDate: taskItemState.dueDate,
+                firstDate: DateTime(1990, 1, 1),
                 lastDate: DateTime.now().add(const Duration(days: 365)),
                 initialEntryMode: DatePickerEntryMode.calendar,
                 builder: (context, child) {

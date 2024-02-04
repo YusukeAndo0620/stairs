@@ -180,7 +180,7 @@ class BoardRepository {
 
     // タスクに設定されている開発言語
     for (var i = 0; i < devData.length; i++) {
-      devMap[devData[i].taskId] = devLangData[i].name;
+      devMap[devData[i].taskId] = devLangData[i].devLangId;
     }
 
     for (var i = 0; i < taskData.length; i++) {
@@ -189,7 +189,7 @@ class BoardRepository {
         taskItemId: taskData[i].taskId,
         title: taskData[i].name,
         description: taskData[i].description,
-        devLangName: devMap[taskData[i].taskId],
+        devLangId: devMap[taskData[i].taskId] ?? '',
         startDate: DateTime.parse(taskData[i].startDate).toLocal(),
         doneDate: taskData[i].endDate != null
             ? DateTime.parse(taskData[i].endDate!).toLocal()

@@ -24,8 +24,9 @@ class TaskListItem extends ConsumerStatefulWidget {
     super.key,
     required this.boardId,
     required this.taskItemId,
-    required this.title,
     required this.themeColor,
+    required this.title,
+    required this.startDate,
     required this.dueDate,
     required this.labelList,
     required this.isReadOnly,
@@ -38,9 +39,10 @@ class TaskListItem extends ConsumerStatefulWidget {
   });
   final String boardId;
   final String taskItemId;
-  final String title;
-  final DateTime dueDate;
   final Color themeColor;
+  final String title;
+  final DateTime startDate;
+  final DateTime dueDate;
   final List<ColorLabelModel> labelList;
   final bool isReadOnly;
   final Function(TaskItemModel) onTap;
@@ -92,6 +94,7 @@ class _TaskListItemState extends ConsumerState<TaskListItem> {
         taskItemNotifier.setItem(
           boardId: widget.boardId,
           title: widget.title,
+          startDate: widget.startDate,
           dueDate: widget.dueDate,
           labelList: widget.labelList,
         );

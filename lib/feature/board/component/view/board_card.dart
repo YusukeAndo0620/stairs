@@ -220,9 +220,10 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                           TaskListItem(
                             boardId: widget.boardId,
                             taskItemId: item.taskItemId,
-                            title: item.title,
-                            dueDate: item.dueDate,
                             themeColor: widget.themeColor,
+                            title: item.title,
+                            startDate: item.startDate,
+                            dueDate: item.dueDate,
                             labelList: item.labelList,
                             isReadOnly: _isNewTaskShown,
                             onTap: (taskItem) async {
@@ -234,6 +235,7 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                                   return TaskEditModal(
                                     themeColor: widget.themeColor,
                                     taskItem: item,
+                                    devLangList: widget.devLangList,
                                     labelList: widget.labelList,
                                     onChangeTaskItem: (taskItemVal) {},
                                   );
@@ -252,6 +254,7 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                                   taskItemId: taskItemState.taskItemId,
                                   title: taskItemState.title,
                                   description: taskItemState.description,
+                                  devLangId: taskItemState.devLangId,
                                   startDate: taskItemState.startDate,
                                   dueDate: taskItemState.dueDate,
                                   labelList: taskItemState.labelList,

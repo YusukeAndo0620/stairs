@@ -64,6 +64,7 @@ TaskItemModel getShrinkItem({required String boardId}) {
     taskItemId: kShrinkId,
     title: '',
     description: '',
+    devLangId: '',
     startDate: DateTime.now(),
     dueDate: DateTime.now(),
     labelList: [],

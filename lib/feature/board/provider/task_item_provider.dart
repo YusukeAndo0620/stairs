@@ -15,6 +15,7 @@ class TaskItem extends _$TaskItem {
         taskItemId: taskItemId,
         title: '',
         description: '',
+        devLangId: '',
         startDate: DateTime.now(),
         dueDate: DateTime.now().add(const Duration(days: 7)),
         labelList: [],
@@ -26,6 +27,7 @@ class TaskItem extends _$TaskItem {
       taskItemId: '',
       title: '',
       description: '',
+      devLangId: '',
       startDate: DateTime.now(),
       dueDate: DateTime.now().add(const Duration(days: 7)),
       labelList: [],
@@ -38,6 +40,7 @@ class TaskItem extends _$TaskItem {
     String? description,
     DateTime? startDate,
     DateTime? dueDate,
+    DateTime? doneDate,
     List<ColorLabelModel>? labelList,
   }) {
     state = state.copyWith(
@@ -46,6 +49,7 @@ class TaskItem extends _$TaskItem {
       description: description,
       startDate: startDate,
       dueDate: dueDate,
+      doneDate: doneDate,
       labelList: labelList,
     );
   }
@@ -60,6 +64,10 @@ class TaskItem extends _$TaskItem {
 
   void updateStartDate({required DateTime startDate}) {
     state = state.copyWith(startDate: startDate);
+  }
+
+  void updateDevLang({required String? devLangId}) {
+    state = state.copyWith(devLangId: devLangId);
   }
 
   void updateDueDate({required DateTime dueDate}) {
