@@ -2,6 +2,7 @@ import 'package:stairs/db/provider/database_provider.dart';
 import 'package:stairs/feature/common/provider/account_provider.dart';
 import 'package:stairs/feature/common/provider/view/toast_msg_provider.dart';
 import 'package:stairs/feature/common/repository/common_repository.dart';
+import 'package:stairs/feature/project/enum/project_update_param.dart';
 import 'package:stairs/feature/project/model/project_detail_model.dart';
 import 'package:stairs/feature/project/repository/project_repository.dart';
 import 'package:stairs/loom/loom_package.dart';
@@ -17,7 +18,7 @@ class ProjectDetail extends _$ProjectDetail {
 
   @override
   FutureOr<ProjectDetailModel?> build({required String projectId}) async {
-    _logger.d('=== build実施 projectId: $projectId ===');
+    _logger.d('ビルド実施 projectId: $projectId');
     if (projectId.isEmpty) {
       if (_initialProjectDetailModel == null) {
         await _setInitialProjectDetailModel();
@@ -61,7 +62,7 @@ class ProjectDetail extends _$ProjectDetail {
   }
 
   Future<ProjectDetailModel?> getDetail({required String projectId}) async {
-    _logger.d('=== プロジェクト取得 projectId: $projectId ===');
+    _logger.d('プロジェクト取得 projectId: $projectId');
     final database = ref.watch(databaseProvider);
     // Repository(APIの取得)の状態を管理する
     final projectRepositoryProvider =
@@ -82,7 +83,7 @@ class ProjectDetail extends _$ProjectDetail {
   }
 
   Future<void> createProject() async {
-    _logger.d('=== プロジェクト作成 開始 ===');
+    _logger.d('プロジェクト作成 開始');
 
     if (state.value == null) {
       _logger.d('stateに値がないため処理終了');
@@ -106,15 +107,20 @@ class ProjectDetail extends _$ProjectDetail {
       await toastMsgNotifier.showToast(
           type: MessageType.error, msg: msgList['err001']);
     } finally {
-      _logger.d('=== プロジェクト更新 終了 ===');
+      _logger.d('プロジェクト更新 終了');
     }
   }
 
-  Future<void> updateProject() async {
-    _logger.d('=== プロジェクト更新 開始 ===');
+  Future<void> updateProject({required List<ProjectUpdateParam> updateParamList}) async {
+    _logger.d('プロジェクト更新 開始');
     if (state.value == null) {
       _logger.d('stateに値がないため処理終了');
       return;
+    }
+    if(updateParamList.isEmpty){
+      _logger.d('更新対象がないため処理終了');
+      return;
+
     }
     _logger.d('projectId: ${state.value!.projectId}');
     final database = ref.watch(databaseProvider);
@@ -126,14 +132,14 @@ class ProjectDetail extends _$ProjectDetail {
     // API通信開始
     final repository = ref.read(projectRepositoryProvider);
     try {
-      await repository.updateProject(detailModel: state.value!);
+      await repository.updateProject(detailModel: state.value!, updateTargetList: updateParamList);
       await toastMsgNotifier.showToast(
           type: MessageType.success, msg: msgList['scc002']);
     } catch (e) {
       await toastMsgNotifier.showToast(
           type: MessageType.error, msg: msgList['err001']);
     } finally {
-      _logger.d('=== プロジェクト更新 終了 ===');
+      _logger.d('プロジェクト更新 終了');
     }
   }
 

@@ -31,6 +31,11 @@ class ColorModel {
 
   @override
   String toString() {
-    return 'ColorModel{id: $id, color_id: ${color.getColorId}}';
+    return '''
+
+      ColorModel {
+        id: $id,
+        color_id: ${color.getColorId},
+      }''';
   }
 }

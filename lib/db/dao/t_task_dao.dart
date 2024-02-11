@@ -35,6 +35,65 @@ class TTaskDao extends DatabaseAccessor<StairsDatabase> with _$TTaskDaoMixin {
     }
   }
 
+  /// タスク詳細取得（projectIdで全て取得）
+  /// return {task}, {board}, {task_tag}, {tag_rel}, {tag}, {color}, {task_dev}, {dev_language}
+  Future<List<TypedResult>> getTaskDetailByProjectId({
+    required String projectId,
+  }) async {
+    try {
+      _logger.d('getTaskDetailByProjectId 通信開始');
+      final query = db.select(db.tTask);
+      final response = await query.join(
+        [
+          // board
+          innerJoin(
+              db.tBoard,
+              db.tBoard.projectId.equals(projectId) &
+                  db.tBoard.boardId.equalsExp(db.tTask.boardId)),
+          // task_tag
+          leftOuterJoin(
+            db.tTaskTag,
+            db.tTaskTag.taskId.equalsExp(db.tTask.taskId),
+          ),
+          // tag_rel
+          leftOuterJoin(
+            db.tTagRel,
+            db.tTagRel.id.equalsExp(db.tTaskTag.tagRelId),
+          ),
+          // tag
+          leftOuterJoin(
+            db.tTag,
+            db.tTag.id.equalsExp(db.tTagRel.tagId),
+          ),
+          // カラー
+          leftOuterJoin(
+            db.mColor,
+            db.mColor.id.equalsExp(db.tTag.colorId),
+          ),
+          // task_dev
+          leftOuterJoin(
+            db.tTaskDev,
+            db.tTaskDev.taskId.equalsExp(db.tTask.taskId),
+          ),
+          // dev_language
+          leftOuterJoin(
+            db.tDevLanguage,
+            db.tDevLanguage.devLangId.equalsExp(db.tTaskDev.devLangId),
+          ),
+        ],
+      ).get();
+
+      _logger.d('取得データ：$response');
+
+      return response;
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('getTaskDetailByProjectId 通信終了');
+    }
+  }
+
   /// タスク 追加
   Future<void> insertTask({
     required TTaskCompanion taskData,

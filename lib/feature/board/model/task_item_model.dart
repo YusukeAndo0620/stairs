@@ -10,6 +10,7 @@ class TaskItemModel {
     required this.startDate,
     required this.dueDate,
     this.doneDate,
+    required this.orderNo,
     required this.labelList,
   });
 
@@ -18,6 +19,7 @@ class TaskItemModel {
   final String title;
   final String description;
   final String devLangId;
+  final int orderNo;
   final DateTime startDate;
   final DateTime dueDate;
   final DateTime? doneDate;
@@ -29,6 +31,7 @@ class TaskItemModel {
     String? title,
     String? description,
     String? devLangId,
+    int? orderNo,
     DateTime? startDate,
     DateTime? dueDate,
     DateTime? doneDate,
@@ -41,6 +44,7 @@ class TaskItemModel {
         description: description ?? this.description,
         devLangId: devLangId ?? this.devLangId,
         startDate: startDate ?? this.startDate,
+        orderNo: orderNo ?? this.orderNo,
         dueDate: dueDate ?? this.dueDate,
         doneDate: doneDate ?? this.doneDate,
         labelList: labelList ?? this.labelList,
@@ -52,6 +56,7 @@ class TaskItemModel {
     final title = json['title'];
     final description = json['description'];
     final devLangId = json['dev_lang_id'];
+    final orderNo = json['orderNo'];
     final startDate = DateTime.parse(json['start_date']);
     final dueDate = DateTime.parse(json['done_date']);
     final doneDate = DateTime.parse(json['end_date']);
@@ -67,6 +72,7 @@ class TaskItemModel {
       title: title,
       description: description,
       devLangId: devLangId,
+      orderNo: orderNo,
       startDate: startDate,
       dueDate: dueDate,
       doneDate: doneDate,
@@ -83,6 +89,7 @@ class TaskItemModel {
     data['title'] = title;
     data['description'] = description;
     data['dev_lang_id'] = devLangId;
+    data['orderNo'] = orderNo;
     data['start_date'] = startDate.toIso8601String();
     data['end_date'] = dueDate.toIso8601String();
     data['done_date'] = doneDate!.toIso8601String();
@@ -93,7 +100,8 @@ class TaskItemModel {
   @override
   String toString() {
     return '''
-      TaskItemModel{
+
+      TaskItemModel {
         board_id: $boardId,
         task_item_id: $taskItemId,
         title: $title,
@@ -102,8 +110,8 @@ class TaskItemModel {
         start_date: ${startDate.toString()},
         due_date: ${dueDate.toString()},
         done_date: ${doneDate.toString()},
+        orderNo: ${orderNo.toString()},
         label_list: ${labelList.map((e) => e.toJson()).toList()},
-      }
-    ''';
+      }''';
   }
 }

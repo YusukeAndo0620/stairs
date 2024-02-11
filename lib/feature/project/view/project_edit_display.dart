@@ -1,5 +1,6 @@
 import 'package:stairs/db/provider/database_provider.dart';
 import 'package:stairs/feature/project/component/provider/dev_lang_provider.dart';
+import 'package:stairs/feature/project/enum/project_update_param.dart';
 import 'package:stairs/feature/project/provider/project_detail_provider.dart';
 import 'package:stairs/feature/project/provider/project_list_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
@@ -69,6 +70,8 @@ class ProjectEditDisplay extends ConsumerStatefulWidget {
 
 class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
   bool isNewProject = false;
+  final List<ProjectUpdateParam> updateParamList = [];
+
   @override
   void initState() {
     super.initState();
@@ -114,18 +117,26 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          IconButton(
-            icon: Icon(
-              theme.icons.done,
-              color: theme.colorPrimary,
+          AbsorbPointer(
+            absorbing: !isNewProject && updateParamList.isEmpty,
+            child: IconButton(
+              icon: Icon(
+                theme.icons.done,
+                color: !isNewProject && updateParamList.isEmpty
+                    ? theme.colorDisabled
+                    : theme.colorPrimary,
+              ),
+              onPressed: () {
+                isNewProject
+                    ? projectDetailNotifier.createProject()
+                    : updateParamList.isNotEmpty
+                        ? projectDetailNotifier.updateProject(
+                            updateParamList: updateParamList)
+                        : null;
+                projectListNotifier.setProjectList();
+                Navigator.of(context).pop();
+              },
             ),
-            onPressed: () {
-              isNewProject
-                  ? projectDetailNotifier.createProject()
-                  : projectDetailNotifier.updateProject();
-              projectListNotifier.setProjectList();
-              Navigator.of(context).pop();
-            },
           ),
         ],
         backgroundColor: theme.colorBgLayer1,
@@ -154,8 +165,12 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             inputValue: detail.projectName,
                             hintText: _kProjectHintTxt,
                             onSubmitted: (projectName) {
-                              projectDetailNotifier.changeProjectName(
-                                  projectName: projectName);
+                              if (detail.projectName != projectName) {
+                                addUpdateParam(
+                                    param: ProjectUpdateParam.project);
+                                projectDetailNotifier.changeProjectName(
+                                    projectName: projectName);
+                              }
                             }),
                         // 色
                         CardLstItem.labeWithIcon(
@@ -177,8 +192,13 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                                       detail.themeColorModel.color,
                                   onTap: (id) {},
                                   onTapBackIcon: (colorModel) {
-                                    projectDetailNotifier.changeThemeColor(
-                                        colorModel: colorModel);
+                                    if (detail.themeColorModel.color !=
+                                        colorModel.color) {
+                                      addUpdateParam(
+                                          param: ProjectUpdateParam.project);
+                                      projectDetailNotifier.changeThemeColor(
+                                          colorModel: colorModel);
+                                    }
                                   },
                                 );
                               },
@@ -193,8 +213,11 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                           inputValue: detail.industry,
                           hintText: _kIndustryHintTxt,
                           onSubmitted: (industry) {
-                            projectDetailNotifier.changeIndustry(
-                                industry: industry);
+                            if (detail.industry != industry) {
+                              addUpdateParam(param: ProjectUpdateParam.project);
+                              projectDetailNotifier.changeIndustry(
+                                  industry: industry);
+                            }
                           },
                         ),
                         // 開発人数
@@ -206,9 +229,12 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                           inputValue: detail.devSize.toString(),
                           hintText: _kDevSizeHintTxt,
                           onSubmitted: (devSize) {
-                            projectDetailNotifier.changeDevSize(
-                              devSize: int.parse(devSize),
-                            );
+                            if (detail.devSize.toString() != devSize) {
+                              addUpdateParam(param: ProjectUpdateParam.project);
+                              projectDetailNotifier.changeDevSize(
+                                devSize: int.parse(devSize),
+                              );
+                            }
                           },
                         ),
                         // 期日
@@ -253,6 +279,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             );
 
                             if (range != null) {
+                              addUpdateParam(param: ProjectUpdateParam.project);
                               projectDetailNotifier.changeDueDate(
                                 startDate: range.start,
                                 endDate: range.end,
@@ -270,8 +297,11 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                           maxLines: _kContentMaxLines,
                           maxLength: _kContentMaxLength,
                           onSubmitted: (description) {
-                            projectDetailNotifier.changeDescription(
-                                description: description);
+                            if (detail.description != description) {
+                              addUpdateParam(param: ProjectUpdateParam.project);
+                              projectDetailNotifier.changeDescription(
+                                  description: description);
+                            }
                           },
                         ),
                         // OS
@@ -296,8 +326,12 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                                   hintText: _kOsInputHintTxt,
                                   emptyText: _kOsListEmptyTxt,
                                   onTapBack: (data) {
-                                    projectDetailNotifier.changeOs(
-                                        osList: (data as List<LabelModel>));
+                                    if (detail.osList != data) {
+                                      addUpdateParam(
+                                          param: ProjectUpdateParam.os);
+                                      projectDetailNotifier.changeOs(
+                                          osList: (data as List<LabelModel>));
+                                    }
                                   },
                                 );
                               },
@@ -326,8 +360,12 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                                   hintText: _kDbInputHintTxt,
                                   emptyText: _kDbListEmptyTxt,
                                   onTapBack: (data) {
-                                    projectDetailNotifier.changeDb(
-                                        dbList: (data as List<LabelModel>));
+                                    if (detail.dbList != data) {
+                                      addUpdateParam(
+                                          param: ProjectUpdateParam.db);
+                                      projectDetailNotifier.changeDb(
+                                          dbList: (data as List<LabelModel>));
+                                    }
                                   },
                                 );
                               },
@@ -357,8 +395,13 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                                   labeList: devLangList.value ?? [],
                                   selectedList: detail.devLanguageList,
                                   onTapBack: (data) {
-                                    projectDetailNotifier.changeDevLanguageList(
-                                        devLanguageList: (data));
+                                    if (detail.devLanguageList != data) {
+                                      addUpdateParam(
+                                          param: ProjectUpdateParam.devLangRel);
+                                      projectDetailNotifier
+                                          .changeDevLanguageList(
+                                              devLanguageList: (data));
+                                    }
                                   },
                                 );
                               },
@@ -387,8 +430,12 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                                   hintText: _kToolInputHintTxt,
                                   emptyText: _kToolListEmptyTxt,
                                   onTapBack: (data) {
-                                    projectDetailNotifier.changeToolList(
-                                        toolList: (data as List<LabelModel>));
+                                    if (detail.toolList != data) {
+                                      addUpdateParam(
+                                          param: ProjectUpdateParam.tool);
+                                      projectDetailNotifier.changeToolList(
+                                          toolList: (data as List<LabelModel>));
+                                    }
                                   },
                                 );
                               },
@@ -416,9 +463,15 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                                   labelList: devProgressList.value!,
                                   selectedLabelList: detail.devProgressList,
                                   onTapBackIcon: (labelList) {
-                                    projectDetailNotifier.changeDevProgressList(
-                                      devProgressList: labelList,
-                                    );
+                                    if (detail.devProgressList != labelList) {
+                                      addUpdateParam(
+                                          param:
+                                              ProjectUpdateParam.devProgress);
+                                      projectDetailNotifier
+                                          .changeDevProgressList(
+                                        devProgressList: labelList,
+                                      );
+                                    }
                                   },
                                 );
                               },
@@ -433,7 +486,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                           title: _kBoardTitleTxt,
                           bgColor: theme.colorBgLayer1,
                         ),
-                        // ラベル,
+                        // ラベル
                         CardLstItem.labeWithIcon(
                           label: _kLabelTxt,
                           iconColor: theme.colorPrimary,
@@ -453,9 +506,14 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                                   title: _kLabelTxt,
                                   tagList: detail.tagList,
                                   onTapBack: (data) {
-                                    projectDetailNotifier.changeTagList(
-                                      tagList: (data as List<ColorLabelModel>),
-                                    );
+                                    if (detail.tagList != data) {
+                                      addUpdateParam(
+                                          param: ProjectUpdateParam.tag);
+                                      projectDetailNotifier.changeTagList(
+                                        tagList:
+                                            (data as List<ColorLabelModel>),
+                                      );
+                                    }
                                   },
                                 );
                               },
@@ -476,5 +534,13 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
         error: (error, _) => Align(child: Text(error.toString())),
       ),
     );
+  }
+
+  void addUpdateParam({required ProjectUpdateParam param}) {
+    if (!updateParamList.contains(param)) {
+      setState(() {
+        updateParamList.add(param);
+      });
+    }
   }
 }

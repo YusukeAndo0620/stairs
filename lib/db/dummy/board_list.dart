@@ -6,18 +6,21 @@ final dummyBoardList = [
     projectId: Value("1"),
     boardId: Value("1"),
     name: Value('TODO'),
+    orderNo: Value(1),
     isCompleted: Value(false),
   ),
   const TBoardCompanion(
     projectId: Value("1"),
     boardId: Value("2"),
     name: Value('作業中'),
+    orderNo: Value(2),
     isCompleted: Value(false),
   ),
   const TBoardCompanion(
     projectId: Value("1"),
     boardId: Value("3"),
     name: Value('完了'),
+    orderNo: Value(3),
     isCompleted: Value(true),
   ),
 ];

@@ -1,28 +1,43 @@
 import 'package:stairs/feature/board/model/task_item_model.dart';
+import 'package:stairs/loom/loom_package.dart';
 
-class BoardModel {
-  BoardModel({
+@immutable
+class BoardModel extends Equatable {
+  const BoardModel({
     required this.projectId,
     required this.boardId,
     required this.title,
+    required this.orderNo,
     required this.taskItemList,
   });
 
   final String projectId;
   final String boardId;
   final String title;
+  final int orderNo;
   final List<TaskItemModel> taskItemList;
+
+  @override
+  List<Object?> get props => [
+        projectId,
+        boardId,
+        title,
+        orderNo,
+        taskItemList,
+      ];
 
   BoardModel copyWith({
     String? projectId,
     String? boardId,
     String? title,
+    int? orderNo,
     List<TaskItemModel>? taskItemList,
   }) =>
       BoardModel(
         projectId: projectId ?? this.projectId,
         boardId: boardId ?? this.boardId,
         title: title ?? this.title,
+        orderNo: orderNo ?? this.orderNo,
         taskItemList: taskItemList ?? this.taskItemList,
       );
 
@@ -30,12 +45,14 @@ class BoardModel {
     final projectId = json['project_id'];
     final boardId = json['board_id'];
     final title = json['title'];
+    final orderNo = json['order_no'];
     final taskItemList = json['task_item_list'];
 
     final model = BoardModel(
       boardId: boardId,
       projectId: projectId,
       title: title,
+      orderNo: orderNo,
       taskItemList: taskItemList,
     );
 
@@ -47,6 +64,7 @@ class BoardModel {
     data['project_id'] = projectId;
     data['board_id'] = boardId;
     data['title'] = title;
+    data['order_no'] = orderNo;
     data['task_item_list'] = taskItemList.map((e) => e.toJson()).toList();
 
     return data;
@@ -55,12 +73,13 @@ class BoardModel {
   @override
   String toString() {
     return '''
-      BoardModel{
+
+      BoardModel {
         project_id: $projectId,
         board_id: $boardId,
         title: $title,
+        orderNo: $orderNo,
         task_item_list: ${taskItemList.map((e) => e.toJson()).toList()},
-      }
-    ''';
+      }''';
   }
 }

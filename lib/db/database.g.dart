@@ -4049,6 +4049,12 @@ class $TBoardTable extends TBoard with TableInfo<$TBoardTable, TBoardData> {
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 30),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
+  static const VerificationMeta _orderNoMeta =
+      const VerificationMeta('orderNo');
+  @override
+  late final GeneratedColumn<int> orderNo = GeneratedColumn<int>(
+      'order_no', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _isCompletedMeta =
       const VerificationMeta('isCompleted');
   @override
@@ -4088,7 +4094,7 @@ class $TBoardTable extends TBoard with TableInfo<$TBoardTable, TBoardData> {
       clientDefault: () => DateTime.now().toIso8601String());
   @override
   List<GeneratedColumn> get $columns =>
-      [boardId, name, isCompleted, projectId, createAt, updateAt];
+      [boardId, name, orderNo, isCompleted, projectId, createAt, updateAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4110,6 +4116,12 @@ class $TBoardTable extends TBoard with TableInfo<$TBoardTable, TBoardData> {
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('order_no')) {
+      context.handle(_orderNoMeta,
+          orderNo.isAcceptableOrUnknown(data['order_no']!, _orderNoMeta));
+    } else if (isInserting) {
+      context.missing(_orderNoMeta);
     }
     if (data.containsKey('is_completed')) {
       context.handle(
@@ -4144,6 +4156,8 @@ class $TBoardTable extends TBoard with TableInfo<$TBoardTable, TBoardData> {
           .read(DriftSqlType.string, data['${effectivePrefix}board_id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      orderNo: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}order_no'])!,
       isCompleted: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_completed'])!,
       projectId: attachedDatabase.typeMapping
@@ -4164,6 +4178,7 @@ class $TBoardTable extends TBoard with TableInfo<$TBoardTable, TBoardData> {
 class TBoardData extends DataClass implements Insertable<TBoardData> {
   final String boardId;
   final String name;
+  final int orderNo;
   final bool isCompleted;
   final String projectId;
   final String createAt;
@@ -4171,6 +4186,7 @@ class TBoardData extends DataClass implements Insertable<TBoardData> {
   const TBoardData(
       {required this.boardId,
       required this.name,
+      required this.orderNo,
       required this.isCompleted,
       required this.projectId,
       required this.createAt,
@@ -4180,6 +4196,7 @@ class TBoardData extends DataClass implements Insertable<TBoardData> {
     final map = <String, Expression>{};
     map['board_id'] = Variable<String>(boardId);
     map['name'] = Variable<String>(name);
+    map['order_no'] = Variable<int>(orderNo);
     map['is_completed'] = Variable<bool>(isCompleted);
     map['project_id'] = Variable<String>(projectId);
     map['create_at'] = Variable<String>(createAt);
@@ -4191,6 +4208,7 @@ class TBoardData extends DataClass implements Insertable<TBoardData> {
     return TBoardCompanion(
       boardId: Value(boardId),
       name: Value(name),
+      orderNo: Value(orderNo),
       isCompleted: Value(isCompleted),
       projectId: Value(projectId),
       createAt: Value(createAt),
@@ -4204,6 +4222,7 @@ class TBoardData extends DataClass implements Insertable<TBoardData> {
     return TBoardData(
       boardId: serializer.fromJson<String>(json['boardId']),
       name: serializer.fromJson<String>(json['name']),
+      orderNo: serializer.fromJson<int>(json['orderNo']),
       isCompleted: serializer.fromJson<bool>(json['isCompleted']),
       projectId: serializer.fromJson<String>(json['projectId']),
       createAt: serializer.fromJson<String>(json['createAt']),
@@ -4216,6 +4235,7 @@ class TBoardData extends DataClass implements Insertable<TBoardData> {
     return <String, dynamic>{
       'boardId': serializer.toJson<String>(boardId),
       'name': serializer.toJson<String>(name),
+      'orderNo': serializer.toJson<int>(orderNo),
       'isCompleted': serializer.toJson<bool>(isCompleted),
       'projectId': serializer.toJson<String>(projectId),
       'createAt': serializer.toJson<String>(createAt),
@@ -4226,6 +4246,7 @@ class TBoardData extends DataClass implements Insertable<TBoardData> {
   TBoardData copyWith(
           {String? boardId,
           String? name,
+          int? orderNo,
           bool? isCompleted,
           String? projectId,
           String? createAt,
@@ -4233,6 +4254,7 @@ class TBoardData extends DataClass implements Insertable<TBoardData> {
       TBoardData(
         boardId: boardId ?? this.boardId,
         name: name ?? this.name,
+        orderNo: orderNo ?? this.orderNo,
         isCompleted: isCompleted ?? this.isCompleted,
         projectId: projectId ?? this.projectId,
         createAt: createAt ?? this.createAt,
@@ -4243,6 +4265,7 @@ class TBoardData extends DataClass implements Insertable<TBoardData> {
     return (StringBuffer('TBoardData(')
           ..write('boardId: $boardId, ')
           ..write('name: $name, ')
+          ..write('orderNo: $orderNo, ')
           ..write('isCompleted: $isCompleted, ')
           ..write('projectId: $projectId, ')
           ..write('createAt: $createAt, ')
@@ -4252,14 +4275,15 @@ class TBoardData extends DataClass implements Insertable<TBoardData> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(boardId, name, isCompleted, projectId, createAt, updateAt);
+  int get hashCode => Object.hash(
+      boardId, name, orderNo, isCompleted, projectId, createAt, updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TBoardData &&
           other.boardId == this.boardId &&
           other.name == this.name &&
+          other.orderNo == this.orderNo &&
           other.isCompleted == this.isCompleted &&
           other.projectId == this.projectId &&
           other.createAt == this.createAt &&
@@ -4269,6 +4293,7 @@ class TBoardData extends DataClass implements Insertable<TBoardData> {
 class TBoardCompanion extends UpdateCompanion<TBoardData> {
   final Value<String> boardId;
   final Value<String> name;
+  final Value<int> orderNo;
   final Value<bool> isCompleted;
   final Value<String> projectId;
   final Value<String> createAt;
@@ -4277,6 +4302,7 @@ class TBoardCompanion extends UpdateCompanion<TBoardData> {
   const TBoardCompanion({
     this.boardId = const Value.absent(),
     this.name = const Value.absent(),
+    this.orderNo = const Value.absent(),
     this.isCompleted = const Value.absent(),
     this.projectId = const Value.absent(),
     this.createAt = const Value.absent(),
@@ -4286,6 +4312,7 @@ class TBoardCompanion extends UpdateCompanion<TBoardData> {
   TBoardCompanion.insert({
     required String boardId,
     required String name,
+    required int orderNo,
     this.isCompleted = const Value.absent(),
     required String projectId,
     this.createAt = const Value.absent(),
@@ -4293,10 +4320,12 @@ class TBoardCompanion extends UpdateCompanion<TBoardData> {
     this.rowid = const Value.absent(),
   })  : boardId = Value(boardId),
         name = Value(name),
+        orderNo = Value(orderNo),
         projectId = Value(projectId);
   static Insertable<TBoardData> custom({
     Expression<String>? boardId,
     Expression<String>? name,
+    Expression<int>? orderNo,
     Expression<bool>? isCompleted,
     Expression<String>? projectId,
     Expression<String>? createAt,
@@ -4306,6 +4335,7 @@ class TBoardCompanion extends UpdateCompanion<TBoardData> {
     return RawValuesInsertable({
       if (boardId != null) 'board_id': boardId,
       if (name != null) 'name': name,
+      if (orderNo != null) 'order_no': orderNo,
       if (isCompleted != null) 'is_completed': isCompleted,
       if (projectId != null) 'project_id': projectId,
       if (createAt != null) 'create_at': createAt,
@@ -4317,6 +4347,7 @@ class TBoardCompanion extends UpdateCompanion<TBoardData> {
   TBoardCompanion copyWith(
       {Value<String>? boardId,
       Value<String>? name,
+      Value<int>? orderNo,
       Value<bool>? isCompleted,
       Value<String>? projectId,
       Value<String>? createAt,
@@ -4325,6 +4356,7 @@ class TBoardCompanion extends UpdateCompanion<TBoardData> {
     return TBoardCompanion(
       boardId: boardId ?? this.boardId,
       name: name ?? this.name,
+      orderNo: orderNo ?? this.orderNo,
       isCompleted: isCompleted ?? this.isCompleted,
       projectId: projectId ?? this.projectId,
       createAt: createAt ?? this.createAt,
@@ -4341,6 +4373,9 @@ class TBoardCompanion extends UpdateCompanion<TBoardData> {
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (orderNo.present) {
+      map['order_no'] = Variable<int>(orderNo.value);
     }
     if (isCompleted.present) {
       map['is_completed'] = Variable<bool>(isCompleted.value);
@@ -4365,6 +4400,7 @@ class TBoardCompanion extends UpdateCompanion<TBoardData> {
     return (StringBuffer('TBoardCompanion(')
           ..write('boardId: $boardId, ')
           ..write('name: $name, ')
+          ..write('orderNo: $orderNo, ')
           ..write('isCompleted: $isCompleted, ')
           ..write('projectId: $projectId, ')
           ..write('createAt: $createAt, ')
@@ -4405,6 +4441,12 @@ class $TTaskTable extends TTask with TableInfo<$TTaskTable, TTaskData> {
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 500),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
+  static const VerificationMeta _orderNoMeta =
+      const VerificationMeta('orderNo');
+  @override
+  late final GeneratedColumn<int> orderNo = GeneratedColumn<int>(
+      'order_no', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _startDateMeta =
       const VerificationMeta('startDate');
   @override
@@ -4457,6 +4499,7 @@ class $TTaskTable extends TTask with TableInfo<$TTaskTable, TTaskData> {
         taskId,
         name,
         description,
+        orderNo,
         startDate,
         endDate,
         dueDate,
@@ -4493,6 +4536,12 @@ class $TTaskTable extends TTask with TableInfo<$TTaskTable, TTaskData> {
               data['description']!, _descriptionMeta));
     } else if (isInserting) {
       context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('order_no')) {
+      context.handle(_orderNoMeta,
+          orderNo.isAcceptableOrUnknown(data['order_no']!, _orderNoMeta));
+    } else if (isInserting) {
+      context.missing(_orderNoMeta);
     }
     if (data.containsKey('start_date')) {
       context.handle(_startDateMeta,
@@ -4537,6 +4586,8 @@ class $TTaskTable extends TTask with TableInfo<$TTaskTable, TTaskData> {
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      orderNo: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}order_no'])!,
       startDate: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}start_date'])!,
       endDate: attachedDatabase.typeMapping
@@ -4562,6 +4613,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
   final String taskId;
   final String name;
   final String description;
+  final int orderNo;
   final String startDate;
   final String? endDate;
   final String dueDate;
@@ -4572,6 +4624,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
       {required this.taskId,
       required this.name,
       required this.description,
+      required this.orderNo,
       required this.startDate,
       this.endDate,
       required this.dueDate,
@@ -4584,6 +4637,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
     map['task_id'] = Variable<String>(taskId);
     map['name'] = Variable<String>(name);
     map['description'] = Variable<String>(description);
+    map['order_no'] = Variable<int>(orderNo);
     map['start_date'] = Variable<String>(startDate);
     if (!nullToAbsent || endDate != null) {
       map['end_date'] = Variable<String>(endDate);
@@ -4600,6 +4654,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
       taskId: Value(taskId),
       name: Value(name),
       description: Value(description),
+      orderNo: Value(orderNo),
       startDate: Value(startDate),
       endDate: endDate == null && nullToAbsent
           ? const Value.absent()
@@ -4618,6 +4673,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
       taskId: serializer.fromJson<String>(json['taskId']),
       name: serializer.fromJson<String>(json['name']),
       description: serializer.fromJson<String>(json['description']),
+      orderNo: serializer.fromJson<int>(json['orderNo']),
       startDate: serializer.fromJson<String>(json['startDate']),
       endDate: serializer.fromJson<String?>(json['endDate']),
       dueDate: serializer.fromJson<String>(json['dueDate']),
@@ -4633,6 +4689,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
       'taskId': serializer.toJson<String>(taskId),
       'name': serializer.toJson<String>(name),
       'description': serializer.toJson<String>(description),
+      'orderNo': serializer.toJson<int>(orderNo),
       'startDate': serializer.toJson<String>(startDate),
       'endDate': serializer.toJson<String?>(endDate),
       'dueDate': serializer.toJson<String>(dueDate),
@@ -4646,6 +4703,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
           {String? taskId,
           String? name,
           String? description,
+          int? orderNo,
           String? startDate,
           Value<String?> endDate = const Value.absent(),
           String? dueDate,
@@ -4656,6 +4714,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
         taskId: taskId ?? this.taskId,
         name: name ?? this.name,
         description: description ?? this.description,
+        orderNo: orderNo ?? this.orderNo,
         startDate: startDate ?? this.startDate,
         endDate: endDate.present ? endDate.value : this.endDate,
         dueDate: dueDate ?? this.dueDate,
@@ -4669,6 +4728,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
           ..write('taskId: $taskId, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
+          ..write('orderNo: $orderNo, ')
           ..write('startDate: $startDate, ')
           ..write('endDate: $endDate, ')
           ..write('dueDate: $dueDate, ')
@@ -4680,8 +4740,8 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
   }
 
   @override
-  int get hashCode => Object.hash(taskId, name, description, startDate, endDate,
-      dueDate, boardId, createAt, updateAt);
+  int get hashCode => Object.hash(taskId, name, description, orderNo, startDate,
+      endDate, dueDate, boardId, createAt, updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4689,6 +4749,7 @@ class TTaskData extends DataClass implements Insertable<TTaskData> {
           other.taskId == this.taskId &&
           other.name == this.name &&
           other.description == this.description &&
+          other.orderNo == this.orderNo &&
           other.startDate == this.startDate &&
           other.endDate == this.endDate &&
           other.dueDate == this.dueDate &&
@@ -4701,6 +4762,7 @@ class TTaskCompanion extends UpdateCompanion<TTaskData> {
   final Value<String> taskId;
   final Value<String> name;
   final Value<String> description;
+  final Value<int> orderNo;
   final Value<String> startDate;
   final Value<String?> endDate;
   final Value<String> dueDate;
@@ -4712,6 +4774,7 @@ class TTaskCompanion extends UpdateCompanion<TTaskData> {
     this.taskId = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
+    this.orderNo = const Value.absent(),
     this.startDate = const Value.absent(),
     this.endDate = const Value.absent(),
     this.dueDate = const Value.absent(),
@@ -4724,6 +4787,7 @@ class TTaskCompanion extends UpdateCompanion<TTaskData> {
     required String taskId,
     required String name,
     required String description,
+    required int orderNo,
     this.startDate = const Value.absent(),
     this.endDate = const Value.absent(),
     required String dueDate,
@@ -4734,12 +4798,14 @@ class TTaskCompanion extends UpdateCompanion<TTaskData> {
   })  : taskId = Value(taskId),
         name = Value(name),
         description = Value(description),
+        orderNo = Value(orderNo),
         dueDate = Value(dueDate),
         boardId = Value(boardId);
   static Insertable<TTaskData> custom({
     Expression<String>? taskId,
     Expression<String>? name,
     Expression<String>? description,
+    Expression<int>? orderNo,
     Expression<String>? startDate,
     Expression<String>? endDate,
     Expression<String>? dueDate,
@@ -4752,6 +4818,7 @@ class TTaskCompanion extends UpdateCompanion<TTaskData> {
       if (taskId != null) 'task_id': taskId,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
+      if (orderNo != null) 'order_no': orderNo,
       if (startDate != null) 'start_date': startDate,
       if (endDate != null) 'end_date': endDate,
       if (dueDate != null) 'due_date': dueDate,
@@ -4766,6 +4833,7 @@ class TTaskCompanion extends UpdateCompanion<TTaskData> {
       {Value<String>? taskId,
       Value<String>? name,
       Value<String>? description,
+      Value<int>? orderNo,
       Value<String>? startDate,
       Value<String?>? endDate,
       Value<String>? dueDate,
@@ -4777,6 +4845,7 @@ class TTaskCompanion extends UpdateCompanion<TTaskData> {
       taskId: taskId ?? this.taskId,
       name: name ?? this.name,
       description: description ?? this.description,
+      orderNo: orderNo ?? this.orderNo,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       dueDate: dueDate ?? this.dueDate,
@@ -4798,6 +4867,9 @@ class TTaskCompanion extends UpdateCompanion<TTaskData> {
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
+    }
+    if (orderNo.present) {
+      map['order_no'] = Variable<int>(orderNo.value);
     }
     if (startDate.present) {
       map['start_date'] = Variable<String>(startDate.value);
@@ -4829,6 +4901,7 @@ class TTaskCompanion extends UpdateCompanion<TTaskData> {
           ..write('taskId: $taskId, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
+          ..write('orderNo: $orderNo, ')
           ..write('startDate: $startDate, ')
           ..write('endDate: $endDate, ')
           ..write('dueDate: $dueDate, ')
@@ -5166,7 +5239,7 @@ class $TTaskDevTable extends TTaskDev
   late final GeneratedColumn<String> devLangId = GeneratedColumn<String>(
       'dev_lang_id', aliasedName, false,
       additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 50),
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(

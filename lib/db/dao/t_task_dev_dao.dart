@@ -41,6 +41,40 @@ class TTaskDevDao extends DatabaseAccessor<StairsDatabase>
     }
   }
 
+  /// プロジェクトごとにタスクで使用されている開発言語を取得
+  /// return {task_dev}, {board}, {task}, {dev_language}
+  Future<List<TypedResult>> getTaskDevListByProjectId({
+    required String projectId,
+  }) async {
+    try {
+      _logger.d('getTaskDevList 通信開始');
+      final query = db.select(db.tTaskDev);
+
+      final response = await query.join([
+        // board
+        innerJoin(
+            db.tBoard,
+            db.tBoard.projectId.equals(projectId) &
+                db.tBoard.boardId.equalsExp(db.tTask.boardId)),
+        // task
+        innerJoin(db.tTask, db.tTask.taskId.equalsExp(db.tTaskDev.taskId)),
+        // dev_language
+        innerJoin(
+          db.tDevLanguage,
+          db.tDevLanguage.devLangId.equalsExp(db.tTaskDev.devLangId),
+        ),
+      ]).get();
+
+      _logger.d('取得件数: ${response.length}');
+      return response;
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('getTaskDevList 通信終了');
+    }
+  }
+
   /// タスク開発言語 追加
   Future<void> insertTaskDev({
     required TTaskDevCompanion taskDevData,

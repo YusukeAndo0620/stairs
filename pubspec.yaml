@@ -50,6 +50,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.18
   dev: ^1.0.0
   toastification: ^1.1.0
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:

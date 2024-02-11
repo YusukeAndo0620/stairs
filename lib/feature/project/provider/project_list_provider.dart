@@ -1,4 +1,5 @@
 import 'package:stairs/db/provider/database_provider.dart';
+import 'package:stairs/feature/common/provider/account_provider.dart';
 import 'package:stairs/feature/project/model/project_list_item_model.dart';
 import 'package:stairs/feature/project/repository/project_repository.dart';
 import 'package:stairs/loom/loom_package.dart';
@@ -44,7 +45,14 @@ class ProjectList extends _$ProjectList {
     final repository = ref.read(projectRepositoryProvider);
     List<ProjectListItemModel> list = [];
     try {
-      list = await repository.getProjectList() ?? [];
+      final account = ref.watch(accountProvider(db: database));
+      if (account.value == null) {
+        _logger.d('アカウント情報が取得できていません。');
+        return list;
+      }
+      list = await repository.getProjectList(
+              accountId: account.value!.accountId) ??
+          [];
     } catch (e) {
       _logger.e(e);
     }

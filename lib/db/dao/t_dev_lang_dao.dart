@@ -21,7 +21,7 @@ class TDevLangDao extends DatabaseAccessor<StairsDatabase>
       final query = db.select(db.tDevLanguage)
         ..where((tbl) => tbl.accountId.equals(accountId));
       final response = await query.get();
-      _logger.d('取得データ：$response');
+      _logger.d('取得データ：${response.map((e) => e.name).toList()}');
       return response;
     } on Exception catch (exception) {
       _logger.e(exception);

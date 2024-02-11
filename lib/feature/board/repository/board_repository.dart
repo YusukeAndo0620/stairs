@@ -61,6 +61,8 @@ class BoardRepository {
           ),
         );
       }
+      // 表示順で並び替え
+      responseData.sort((a, b) => a.orderNo.compareTo(b.orderNo));
 
       return responseData;
     } on Exception catch (exception) {
@@ -190,6 +192,7 @@ class BoardRepository {
         title: taskData[i].name,
         description: taskData[i].description,
         devLangId: devMap[taskData[i].taskId] ?? '',
+        orderNo: taskData[i].orderNo,
         startDate: DateTime.parse(taskData[i].startDate).toLocal(),
         doneDate: taskData[i].endDate != null
             ? DateTime.parse(taskData[i].endDate!).toLocal()
@@ -200,14 +203,18 @@ class BoardRepository {
       taskList.add(taskItem);
     }
 
+    // 表示順で並び替え
+    taskList.sort((a, b) => a.orderNo.compareTo(b.orderNo));
+
     return BoardModel(
         projectId: boardData.projectId,
         boardId: boardData.boardId,
         title: boardData.name,
+        orderNo: boardData.orderNo,
         taskItemList: taskList);
   }
 
-// プロジェクト詳細 model to entity
+  // プロジェクト詳細 model to entity
   TBoardCompanion _convertBoardModelToEntity({
     required BoardModel boardModel,
   }) {

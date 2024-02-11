@@ -36,11 +36,11 @@ class ProjectListItemModel {
   @override
   String toString() {
     return '''
-      ProjectListItemModel{
+
+      ProjectListItemModel {
         project_id: $projectId, 
         project_name: $projectName, 
         theme_color_model: $themeColorModel,
-      }
-    ''';
+      }''';
   }
 }

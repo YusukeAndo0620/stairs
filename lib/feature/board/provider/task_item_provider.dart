@@ -16,6 +16,7 @@ class TaskItem extends _$TaskItem {
         title: '',
         description: '',
         devLangId: '',
+        orderNo: 1,
         startDate: DateTime.now(),
         dueDate: DateTime.now().add(const Duration(days: 7)),
         labelList: [],
@@ -28,6 +29,7 @@ class TaskItem extends _$TaskItem {
       title: '',
       description: '',
       devLangId: '',
+      orderNo: 1,
       startDate: DateTime.now(),
       dueDate: DateTime.now().add(const Duration(days: 7)),
       labelList: [],
@@ -66,8 +68,12 @@ class TaskItem extends _$TaskItem {
     state = state.copyWith(startDate: startDate);
   }
 
-  void updateDevLang({required String? devLangId}) {
+  void updateDevLang({required String devLangId}) {
     state = state.copyWith(devLangId: devLangId);
+  }
+
+  void updateOrderNo({required int orderNo}) {
+    state = state.copyWith(orderNo: orderNo);
   }
 
   void updateDueDate({required DateTime dueDate}) {

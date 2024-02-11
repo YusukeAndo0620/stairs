@@ -43,13 +43,29 @@ class TDevProgressRelDao extends DatabaseAccessor<StairsDatabase>
   }) async {
     try {
       _logger.d('insertDevProgress 通信開始');
-      _logger.d('devProgressData:  $devProgressData');
+      _logger.d('devProgressData: $devProgressData');
       await db.into(db.tDevProgressRel).insert(devProgressData);
     } on Exception catch (exception) {
       _logger.e(exception);
       rethrow;
     } finally {
       _logger.d('insertDevProgress 通信終了');
+    }
+  }
+
+  /// 開発工程 更新
+  Future<void> updateDevProgress({
+    required TDevProgressRelCompanion devProgressData,
+  }) async {
+    try {
+      _logger.d('updateDevProgress 通信開始');
+      _logger.d('devProgressData: $devProgressData');
+      await db.update(db.tDevProgressRel).replace(devProgressData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('updateDevProgress 通信終了');
     }
   }
 

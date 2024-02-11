@@ -38,13 +38,29 @@ class TOsInfoDao extends DatabaseAccessor<StairsDatabase>
   }) async {
     try {
       _logger.d('insertOs 通信開始');
-      _logger.d('osData:  $osData');
+      _logger.d('osData: $osData');
       await db.into(db.tOsInfo).insert(osData);
     } on Exception catch (exception) {
       _logger.e(exception);
       rethrow;
     } finally {
       _logger.d('insertOs 通信終了');
+    }
+  }
+
+  /// OS 更新
+  Future<void> updateOs({
+    required TOsInfoCompanion osData,
+  }) async {
+    try {
+      _logger.d('updateOs 通信開始');
+      _logger.d('osData: $osData');
+      await db.update(db.tOsInfo).replace(osData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('updateOs 通信終了');
     }
   }
 

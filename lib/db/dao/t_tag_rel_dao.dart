@@ -29,7 +29,7 @@ class TTagRelDao extends DatabaseAccessor<StairsDatabase>
         // カラー
         innerJoin(
           db.mColor,
-          db.mColor.id.equalsExp(db.tTag.colorId),
+          db.mColor.id.equalsExp(db.tTagRel.colorId),
         ),
       ]).get();
       _logger.d('取得データ：$response');
@@ -49,8 +49,7 @@ class TTagRelDao extends DatabaseAccessor<StairsDatabase>
     try {
       _logger.d('getTagList 通信開始');
       final query = db.select(db.tTagRel)
-        ..where(
-            (tbl) =>  tbl.id.equals(tagRelId));
+        ..where((tbl) => tbl.id.equals(tagRelId));
 
       final response = await query.join([
         innerJoin(
@@ -89,7 +88,40 @@ class TTagRelDao extends DatabaseAccessor<StairsDatabase>
     }
   }
 
+  /// タグ 更新
+  Future<void> updateTag({
+    required TTagRelCompanion tagData,
+  }) async {
+    try {
+      _logger.d('updateTag 通信開始');
+      _logger.d('tagData: $tagData');
+      await db.update(db.tTagRel).replace(tagData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('updateTag 通信終了');
+    }
+  }
+
   /// タグ 削除
+  Future<void> deleteTagByKey({
+    required int id,
+  }) async {
+    try {
+      _logger.d('deleteTagByKey 通信開始');
+      _logger.d('id: $id');
+      final query = db.delete(db.tTagRel)..where((tbl) => tbl.id.equals(id));
+      await query.go();
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('deleteTagByKey 通信終了');
+    }
+  }
+
+  /// タグ 削除（projectId)
   Future<void> deleteTagByProjectId({
     required String projectId,
   }) async {
@@ -109,6 +141,7 @@ class TTagRelDao extends DatabaseAccessor<StairsDatabase>
 
   // Tag rel model to entity
   TTagRelCompanion? convertTagToEntity({
+    int? id,
     required String projectId,
     required ColorLabelModel model,
   }) {
@@ -117,6 +150,7 @@ class TTagRelDao extends DatabaseAccessor<StairsDatabase>
       return null;
     }
     return TTagRelCompanion(
+      id: id != null ? Value(id) : const Value.absent(),
       colorId: Value(model.colorModel.id),
       projectId: Value(projectId),
       tagId: Value(int.parse(model.id)),

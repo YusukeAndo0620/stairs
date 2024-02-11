@@ -27,8 +27,8 @@ const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
 const _kContentMargin = EdgeInsets.only(
   top: 24,
   bottom: 48.0,
-  left: 0.0,
-  right: 10.0,
+  left: 20.0,
+  right: 20.0,
 );
 final _logger = stairsLogger(name: 'board_card');
 
@@ -64,6 +64,9 @@ class _BoardCardState extends ConsumerState<BoardCard> {
 
   // タスクが追加された後、リストの最下部まで移動するかどうか
   bool _isMovingLast = false;
+
+  // ドラッグできる状態かどうかを管理
+  bool _isMovingReady = false;
 
   final _scrollController = ScrollController();
   final boardCardKey = GlobalKey<_BoardCardState>();
@@ -126,6 +129,10 @@ class _BoardCardState extends ConsumerState<BoardCard> {
       key: ValueKey(widget.boardId),
       onMove: (details) {
         _logger.d('[event] onMove {board id:${widget.boardId}}');
+        if (!_isMovingReady) {
+          _logger.d('ドラッグの準備が完了していません。');
+          return;
+        }
 
         // ポジション
         final positionState = ref.watch(boardPositionProvider);
@@ -172,14 +179,26 @@ class _BoardCardState extends ConsumerState<BoardCard> {
 
           dragItemNotifier.init();
         }
+        setState(() {
+          _isMovingReady = false;
+        });
       },
-      onLeave: (data) {},
+      onLeave: (data) {
+        setState(() {
+          _isMovingReady = false;
+        });
+      },
       onWillAccept: (data) {
         if (dragItemState.boardId != widget.boardId) {
           final dragItemNotifier = ref.read(dragItemProvider.notifier);
           dragItemNotifier.setItem(
             boardId: widget.boardId,
           );
+        }
+        if (!_isMovingReady) {
+          setState(() {
+            _isMovingReady = true;
+          });
         }
         return true;
       },
@@ -255,6 +274,7 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                                   title: taskItemState.title,
                                   description: taskItemState.description,
                                   devLangId: taskItemState.devLangId,
+                                  orderNo: taskItemState.orderNo,
                                   startDate: taskItemState.startDate,
                                   dueDate: taskItemState.dueDate,
                                   labelList: taskItemState.labelList,
@@ -272,11 +292,14 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                                   .notifier);
 
                               dragItemNotifier.setItem(
-                                  boardId: item.boardId, draggingItem: item);
+                                boardId: item.boardId,
+                                draggingItem: item,
+                              );
 
                               boardNotifier.replaceShrinkItem(
                                 boardId: widget.boardId,
                                 taskItemId: item.taskItemId,
+                                orderNo: item.orderNo,
                               );
                             },
                             onDragUpdate: (detail) async {},
@@ -306,6 +329,9 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                                   draggingItem: dragItemState.draggingItem!);
 
                               dragItemNotifier.init();
+                              setState(() {
+                                _isMovingReady = false;
+                              });
                             },
                           ),
                       ],

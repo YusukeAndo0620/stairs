@@ -5,8 +5,10 @@ export 'package:intl/intl.dart' hide TextDirection;
 export 'package:dotted_border/dotted_border.dart';
 export 'package:badges/badges.dart';
 export 'package:dio/dio.dart';
-export 'dart:convert';
+export 'package:equatable/equatable.dart';
 export 'package:stairs/loom/screen_id.dart';
+
+export 'dart:convert';
 export 'stairs_logger.dart';
 export 'theme.dart';
 export 'loom_theme_data.dart';

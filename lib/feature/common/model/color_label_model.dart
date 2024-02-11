@@ -42,12 +42,12 @@ class ColorLabelModel {
   @override
   String toString() {
     return '''
+
       ColorLabelModel{
         id: $id,
         name: $labelName,
         is_read_only: ${isReadOnly.parseString},
         color_model: $colorModel,
-      }
-    ''';
+      }''';
   }
 }

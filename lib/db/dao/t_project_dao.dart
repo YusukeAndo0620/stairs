@@ -13,10 +13,12 @@ class TProjectDao extends DatabaseAccessor<StairsDatabase>
   final _logger = stairsLogger(name: 't_project_dao');
 
   /// プロジェクト一覧取得
-  Future<List<TypedResult>> getProjectList() async {
+  Future<List<TypedResult>> getProjectList({required String accountId}) async {
     try {
       _logger.d('getProjectList 通信開始');
-      final response = await db.select(db.tProject).join(
+      final query = db.select(db.tProject)
+        ..where((tbl) => tbl.accountId.equals(accountId));
+      final response = await query.join(
         [
           innerJoin(db.mColor, db.mColor.id.equalsExp(db.tProject.colorId)),
         ],
@@ -68,7 +70,7 @@ class TProjectDao extends DatabaseAccessor<StairsDatabase>
   }) async {
     try {
       _logger.d('insertProject 通信開始');
-      _logger.d('projectData:  $projectData');
+      _logger.d('projectData: $projectData');
       await db.into(db.tProject).insert(projectData);
     } on Exception catch (exception) {
       _logger.e(exception);
@@ -84,7 +86,7 @@ class TProjectDao extends DatabaseAccessor<StairsDatabase>
   }) async {
     try {
       _logger.d('updateProject 通信開始');
-      _logger.d('projectData:  $projectData');
+      _logger.d('projectData: $projectData');
       await db.update(db.tProject).replace(projectData);
     } on Exception catch (exception) {
       _logger.e(exception);

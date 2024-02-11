@@ -8,7 +8,8 @@ import 'package:toastification/toastification.dart';
 import 'package:stairs/feature/common/provider/view/toast_msg_provider.dart';
 
 final _logger = stairsLogger(name: 'display_contents');
-
+const _kAppBarTitle = 'Stairs';
+const _kAppBarHeight = 40.0;
 const _kFooterButtons = [
   _FooterInfo(
     screenId: ScreenId.board,
@@ -31,8 +32,6 @@ const _kFooterButtons = [
     buildWidget: Text(''),
   ),
 ];
-
-const _kAppBarTitle = 'Stairs';
 
 class DisplayContents extends ConsumerStatefulWidget {
   const DisplayContents({super.key, required this.screenId});
@@ -96,6 +95,7 @@ class _DisplayContentsState extends ConsumerState<DisplayContents> {
     );
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: _kAppBarHeight,
         backgroundColor: theme.colorBgLayer1,
         title: Text(
           _kAppBarTitle,

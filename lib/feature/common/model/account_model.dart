@@ -46,6 +46,12 @@ class AccountModel {
 
   @override
   String toString() {
-    return 'AccountModel{account_id: $accountId, address: $address, plan_type: ${planType.planValue}}';
+    return '''
+    
+    AccountModel {
+      account_id: $accountId,
+      address: $address,
+      plan_type: ${planType.planValue},
+    }''';
   }
 }

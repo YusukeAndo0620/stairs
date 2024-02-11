@@ -35,13 +35,29 @@ class TDbDao extends DatabaseAccessor<StairsDatabase> with _$TDbDaoMixin {
   }) async {
     try {
       _logger.d('insertDb 通信開始');
-      _logger.d('dbData:  $dbData');
+      _logger.d('dbData: $dbData');
       await db.into(db.tDb).insert(dbData);
     } on Exception catch (exception) {
       _logger.e(exception);
       rethrow;
     } finally {
       _logger.d('insertDb 通信終了');
+    }
+  }
+
+  /// DB 更新
+  Future<void> updateDb({
+    required TDbCompanion dbData,
+  }) async {
+    try {
+      _logger.d('updateDb 通信開始');
+      _logger.d('dbData: $dbData');
+      await db.update(db.tDb).replace(dbData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('updateDb 通信終了');
     }
   }
 

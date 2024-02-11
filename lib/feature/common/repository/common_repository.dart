@@ -30,7 +30,7 @@ class CommonRepository {
     try {
       _logger.i('getColorList 通信開始');
       final response = await db.select(db.mColor).get();
-      _logger.i('取得データ：$response');
+      _logger.i('取得数：${response.length}件');
       final responseData = _convertMColorToModel(colorData: response);
 
       return responseData;
@@ -49,6 +49,7 @@ class CommonRepository {
       _logger.i('getDevLanguageList 通信開始');
       final tDevLangList =
           await db.tDevLangDao.getDevLangList(accountId: accountId);
+      _logger.i('取得数：${tDevLangList.length}件');
       List<LabelModel> responseData = [];
       for (final item in tDevLangList) {
         responseData.add(LabelModel(id: item.devLangId, labelName: item.name));
@@ -68,7 +69,7 @@ class CommonRepository {
     try {
       _logger.i('getDevProgressList 通信開始');
       final response = await db.select(db.mDevProgressList).get();
-      _logger.i('取得データ：$response');
+      _logger.i('取得数：${response.length}件');
       final responseData =
           _convertMDevProgressToModel(devProgressList: response);
 
@@ -87,7 +88,7 @@ class CommonRepository {
     try {
       _logger.i('getDefaultTagList 通信開始');
       final response = await db.tTagDao.getDefaultTagList(accountId: accountId);
-
+      _logger.i('取得数：${response.length}件');
       final responseData = _convertTTagToModel(
         tagList: response.map((e) => e.readTable(db.tTag)).toList(),
         tagColorData: response.map((e) => e.readTable(db.mColor)).toList(),

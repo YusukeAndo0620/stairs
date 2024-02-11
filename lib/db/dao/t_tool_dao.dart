@@ -36,13 +36,29 @@ class TToolDao extends DatabaseAccessor<StairsDatabase> with _$TToolDaoMixin {
   }) async {
     try {
       _logger.d('insertTool 通信開始');
-      _logger.d('toolData:  $toolData');
+      _logger.d('toolData: $toolData');
       await db.into(db.tTool).insert(toolData);
     } on Exception catch (exception) {
       _logger.e(exception);
       rethrow;
     } finally {
       _logger.d('insertTool 通信終了');
+    }
+  }
+
+  /// ツール 更新
+  Future<void> updateTool({
+    required TToolCompanion toolData,
+  }) async {
+    try {
+      _logger.d('updateTool 通信開始');
+      _logger.d('toolData: $toolData');
+      await db.update(db.tTool).replace(toolData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('updateTool 通信終了');
     }
   }
 
