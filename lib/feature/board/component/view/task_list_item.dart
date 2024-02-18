@@ -10,11 +10,14 @@ const _kEllipsisTxt = '...';
 const _kBorderWidth = 1.0;
 const _kTitleMaxLine = 2;
 const _kTitleAndLabelSpace = 5.0;
-const kDraggedItemHeight = 100.0;
+const kDraggedItemHeight = 90.0;
 
 const _kContentPadding = EdgeInsets.all(8.0);
 const _kLabelContentPadding = EdgeInsets.only(right: 8.0);
 const _kContentMargin = EdgeInsets.symmetric(vertical: 4.0);
+
+const _kIconAndContentsSpace = 4.0;
+const _kIconSize = 16.0;
 
 final _logger = stairsLogger(name: 'task_list_item');
 
@@ -139,10 +142,10 @@ class _TaskListItemState extends ConsumerState<TaskListItem> {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.4,
+                    width: MediaQuery.of(context).size.width * 0.55,
                     child: Text(
                       taskItemState.title,
                       style: theme.textStyleBody,
@@ -197,7 +200,7 @@ class _DraggingListItem extends StatelessWidget {
     return Transform.rotate(
       angle: 5 * pi / 180,
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.7,
+        width: MediaQuery.of(context).size.width * 0.8,
         height: kDraggedItemHeight,
         padding: _kContentPadding,
         margin: _kContentMargin,
@@ -218,12 +221,12 @@ class _DraggingListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.4,
+                  width: MediaQuery.of(context).size.width * 0.55,
                   child: Text(
                     title,
                     style: theme.textStyleBody,
                     overflow: TextOverflow.ellipsis,
-                    maxLines: _kTitleMaxLine,
+                    maxLines: 1,
                   ),
                 ),
                 _DueDateLabel(
@@ -309,14 +312,26 @@ class _DueDateLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
-    return LabelTip(
-      type: LabelTipType.square,
-      label: getFormattedDate(dueDate),
-      textColor: dueDate.difference(DateTime.now()).inDays < 3
-          ? theme.colorDangerBgDefault
-          : theme.colorFgDefault,
-      themeColor: theme.colorDisabled,
-      iconData: Icons.date_range,
+    final color = dueDate.difference(DateTime.now()).inDays < 3
+        ? theme.colorDangerBgDefault
+        : theme.colorFgDefault;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          Icons.date_range,
+          size: _kIconSize,
+          color: color,
+        ),
+        const SizedBox(
+          width: _kIconAndContentsSpace,
+        ),
+        Text(
+          getFormattedDate(dueDate),
+          style: theme.textStyleFootnote.copyWith(color: color),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 }

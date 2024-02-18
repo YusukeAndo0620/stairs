@@ -10,7 +10,9 @@ class LoomThemeData with Diagnosticable {
     required this.colorPrimary,
     required this.colorSecondary,
     required this.colorDisabled,
+    required this.colorWarning,
     required this.colorDangerBgDefault,
+    required this.colorProgress,
     required this.colorFgDefault,
     required this.colorFgDefaultWhite,
     required this.colorFgDisabled,
@@ -31,7 +33,8 @@ class LoomThemeData with Diagnosticable {
   final Color colorSecondary;
   final Color colorDisabled;
   final Color colorDangerBgDefault;
-
+  final Color colorWarning;
+  final Color colorProgress;
   final Color colorFgDefault;
   final Color colorFgDefaultWhite;
   final Color colorFgDisabled;
@@ -76,6 +79,16 @@ class LoomThemeData with Diagnosticable {
       colorDangerBgDefault: Color.lerp(
         a.colorDangerBgDefault,
         b.colorDangerBgDefault,
+        t,
+      )!,
+      colorWarning: Color.lerp(
+        a.colorWarning,
+        b.colorWarning,
+        t,
+      )!,
+      colorProgress: Color.lerp(
+        a.colorProgress,
+        b.colorProgress,
         t,
       )!,
       colorFgDefault: Color.lerp(

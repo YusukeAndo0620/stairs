@@ -1,4 +1,3 @@
-import 'package:stairs/feature/status/model/task_status_model.dart';
 import 'package:stairs/loom/loom_package.dart';
 
 class LabelStatusModel {
@@ -6,42 +5,38 @@ class LabelStatusModel {
     required this.labelId,
     required this.labelName,
     required this.themeColorModel,
-    required this.taskStatusList,
+    required this.taskIdList,
   });
 
   final String labelId;
   final String labelName;
   final ColorModel themeColorModel;
-  final List<TaskStatusModel> taskStatusList;
+  final List<String> taskIdList;
 
   LabelStatusModel copyWith({
     String? labelId,
     String? labelName,
     ColorModel? themeColorModel,
-    List<TaskStatusModel>? taskStatusList,
+    List<String>? taskIdList,
   }) =>
       LabelStatusModel(
         labelId: labelId ?? this.labelId,
         labelName: labelName ?? this.labelName,
         themeColorModel: themeColorModel ?? this.themeColorModel,
-        taskStatusList: taskStatusList ?? this.taskStatusList,
+        taskIdList: taskIdList ?? this.taskIdList,
       );
 
   factory LabelStatusModel.fromJson(dynamic json) {
     final labelId = json['label_id'];
     final labelName = json['label_name'];
     final themeColorModel = ColorModel.fromJson(json['theme_color_model']);
-    final List<TaskStatusModel> taskList = [];
-    for (final item in json['task_status_list']) {
-      final taskStatus = TaskStatusModel.fromJson(item);
-      taskList.add(taskStatus);
-    }
+    final taskIdList = json['task_id_list'];
 
     final model = LabelStatusModel(
       labelId: labelId,
       labelName: labelName,
       themeColorModel: themeColorModel,
-      taskStatusList: taskList,
+      taskIdList: taskIdList,
     );
 
     return model;
@@ -52,7 +47,7 @@ class LabelStatusModel {
     data['label_id'] = labelId;
     data['label_name'] = labelName;
     data['theme_color_model'] = themeColorModel.toJson();
-    data['task_status_list'] = taskStatusList.map((e) => e.toJson()).toList();
+    data['task_id_list'] = taskIdList;
 
     return data;
   }
@@ -65,7 +60,7 @@ class LabelStatusModel {
         label_id: $labelId, 
         label_name: $labelName, 
         theme_color_model: ${themeColorModel.toString()},
-        task_status_list: ${taskStatusList.map((e) => e.toString()).toList()},
+        task_id_list: $taskIdList,
       }''';
   }
 }

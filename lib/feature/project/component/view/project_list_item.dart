@@ -34,7 +34,7 @@ class _ProjectListItemState extends State<ProjectListItem> {
     final theme = LoomTheme.of(context);
     return ListTile(
       leading: Icon(
-        Icons.table_chart,
+        theme.icons.project,
         color: widget.themeColor,
         size: _kProjectIconSize,
       ),

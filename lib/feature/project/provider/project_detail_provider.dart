@@ -107,20 +107,21 @@ class ProjectDetail extends _$ProjectDetail {
       await toastMsgNotifier.showToast(
           type: MessageType.error, msg: msgList['err001']);
     } finally {
-      _logger.d('プロジェクト更新 終了');
+      _logger.d('プロジェクト作成 終了');
+      _setInitialProjectDetailModel();
     }
   }
 
-  Future<void> updateProject({required List<ProjectUpdateParam> updateParamList}) async {
+  Future<void> updateProject(
+      {required List<ProjectUpdateParam> updateParamList}) async {
     _logger.d('プロジェクト更新 開始');
     if (state.value == null) {
       _logger.d('stateに値がないため処理終了');
       return;
     }
-    if(updateParamList.isEmpty){
+    if (updateParamList.isEmpty) {
       _logger.d('更新対象がないため処理終了');
       return;
-
     }
     _logger.d('projectId: ${state.value!.projectId}');
     final database = ref.watch(databaseProvider);
@@ -132,7 +133,8 @@ class ProjectDetail extends _$ProjectDetail {
     // API通信開始
     final repository = ref.read(projectRepositoryProvider);
     try {
-      await repository.updateProject(detailModel: state.value!, updateTargetList: updateParamList);
+      await repository.updateProject(
+          detailModel: state.value!, updateTargetList: updateParamList);
       await toastMsgNotifier.showToast(
           type: MessageType.success, msg: msgList['scc002']);
     } catch (e) {

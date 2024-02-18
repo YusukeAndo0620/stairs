@@ -14,6 +14,8 @@ class Loom {
     colorSecondary: colorSecondary,
     colorDisabled: colorDisabled,
     colorDangerBgDefault: colorDangerBgDefault,
+    colorWarning: colorWarning,
+    colorProgress: colorProgress,
     colorFgDefault: colorFgDefault,
     colorFgDefaultWhite: colorFgDefaultWhite,
     colorFgDisabled: colorFgDisabled,

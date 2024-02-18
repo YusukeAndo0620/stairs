@@ -1,8 +1,8 @@
 import 'package:stairs/loom/loom_package.dart';
 
 const _kBorderWidth = 1.0;
-const _kSpaceHeight = 20.0;
-const _kTitleAndIconSpace = 8.0;
+const _kSpaceHeight = 8.0;
+const _kTitleAndIconSpace = 4.0;
 const _kIconSize = 16.0;
 
 const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0);
@@ -27,7 +27,7 @@ class TaskCard extends StatelessWidget {
   final String title;
   final HeaderType headerType;
   final int count;
-  final int changedPercent;
+  final double changedPercent;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +88,7 @@ class _Header extends StatelessWidget {
           ),
           Icon(
             headerType == HeaderType.total
-                ? Icons.ac_unit_rounded
+                ? Icons.task
                 : headerType == HeaderType.inProgress
                     ? Icons.access_time
                     : headerType == HeaderType.completed
@@ -108,14 +108,14 @@ class _Content extends StatelessWidget {
     required this.changedPercent,
   });
   final int count;
-  final int changedPercent;
+  final double changedPercent;
 
   @override
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
     final formattedPercent = changedPercent > 0
-        ? "+$changedPercent（1ヶ月前）"
-        : "-$changedPercent（1ヶ月前）";
+        ? "+${getFormattedPercent(percent: changedPercent.isNaN ? 0 : changedPercent.toInt())}（1ヶ月前）"
+        : "${getFormattedPercent(percent: changedPercent.isNaN ? 0 : changedPercent.toInt())}（1ヶ月前）";
     return Container(
       padding: _kContentPadding,
       child: Column(

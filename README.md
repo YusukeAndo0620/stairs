@@ -16,9 +16,42 @@ clone が完了したら、ターミナルで以下のコマンドを実施し�
 3. flutter clean
 4. flutter run(ログ見たいなら、flutter run --verbose)
 
+### Xcode でビルド
+
+1. cocoapods をインストールする。
+   // ドライブ直下で実施。基本 brew コマンドで実施してください。
+   brew install cocoapods
+   // or
+   sudo gem install cocoapods
+
+2. でビルドに失敗する場合、以下のコマンドを実施する。
+   https://flutter.salon/error_warning/flutter-build-ios/
+
+// 本ディレクトリ直下で実施。
+flutter clean
+
+// ios フォルダで実施
+cd ios
+rm -rf Pods Podfile.lock
+pod repo update
+
+// 本ディレクトリ直下で実施。
+cd ../
+flutter pub get
+
+// ios フォルダで実施
+cd ios
+pod install
+
+// 本ディレクトリ直下で実施。
+flutter run
+
+3. 上記で正常にいかない場合、Xcode のキャッシュを削除する。
+   この Mac について > 詳細情報 > ストレージ設定 > デベロッパ > XCode プロジェクトのキャッシュを削除
+
 ## Implementation
 
-# 1.view model には自動生成を使用します。以下のコマンドを実施してください。
+# 1.view model, provider は自動生成を使用しています。以下のコマンドを実施してください。
 
 flutter pub run build_runner build --delete-conflicting-outputs
 

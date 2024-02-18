@@ -8,33 +8,31 @@ import 'package:toastification/toastification.dart';
 import 'package:stairs/feature/common/provider/view/toast_msg_provider.dart';
 
 final _logger = stairsLogger(name: 'display_contents');
-const _kAppBarTitle = 'Stairs';
-const _kAppBarHeight = 40.0;
-const _kFooterButtons = [
-  _FooterInfo(
+
+const footerButtons = [
+  FooterInfo(
     screenId: ScreenId.board,
     title: 'ボード',
-    buildWidget: ProjectScreen(),
   ),
-  _FooterInfo(
+  FooterInfo(
     screenId: ScreenId.status,
     title: 'ステータス',
-    buildWidget: StatusScreen(),
   ),
-  _FooterInfo(
+  FooterInfo(
     screenId: ScreenId.resume,
     title: '経歴書',
-    buildWidget: Text(''),
   ),
-  _FooterInfo(
+  FooterInfo(
     screenId: ScreenId.account,
     title: 'アカウント',
-    buildWidget: Text(''),
   ),
 ];
 
 class DisplayContents extends ConsumerStatefulWidget {
-  const DisplayContents({super.key, required this.screenId});
+  const DisplayContents({
+    super.key,
+    required this.screenId,
+  });
 
   final ScreenId screenId;
   @override
@@ -58,8 +56,6 @@ class _DisplayContentsState extends ConsumerState<DisplayContents> {
   @override
   Widget build(BuildContext context) {
     _logger.i('画面表示 {selectedScreenId: $selectedScreenId}');
-
-    final theme = LoomTheme.of(context);
     // アカウント情報取得
     ref.watch(accountProvider(db: ref.watch(databaseProvider)));
 
@@ -93,52 +89,37 @@ class _DisplayContentsState extends ConsumerState<DisplayContents> {
       // `onError` で何らかのエラーハンドリングが可能（任意）
       onError: (error, stackTrace) => debugPrint('$error'),
     );
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: _kAppBarHeight,
-        backgroundColor: theme.colorBgLayer1,
-        title: Text(
-          _kAppBarTitle,
-          style: theme.textStyleHeading,
+    return switch (selectedScreenId) {
+      ScreenId.board => ProjectScreen(
+          onTapFooterIcon: (index) => _onTapIcon(index: index),
         ),
-      ),
-      body: _kFooterButtons
-          .firstWhere((element) => element.screenId == selectedScreenId)
-          .buildWidget,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _kFooterButtons.indexOf(_kFooterButtons
-            .firstWhere((element) => element.screenId == selectedScreenId)),
-        showUnselectedLabels: true,
-        selectedItemColor: theme.colorPrimary,
-        unselectedItemColor: theme.colorFgDisabled,
-        items: [
-          for (final footerInfo in _kFooterButtons)
-            BottomNavigationBarItem(
-              icon: Icon(footerInfo.screenId.iconData(themeData: theme)),
-              activeIcon: Icon(footerInfo.screenId.iconData(themeData: theme)),
-              label: footerInfo.title,
-              tooltip: footerInfo.title,
-            ),
-        ],
-        onTap: (value) => _onTapIcon(index: value),
-      ),
-    );
+      ScreenId.status =>
+        StatusScreen(onTapFooterIcon: (index) => _onTapIcon(index: index)),
+      ScreenId.resume => ScreenWidget(
+          screenId: ScreenId.resume,
+          buildMainContents: const SizedBox(),
+          onTapFooterIcon: (index) => _onTapIcon(index: index),
+        ),
+      ScreenId.account => ScreenWidget(
+          screenId: ScreenId.account,
+          buildMainContents: const SizedBox(),
+          onTapFooterIcon: (index) => _onTapIcon(index: index),
+        ),
+    };
   }
 
   void _onTapIcon({required int index}) {
     setState(() {
-      selectedScreenId = _kFooterButtons[index].screenId;
+      selectedScreenId = footerButtons[index].screenId;
     });
   }
 }
 
-class _FooterInfo {
-  const _FooterInfo({
+class FooterInfo {
+  const FooterInfo({
     required this.screenId,
     required this.title,
-    required this.buildWidget,
   });
   final ScreenId screenId;
   final String title;
-  final Widget buildWidget;
 }

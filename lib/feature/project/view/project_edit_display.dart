@@ -161,7 +161,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         CardLstItem.input(
                             label: _kProjectNameTitleTxt,
                             iconColor: theme.colorPrimary,
-                            iconData: Icons.assessment,
+                            iconData: theme.icons.project,
                             inputValue: detail.projectName,
                             hintText: _kProjectHintTxt,
                             onSubmitted: (projectName) {
@@ -209,7 +209,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         CardLstItem.input(
                           label: _kIndustryTxt,
                           iconColor: theme.colorPrimary,
-                          iconData: theme.icons.trash,
+                          iconData: theme.icons.industry,
                           inputValue: detail.industry,
                           hintText: _kIndustryHintTxt,
                           onSubmitted: (industry) {
@@ -224,7 +224,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         CardLstItem.input(
                           label: _kDevSizeTxt,
                           iconColor: theme.colorPrimary,
-                          iconData: Icons.group,
+                          iconData: theme.icons.group,
                           inputType: TextInputType.number,
                           inputValue: detail.devSize.toString(),
                           hintText: _kDevSizeHintTxt,
@@ -250,6 +250,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             )
                           ],
                           onTap: () async {
+                            final now = DateTime.now();
                             DateTimeRange? range = await showDateRangePicker(
                               context: context,
                               initialDateRange: DateTimeRange(
@@ -257,7 +258,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                                 end: detail.endDate,
                               ),
                               firstDate: DateTime(1990, 1, 1),
-                              lastDate: DateTime.now(),
+                              lastDate: DateTime(now.year + 5),
                               initialEntryMode: DatePickerEntryMode.input,
                               builder: (context, child) {
                                 return Theme(
@@ -291,7 +292,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         CardLstItem.input(
                           label: _kContentTxt,
                           iconColor: theme.colorPrimary,
-                          iconData: theme.icons.trash,
+                          iconData: theme.icons.description,
                           inputValue: detail.description,
                           hintText: _kContentHintTxt,
                           maxLines: _kContentMaxLines,
@@ -376,7 +377,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         CardLstItem.labeWithIcon(
                           label: _kDevLangTxt,
                           iconColor: theme.colorPrimary,
-                          iconData: theme.icons.resume,
+                          iconData: theme.icons.developers,
                           hintText: _kDevLangHintTxt,
                           itemList: [
                             for (final item in detail.devLanguageList)
@@ -412,7 +413,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         CardLstItem.labeWithIcon(
                           label: _kToolTxt,
                           iconColor: theme.colorPrimary,
-                          iconData: theme.icons.resume,
+                          iconData: theme.icons.tool,
                           hintText: _kToolHintTxt,
                           itemList: [
                             for (final item in detail.toolList)

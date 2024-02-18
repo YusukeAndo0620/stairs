@@ -23,12 +23,12 @@ const _kCancelBtnTxt = 'キャンセル';
 const _kAddBtnTxt = '追加';
 
 const _kAnimatedDuration = Duration(milliseconds: 300);
-const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
+const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0);
 const _kContentMargin = EdgeInsets.only(
   top: 24,
   bottom: 48.0,
-  left: 20.0,
-  right: 20.0,
+  left: 5.0,
+  right: 5.0,
 );
 final _logger = stairsLogger(name: 'board_card');
 
@@ -204,7 +204,6 @@ class _BoardCardState extends ConsumerState<BoardCard> {
       },
       builder: (context, accepted, rejected) {
         return Container(
-          width: MediaQuery.of(context).size.width * 0.7,
           padding: _kContentPadding,
           margin: _kContentMargin,
           decoration: BoxDecoration(

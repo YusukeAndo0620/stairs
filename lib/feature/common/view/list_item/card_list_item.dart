@@ -262,7 +262,7 @@ class _DropDown extends StatelessWidget {
         DropdownMenuItem(
           value: '',
           child: SizedBox(
-            width: MediaQuery.of(context).size.height * 0.32,
+            width: MediaQuery.of(context).size.width * 0.43,
             child: Text(
               _kNoSelectedName,
               style: theme.textStyleBody,
@@ -274,7 +274,7 @@ class _DropDown extends StatelessWidget {
               (item) => DropdownMenuItem(
                 value: item.id,
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.height * 0.32,
+                  width: MediaQuery.of(context).size.width * 0.43,
                   child: Text(
                     item.labelName,
                     style: theme.textStyleBody,
@@ -343,7 +343,7 @@ class _SecondaryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: BoxConstraints(
-          maxWidth: width ?? MediaQuery.of(context).size.width * 0.55),
+          maxWidth: width ?? MediaQuery.of(context).size.width * 0.5),
       child: widget,
     );
   }

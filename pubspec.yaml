@@ -51,6 +51,9 @@ dependencies:
   dev: ^1.0.0
   toastification: ^1.1.0
   equatable: ^2.0.5
+  data_table_2: ^2.5.10
+  percent_indicator: ^4.2.3
+  syncfusion_flutter_charts: ^24.2.6
 
 dev_dependencies:
   flutter_test:

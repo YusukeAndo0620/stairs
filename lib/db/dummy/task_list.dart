@@ -42,6 +42,16 @@ final dummyTaskList = [
     dueDate: Value("2024-02-10 00:00:00"),
     endDate: Value("2024-02-11 00:00:00"),
   ),
+  const TTaskCompanion(
+    boardId: Value("3"),
+    taskId: Value("5"),
+    name: Value("管理者登録画面に禁則文字バリデーション追加"),
+    description: Value("管理者登録画面に禁則文字バリデーション追加"),
+    orderNo: Value(2),
+    startDate: Value("2023-11-26 00:00:00"),
+    dueDate: Value("2023-12-30 00:00:00"),
+    endDate: Value("2024-01-11 00:00:00"),
+  ),
 ];
 
 final dummyTaskTagList = [
@@ -66,12 +76,24 @@ final dummyTaskTagList = [
     tagRelId: Value(4),
   ),
   const TTaskTagCompanion(
+    taskId: Value("2"),
+    tagRelId: Value(11),
+  ),
+  const TTaskTagCompanion(
     taskId: Value("3"),
     tagRelId: Value(5),
   ),
   const TTaskTagCompanion(
     taskId: Value("4"),
     tagRelId: Value(5),
+  ),
+  const TTaskTagCompanion(
+    taskId: Value("4"),
+    tagRelId: Value(7),
+  ),
+  const TTaskTagCompanion(
+    taskId: Value("4"),
+    tagRelId: Value(9),
   ),
 ];
 final dummyTaskDevList = [
@@ -90,5 +112,9 @@ final dummyTaskDevList = [
   const TTaskDevCompanion(
     taskId: Value("4"),
     devLangId: Value(""),
+  ),
+  const TTaskDevCompanion(
+    taskId: Value("5"),
+    devLangId: Value("1e399688-9d4c-4b8e-98d7-6e02af716ab8"),
   ),
 ];

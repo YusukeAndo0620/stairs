@@ -13,7 +13,9 @@ class Status extends _$Status {
 
   @override
   FutureOr<List<ProjectStatusModel>> build() async {
-    return getList();
+    final list = getList();
+    return Future.delayed(const Duration(milliseconds: 800))
+        .then((value) => list);
   }
 
   Future<List<ProjectStatusModel>> getList() async {

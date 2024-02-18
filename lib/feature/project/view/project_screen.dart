@@ -5,27 +5,31 @@ import 'project_list_display.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProjectScreen extends ConsumerWidget {
-  const ProjectScreen({super.key});
+  const ProjectScreen({super.key, required this.onTapFooterIcon});
+  final Function(int) onTapFooterIcon;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final projectListState =
-        ref.watch(projectListProvider);
+    final projectListState = ref.watch(projectListProvider);
 
-    return SizedBox(
-      child: projectListState.when(
-        data: (list) {
-          return list.isEmpty
-              ? const ProjectEmptyDisplay()
-              : ProjectListDisplay(
-                  projectList: list,
-                );
-        },
-        loading: () => const Align(
-          child: CircularProgressIndicator(),
+    return ScreenWidget(
+      screenId: ScreenId.board,
+      buildMainContents: SizedBox(
+        child: projectListState.when(
+          data: (list) {
+            return list.isEmpty
+                ? const ProjectEmptyDisplay()
+                : ProjectListDisplay(
+                    projectList: list,
+                  );
+          },
+          loading: () => const Align(
+            child: CircularProgressIndicator(),
+          ),
+          error: (error, _) => Align(child: Text(error.toString())),
         ),
-        error: (error, _) => Align(child: Text(error.toString())),
       ),
+      onTapFooterIcon: (index) => onTapFooterIcon(index),
     );
   }
 }

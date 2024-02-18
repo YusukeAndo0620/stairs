@@ -10,6 +10,19 @@ String getFormattedCommaSeparated({required int value}) {
 String getFormattedDate(DateTime date) =>
     '${date.year}/${date.month}/${date.day}';
 
+/// yyyy/mm/dd hh:mm 形式に変換
+String getFormattedDateTime(DateTime date) =>
+    '${date.year}/${date.month}/${date.day} ${date.hour}:${date.minute}';
+
+/// mm/dd 形式に変換
+String getFormattedMonthDate(DateTime date) => '${date.month}/${date.day}';
+
+/// yyyy/mm 形式に変換
+String getFormattedYearMonthDate(DateTime date) => '${date.year}/${date.month}';
+
+/// %付与
+String getFormattedPercent({required int percent}) => '$percent%';
+
 int getIdByColor({required List<ColorModel> colorList, required Color color}) {
   if (colorList.isEmpty) return 1;
   return colorList

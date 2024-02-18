@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:stairs/db/database.dart';
 import 'package:stairs/feature/status/model/label_status_model.dart';
 import 'package:stairs/feature/status/model/project_status_model.dart';
@@ -24,34 +25,25 @@ class StatusRepository {
 
       for (final projectRow in projectResponse) {
         // プロジェクト単位でタスクに紐づくタグを全て取得
-        // {task_tag}, {board}, {task}, {tag_rel}, {tag}, {color}
-        final tagResponse = await db.tTaskTagDao.getTaskTagListByProjectId(
-            projectId: projectRow.readTable(db.tProject).projectId);
-        // プロジェクト単位でタスクに紐づく開発言語を取得
-        // {task_dev}, {board}, {task}, {dev_language}
-        final devResponse = await db.tTaskDevDao.getTaskDevListByProjectId(
+        final taskResponse = await db.tTaskDao.getTaskDetailByProjectId(
             projectId: projectRow.readTable(db.tProject).projectId);
 
         projectStatusList.add(
           _convertProjectStatusModel(
             projectData: projectRow.readTable(db.tProject),
             projectColorData: projectRow.readTable(db.mColor),
-            taskData: tagResponse.map((e) => e.readTable(db.tTask)).toList(),
-            taskTagData: tagResponse
+            taskData: taskResponse.map((e) => e.readTable(db.tTask)).toList(),
+            taskTagData: taskResponse
                 .map((e) => e.readTableOrNull(db.tTaskTag))
-                .whereType<TTaskTagData>()
                 .toList(),
-            tagData: tagResponse
-                .map((e) => e.readTableOrNull(db.tTag))
-                .whereType<TTagData>()
+            tagData:
+                taskResponse.map((e) => e.readTableOrNull(db.tTag)).toList(),
+            tagColorData:
+                taskResponse.map((e) => e.readTableOrNull(db.mColor)).toList(),
+            devData: taskResponse.map((e) => e.readTable(db.tTaskDev)).toList(),
+            devLangData: taskResponse
+                .map((e) => e.readTableOrNull(db.tDevLanguage))
                 .toList(),
-            tagColorData: tagResponse
-                .map((e) => e.readTableOrNull(db.mColor))
-                .whereType<MColorData>()
-                .toList(),
-            devData: devResponse.map((e) => e.readTable(db.tTaskDev)).toList(),
-            devLangData:
-                devResponse.map((e) => e.readTable(db.tDevLanguage)).toList(),
           ),
         );
       }
@@ -71,11 +63,11 @@ class StatusRepository {
     required TProjectData projectData,
     required MColorData projectColorData,
     required List<TTaskData> taskData,
-    required List<TTaskTagData> taskTagData,
-    required List<TTagData> tagData,
-    required List<MColorData> tagColorData,
+    required List<TTaskTagData?> taskTagData,
+    required List<TTagData?> tagData,
+    required List<MColorData?> tagColorData,
     required List<TTaskDevData> devData,
-    required List<TDevLanguageData> devLangData,
+    required List<TDevLanguageData?> devLangData,
   }) {
     // 重複ラベルステータスリスト
     List<LabelStatusModel> tempLabelStatusList = [];
@@ -91,11 +83,19 @@ class StatusRepository {
 
     // タスクに設定されている開発言語
     for (var i = 0; i < devData.length; i++) {
-      devMap[devData[i].taskId] = devLangData[i].devLangId;
+      devMap[devData[i].taskId] =
+          devLangData[i] != null ? devLangData[i]!.devLangId : '';
     }
 
     // タスクの全量をリストにセット
     for (var i = 0; i < taskData.length; i++) {
+      // すでに同じタスクが追加されている場合は追加しない
+      if (taskStatusList
+              .indexWhere((task) => task.taskItemId == taskData[i].taskId) !=
+          -1) {
+        continue;
+      }
+
       final taskStatus = TaskStatusModel(
         taskItemId: taskData[i].taskId,
         devLangId: devMap[taskData[i].taskId] ?? '',
@@ -109,35 +109,35 @@ class StatusRepository {
     }
 
     for (var i = 0; i < taskTagData.length; i++) {
+      if (taskTagData[i] == null) {
+        continue;
+      }
       final labelStatus = LabelStatusModel(
-        labelId: tagData[i].id.toString(),
-        labelName: tagData[i].name,
+        labelId: tagData[i]!.id.toString(),
+        labelName: tagData[i]!.name,
         themeColorModel: ColorModel(
-            id: tagColorData[i].id,
-            color: getColorFromCode(code: tagColorData[i].colorCodeId)),
-        taskStatusList: [],
+            id: tagColorData[i]!.id,
+            color: getColorFromCode(code: tagColorData[i]!.colorCodeId)),
+        taskIdList: [],
       );
-      tempLabelStatusList.add(labelStatus);
+      // すでに同じラベルが追加されていない場合追加する
+      if (tempLabelStatusList.firstWhereOrNull(
+              (item) => item.labelId == tagData[i]!.id.toString()) ==
+          null) {
+        tempLabelStatusList.add(labelStatus);
+      }
       // ラベルIDをキーにし、紐づくタスクIDをマップに保持しておく
-      if (labelMap.containsKey(tagData[i].id.toString())) {
-        labelMap[tagData[i].id.toString()]!.add(taskTagData[i].taskId);
+      if (labelMap.containsKey(tagData[i]!.id.toString())) {
+        labelMap[tagData[i]!.id.toString()]!.add(taskTagData[i]!.taskId);
       } else {
-        labelMap[tagData[i].id.toString()] = [taskTagData[i].taskId];
+        labelMap[tagData[i]!.id.toString()] = [taskTagData[i]!.taskId];
       }
     }
-
-    // ラベル（タグ）情報が重複しているため重複削除
-    tempLabelStatusList = tempLabelStatusList.toSet().toList();
 
     // ラベルに紐づくタスクを特定し、labelStatusListにセットする
     for (final item in tempLabelStatusList) {
       if (labelMap.containsKey(item.labelId)) {
-        final List<TaskStatusModel> targetList = [];
-        for (final taskId in labelMap[item.labelId] ?? []) {
-          targetList
-              .add(taskStatusList.firstWhere((e) => e.taskItemId == taskId));
-        }
-        labelStatusList.add(item.copyWith(taskStatusList: targetList));
+        labelStatusList.add(item.copyWith(taskIdList: labelMap[item.labelId]));
       }
     }
 
@@ -150,6 +150,7 @@ class StatusRepository {
       ),
       startDate: DateTime.parse(projectData.startDate).toLocal(),
       endDate: DateTime.parse(projectData.endDate).toLocal(),
+      taskStatusList: taskStatusList,
       labelStatusList: labelStatusList,
     );
   }

@@ -1,8 +1,7 @@
 import 'package:stairs/feature/board/component/provider/board_position_provider.dart';
+import 'package:stairs/feature/board/component/view/task_list_item.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-const _kItemHeight = 100.0;
 
 final _logger = stairsLogger(name: 'shrink_list_item');
 
@@ -33,8 +32,8 @@ class ShrinkTaskListItem extends ConsumerWidget {
 
     return Container(
       key: itemKey,
-      width: MediaQuery.of(context).size.width * 0.7,
-      height: _kItemHeight,
+      width: MediaQuery.of(context).size.width * 0.9,
+      height: kDraggedItemHeight,
       color: theme.colorDisabled.withOpacity(0.2),
     );
   }

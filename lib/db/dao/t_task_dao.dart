@@ -11,7 +11,7 @@ class TTaskDao extends DatabaseAccessor<StairsDatabase> with _$TTaskDaoMixin {
 
   final _logger = stairsLogger(name: 't_task_dao');
 
-  /// タスク詳細取得
+  /// タスク取得
   /// return {task}
   Future<List<TTaskData>> getTaskDetail({
     required String boardId,
@@ -35,7 +35,7 @@ class TTaskDao extends DatabaseAccessor<StairsDatabase> with _$TTaskDaoMixin {
     }
   }
 
-  /// タスク詳細取得（projectIdで全て取得）
+  /// タスク取得（projectIdで全て取得）
   /// return {task}, {board}, {task_tag}, {tag_rel}, {tag}, {color}, {task_dev}, {dev_language}
   Future<List<TypedResult>> getTaskDetailByProjectId({
     required String projectId,
@@ -71,7 +71,7 @@ class TTaskDao extends DatabaseAccessor<StairsDatabase> with _$TTaskDaoMixin {
             db.mColor.id.equalsExp(db.tTag.colorId),
           ),
           // task_dev
-          leftOuterJoin(
+          innerJoin(
             db.tTaskDev,
             db.tTaskDev.taskId.equalsExp(db.tTask.taskId),
           ),

@@ -35,7 +35,7 @@ class BoardScreen extends ConsumerStatefulWidget {
 
 class _BoardScreenState extends ConsumerState<BoardScreen> {
   final PageController controller =
-      PageController(initialPage: 0, viewportFraction: 0.8);
+      PageController(initialPage: 0, viewportFraction: 0.9);
 
   @override
   void initState() {

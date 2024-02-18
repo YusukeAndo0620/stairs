@@ -68,7 +68,7 @@ class TaskEditModal extends ConsumerWidget {
           CardLstItem.inputArea(
               width: double.infinity,
               label: _kTaskItemDescriptionTxt,
-              iconData: theme.icons.resume,
+              iconData: theme.icons.description,
               iconColor: themeColor,
               inputValue: taskItemState.description,
               hintText: _kTaskItemDescriptionHintTxt,
@@ -77,7 +77,7 @@ class TaskEditModal extends ConsumerWidget {
           // 開発言語
           CardLstItem.dropDown(
             label: _kTaskItemDevLangTxt,
-            iconData: theme.icons.resume,
+            iconData: theme.icons.developers,
             iconColor: themeColor,
             selectedItemId: taskItemState.devLangId,
             itemList: devLangList,
