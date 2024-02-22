@@ -1,14 +1,15 @@
 import 'package:stairs/feature/status/enum/task_chart_type.dart';
 import 'package:stairs/feature/status/model/task_status_model.dart';
 import 'package:stairs/feature/status/provider/component/task_status_chart_provider.dart';
+import 'package:stairs/feature/status/view/component/status_header.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const _kBorderWidth = 1.0;
 const _kDisplayedColumnCount = 4;
 const _kPageTransitionIconSize = 20.0;
 const _kSelectTypeBarHeight = 30.0;
-const _kSelectTypeBarWidth = 60.0;
+const _kSelectTypeBarWidth = 45.0;
+const _kBarAnimation = 700.0;
 const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0);
 const _kContentMargin = EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0);
 const _kChartAreaMargin = EdgeInsets.only(top: 40.0, right: 28.0, left: 28.0);
@@ -128,16 +129,20 @@ class _TaskStatusChartState extends ConsumerState<TaskStatusChart> {
           // ヘッダー
           Align(
             alignment: const Alignment(0, -1),
-            child: _BarChartHeader(
+            child: StatusHeader(
               title: _kHeaderTitle,
-              selectedType: selectedDisplayType,
-              onTap: (type) {
-                taskStatusChartNotifier.setItem(
-                    type: type, displayedColumnCount: _kDisplayedColumnCount);
-                setState(() {
-                  selectedDisplayType = type;
-                });
-              },
+              trailWidget: _SelectTypeBar(
+                selectedType: selectedDisplayType,
+                onTap: (type) {
+                  taskStatusChartNotifier.setItem(
+                      type: type, displayedColumnCount: _kDisplayedColumnCount);
+                  setState(
+                    () {
+                      selectedDisplayType = type;
+                    },
+                  );
+                },
+              ),
             ),
           ),
           // ページインジケーター
@@ -222,7 +227,11 @@ class _TaskBarChart extends StatelessWidget {
           : const ChartTitle(),
       margin: _kChartMargin,
       primaryXAxis: const CategoryAxis(),
-      primaryYAxis: const NumericAxis(minimum: 0, interval: 1),
+      primaryYAxis: const NumericAxis(
+        minimum: 0,
+        interval: 1,
+        labelFormat: '{value}件',
+      ),
       tooltipBehavior: TooltipBehavior(enable: true),
       series: <CartesianSeries<TaskBarData, String>>[
         StackedBarSeries<TaskBarData, String>(
@@ -232,6 +241,7 @@ class _TaskBarChart extends StatelessWidget {
           yValueMapper: (TaskBarData data, _) => data.y1,
           width: 0.3,
           color: y1Color ?? theme.colorProgress,
+          animationDuration: _kBarAnimation,
         ),
         StackedBarSeries<TaskBarData, String>(
           name: y2LegendName,
@@ -240,6 +250,7 @@ class _TaskBarChart extends StatelessWidget {
           yValueMapper: (TaskBarData data, _) => data.y2,
           width: 0.3,
           color: y2Color ?? theme.colorDangerBgDefault,
+          animationDuration: _kBarAnimation,
         ),
         StackedBarSeries<TaskBarData, String>(
           name: y3LegendName,
@@ -248,48 +259,8 @@ class _TaskBarChart extends StatelessWidget {
           yValueMapper: (TaskBarData data, _) => data.y3,
           width: 0.3,
           color: y3Color ?? theme.colorPrimary,
+          animationDuration: _kBarAnimation,
         ),
-      ],
-    );
-  }
-}
-
-// チャートヘッダー
-class _BarChartHeader extends StatelessWidget {
-  const _BarChartHeader({
-    required this.title,
-    required this.selectedType,
-    required this.onTap,
-  });
-
-  final String title;
-  final TaskChartType selectedType;
-  final Function(TaskChartType) onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = LoomTheme.of(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title,
-                style:
-                    theme.textStyleTitle.copyWith(color: theme.colorFgDefault)),
-            Text(
-              '算出基準日: ${getFormattedDateTime(DateTime.now())}',
-              style: theme.textStyleFootnote,
-            ),
-          ],
-        ),
-        _SelectTypeBar(
-          selectedType: selectedType,
-          onTap: (type) => onTap(type),
-        )
       ],
     );
   }

@@ -52,6 +52,26 @@ final dummyTaskList = [
     dueDate: Value("2023-12-30 00:00:00"),
     endDate: Value("2024-01-11 00:00:00"),
   ),
+  const TTaskCompanion(
+    boardId: Value("4"),
+    taskId: Value("6"),
+    name: Value("帳票テーブル設計"),
+    description: Value("帳票テーブル設計"),
+    orderNo: Value(1),
+    startDate: Value("2024-02-13 09:00:00"),
+    dueDate: Value("2024-02-24 12:00:00"),
+    endDate: Value.absent(),
+  ),
+  const TTaskCompanion(
+    boardId: Value("5"),
+    taskId: Value("7"),
+    name: Value("ワークフロー編集画面修正"),
+    description: Value("ワークフロー編集画面修正"),
+    orderNo: Value(2),
+    startDate: Value("2024-02-21 10:00:00"),
+    dueDate: Value("2024-03-04 12:00:00"),
+    endDate: Value("2024-02-21 12:00:00"),
+  ),
 ];
 
 final dummyTaskTagList = [
@@ -95,6 +115,10 @@ final dummyTaskTagList = [
     taskId: Value("4"),
     tagRelId: Value(9),
   ),
+  const TTaskTagCompanion(
+    taskId: Value("6"),
+    tagRelId: Value(10),
+  ),
 ];
 final dummyTaskDevList = [
   const TTaskDevCompanion(
@@ -116,5 +140,13 @@ final dummyTaskDevList = [
   const TTaskDevCompanion(
     taskId: Value("5"),
     devLangId: Value("1e399688-9d4c-4b8e-98d7-6e02af716ab8"),
+  ),
+  const TTaskDevCompanion(
+    taskId: Value("6"),
+    devLangId: Value(""),
+  ),
+  const TTaskDevCompanion(
+    taskId: Value("7"),
+    devLangId: Value(""),
   ),
 ];

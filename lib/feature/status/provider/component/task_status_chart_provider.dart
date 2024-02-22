@@ -55,11 +55,11 @@ class TaskStatusChartState extends Equatable {
   final DateTime taskInitialDate;
   // タスクリスト
   final List<TaskBarData> taskStatusList;
-  // 進行中タスク key: 週初めの曜日, value: タスク数
+  // 進行中タスク key: 週初めの日付, value: タスク数
   final Map<DateTime, int> progressCountMap;
-  // 期限切れタスク key: 週初めの曜日, value: タスク数
+  // 期限切れタスク key: 週初めの日付, value: タスク数
   final Map<DateTime, int> overDueDateCountMap;
-  //完了タスク key: 週初めの曜日, value: タスク数
+  //完了タスク key: 週初めの日付, value: タスク数
   final Map<DateTime, int> completedCountMap;
 
   TaskStatusChartState copyWith({
@@ -100,20 +100,20 @@ class TaskStatusChart extends _$TaskStatusChart {
         completedCountMap: const {},
       );
     }
-    // タスク登録日時でソード
+    // タスク登録日時でソート
     copyList.sort((a, b) => a.startDate.compareTo(b.startDate));
     // タスクの中で最も古い日付
     final initialDate = copyList.first.startDate;
     // チャートx軸の開始基準の日付
-    final criteriaDay = initialDate.subtract(
-      Duration(days: initialDate.weekday - 1),
-    );
-    final minusDays = ((DateTime.now()
-                .subtract(Duration(days: DateTime.now().weekday - 1))
-                .difference(criteriaDay)
-                .inDays) /
-            displayedColumnCount)
-        .ceil();
+    final criteriaDay = getWeeklyInitialDate(date: initialDate);
+    final minusDays = (((getWeeklyInitialDate(date: DateTime.now())
+                        .difference(criteriaDay)
+                        .inDays) /
+                    7 %
+                    displayedColumnCount)
+                .ceil() +
+            1) *
+        7;
 
     // 週ごとのタスク状況を取得
     final dateMapList = getDateMapList(
@@ -193,17 +193,18 @@ class TaskStatusChart extends _$TaskStatusChart {
     switch (type) {
       case TaskChartType.weekly:
         // チャートx軸の開始基準の日付
-        final criteriaDay = initialDate.subtract(
-          Duration(days: initialDate.weekday - 1),
-        );
+        final criteriaDay = getWeeklyInitialDate(date: initialDate);
         // 1画面あたりに表示する個数は4, 4, 2などリスト数に依存するので、常に同じにするため
         // 足りない個数分、criteriaDayより過去日から始めるように調整し、どの画面も常に4つのデータが表示されるようにする
-        final minusDays = ((DateTime.now()
-                    .subtract(Duration(days: DateTime.now().weekday - 1))
-                    .difference(criteriaDay)
-                    .inDays) /
-                displayedColumnCount)
-            .ceil();
+        final minusDays = (((getWeeklyInitialDate(date: DateTime.now())
+                            .difference(criteriaDay)
+                            .inDays) /
+                        7 %
+                        displayedColumnCount)
+                    .ceil() +
+                1) *
+            7;
+
         return getWeeklyList(
           criteriaDay: criteriaDay.add(Duration(days: -minusDays)),
           latestDate: DateTime.now(),
@@ -438,7 +439,7 @@ class TaskStatusChart extends _$TaskStatusChart {
         // 1. 完了タスク
         // 前週では完了しておらず、該当週で完了している場合に算出
         if (task.doneDate != null &&
-            _isDateBetweenRange(
+            isDateBetweenRange(
                 start: weekDay, end: thisWeekend, target: task.doneDate!)) {
           // 1.1 完了タスク追加
           completedCountMap.containsKey(weekDay)
@@ -461,7 +462,7 @@ class TaskStatusChart extends _$TaskStatusChart {
           // 同一週に[「今週にタスク追加→今週完了」になった場合は減らさない
           else if (task.startDate.isBefore(weekDay) &&
               (task.dueDate.isBefore(weekDay) ||
-                  _isDateBetweenRange(
+                  isDateBetweenRange(
                       start: weekDay,
                       end: thisWeekend,
                       target: task.dueDate))) {
@@ -473,7 +474,7 @@ class TaskStatusChart extends _$TaskStatusChart {
           // 2. 期限切れタスク
           // 2.1 前週では期限切れになっておらず、まだ完了していないタスクのケース
           // 完了しているが、対象の週では期限切れとなっていたタスク
-        } else if (_isDateBetweenRange(
+        } else if (isDateBetweenRange(
                 start: weekDay, end: thisWeekend, target: task.dueDate) &&
             (task.doneDate == null ||
                 (task.doneDate != null &&
@@ -493,7 +494,7 @@ class TaskStatusChart extends _$TaskStatusChart {
           // 3. 進行中タスク
         } else {
           // 3.1 前週で進行中タスクがない場合は追加する（該当週で追加されたと判定）
-          if (_isDateBetweenRange(
+          if (isDateBetweenRange(
               start: weekDay, end: thisWeekend, target: task.startDate)) {
             progressCountMap.containsKey(weekDay)
                 ? progressCountMap[weekDay] = progressCountMap[weekDay]! + 1
@@ -506,15 +507,6 @@ class TaskStatusChart extends _$TaskStatusChart {
     targetMapList.add(overDueDateCountMap);
     targetMapList.add(completedCountMap);
     return targetMapList;
-  }
-
-  // 対象日付が指定した範囲内の日付に存在するかどうか
-  bool _isDateBetweenRange({
-    required DateTime start,
-    required DateTime end,
-    required DateTime target,
-  }) {
-    return start == target || (start.isBefore(target) && end.isAfter(target));
   }
 
   // 対象日付より過去日のタスク数を取得

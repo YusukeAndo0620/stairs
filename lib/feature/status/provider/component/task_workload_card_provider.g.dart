@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'task_status_chart_provider.dart';
+part of 'task_workload_card_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$taskStatusChartHash() => r'408743d5b2f4c0ae63f1a1b114ac277c921c0ee6';
+String _$taskWorkloadCardHash() => r'8f4f7c4707d4cedbc1fd80e5caf7a818a2ff466b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,43 +29,38 @@ class _SystemHash {
   }
 }
 
-abstract class _$TaskStatusChart
-    extends BuildlessAutoDisposeNotifier<TaskStatusChartState> {
-  late final int displayedColumnCount;
+abstract class _$TaskWorkloadCard
+    extends BuildlessAutoDisposeNotifier<TaskWorkloadCardState> {
   late final List<TaskStatusModel> taskStatusModelList;
 
-  TaskStatusChartState build({
-    required int displayedColumnCount,
+  TaskWorkloadCardState build({
     required List<TaskStatusModel> taskStatusModelList,
   });
 }
 
-/// See also [TaskStatusChart].
-@ProviderFor(TaskStatusChart)
-const taskStatusChartProvider = TaskStatusChartFamily();
+/// See also [TaskWorkloadCard].
+@ProviderFor(TaskWorkloadCard)
+const taskWorkloadCardProvider = TaskWorkloadCardFamily();
 
-/// See also [TaskStatusChart].
-class TaskStatusChartFamily extends Family<TaskStatusChartState> {
-  /// See also [TaskStatusChart].
-  const TaskStatusChartFamily();
+/// See also [TaskWorkloadCard].
+class TaskWorkloadCardFamily extends Family<TaskWorkloadCardState> {
+  /// See also [TaskWorkloadCard].
+  const TaskWorkloadCardFamily();
 
-  /// See also [TaskStatusChart].
-  TaskStatusChartProvider call({
-    required int displayedColumnCount,
+  /// See also [TaskWorkloadCard].
+  TaskWorkloadCardProvider call({
     required List<TaskStatusModel> taskStatusModelList,
   }) {
-    return TaskStatusChartProvider(
-      displayedColumnCount: displayedColumnCount,
+    return TaskWorkloadCardProvider(
       taskStatusModelList: taskStatusModelList,
     );
   }
 
   @override
-  TaskStatusChartProvider getProviderOverride(
-    covariant TaskStatusChartProvider provider,
+  TaskWorkloadCardProvider getProviderOverride(
+    covariant TaskWorkloadCardProvider provider,
   ) {
     return call(
-      displayedColumnCount: provider.displayedColumnCount,
       taskStatusModelList: provider.taskStatusModelList,
     );
   }
@@ -82,119 +77,101 @@ class TaskStatusChartFamily extends Family<TaskStatusChartState> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'taskStatusChartProvider';
+  String? get name => r'taskWorkloadCardProvider';
 }
 
-/// See also [TaskStatusChart].
-class TaskStatusChartProvider extends AutoDisposeNotifierProviderImpl<
-    TaskStatusChart, TaskStatusChartState> {
-  /// See also [TaskStatusChart].
-  TaskStatusChartProvider({
-    required int displayedColumnCount,
+/// See also [TaskWorkloadCard].
+class TaskWorkloadCardProvider extends AutoDisposeNotifierProviderImpl<
+    TaskWorkloadCard, TaskWorkloadCardState> {
+  /// See also [TaskWorkloadCard].
+  TaskWorkloadCardProvider({
     required List<TaskStatusModel> taskStatusModelList,
   }) : this._internal(
-          () => TaskStatusChart()
-            ..displayedColumnCount = displayedColumnCount
-            ..taskStatusModelList = taskStatusModelList,
-          from: taskStatusChartProvider,
-          name: r'taskStatusChartProvider',
+          () => TaskWorkloadCard()..taskStatusModelList = taskStatusModelList,
+          from: taskWorkloadCardProvider,
+          name: r'taskWorkloadCardProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$taskStatusChartHash,
-          dependencies: TaskStatusChartFamily._dependencies,
+                  : _$taskWorkloadCardHash,
+          dependencies: TaskWorkloadCardFamily._dependencies,
           allTransitiveDependencies:
-              TaskStatusChartFamily._allTransitiveDependencies,
-          displayedColumnCount: displayedColumnCount,
+              TaskWorkloadCardFamily._allTransitiveDependencies,
           taskStatusModelList: taskStatusModelList,
         );
 
-  TaskStatusChartProvider._internal(
+  TaskWorkloadCardProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.displayedColumnCount,
     required this.taskStatusModelList,
   }) : super.internal();
 
-  final int displayedColumnCount;
   final List<TaskStatusModel> taskStatusModelList;
 
   @override
-  TaskStatusChartState runNotifierBuild(
-    covariant TaskStatusChart notifier,
+  TaskWorkloadCardState runNotifierBuild(
+    covariant TaskWorkloadCard notifier,
   ) {
     return notifier.build(
-      displayedColumnCount: displayedColumnCount,
       taskStatusModelList: taskStatusModelList,
     );
   }
 
   @override
-  Override overrideWith(TaskStatusChart Function() create) {
+  Override overrideWith(TaskWorkloadCard Function() create) {
     return ProviderOverride(
       origin: this,
-      override: TaskStatusChartProvider._internal(
-        () => create()
-          ..displayedColumnCount = displayedColumnCount
-          ..taskStatusModelList = taskStatusModelList,
+      override: TaskWorkloadCardProvider._internal(
+        () => create()..taskStatusModelList = taskStatusModelList,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        displayedColumnCount: displayedColumnCount,
         taskStatusModelList: taskStatusModelList,
       ),
     );
   }
 
   @override
-  AutoDisposeNotifierProviderElement<TaskStatusChart, TaskStatusChartState>
+  AutoDisposeNotifierProviderElement<TaskWorkloadCard, TaskWorkloadCardState>
       createElement() {
-    return _TaskStatusChartProviderElement(this);
+    return _TaskWorkloadCardProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is TaskStatusChartProvider &&
-        other.displayedColumnCount == displayedColumnCount &&
+    return other is TaskWorkloadCardProvider &&
         other.taskStatusModelList == taskStatusModelList;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, displayedColumnCount.hashCode);
     hash = _SystemHash.combine(hash, taskStatusModelList.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
-mixin TaskStatusChartRef
-    on AutoDisposeNotifierProviderRef<TaskStatusChartState> {
-  /// The parameter `displayedColumnCount` of this provider.
-  int get displayedColumnCount;
-
+mixin TaskWorkloadCardRef
+    on AutoDisposeNotifierProviderRef<TaskWorkloadCardState> {
   /// The parameter `taskStatusModelList` of this provider.
   List<TaskStatusModel> get taskStatusModelList;
 }
 
-class _TaskStatusChartProviderElement
-    extends AutoDisposeNotifierProviderElement<TaskStatusChart,
-        TaskStatusChartState> with TaskStatusChartRef {
-  _TaskStatusChartProviderElement(super.provider);
+class _TaskWorkloadCardProviderElement
+    extends AutoDisposeNotifierProviderElement<TaskWorkloadCard,
+        TaskWorkloadCardState> with TaskWorkloadCardRef {
+  _TaskWorkloadCardProviderElement(super.provider);
 
   @override
-  int get displayedColumnCount =>
-      (origin as TaskStatusChartProvider).displayedColumnCount;
-  @override
   List<TaskStatusModel> get taskStatusModelList =>
-      (origin as TaskStatusChartProvider).taskStatusModelList;
+      (origin as TaskWorkloadCardProvider).taskStatusModelList;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

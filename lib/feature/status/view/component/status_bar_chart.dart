@@ -55,7 +55,6 @@ class StatusBarChart extends StatelessWidget {
 // 棒チャート
 class _BarChart extends StatelessWidget {
   const _BarChart({
-    super.key,
     this.title,
     required this.color,
     required this.legendName,

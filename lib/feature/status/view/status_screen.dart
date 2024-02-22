@@ -4,6 +4,7 @@ import 'package:stairs/feature/status/view/component/status_label_table.dart';
 import 'package:stairs/feature/status/view/component/status_pie_chart.dart';
 import 'package:stairs/feature/status/view/component/task_card.dart';
 import 'package:stairs/feature/status/view/component/task_status_chart.dart';
+import 'package:stairs/feature/status/view/component/task_workload.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -121,39 +122,41 @@ class _StatusScreenState extends ConsumerState<StatusScreen>
                         totalLabelTaskCount: item.totalLabelTaskCount,
                         labelStatusList: item.labelStatusList,
                       ),
-                      StatusBarChart(
-                        title: _kBarAchievementTitle,
-                        legendName: _kTaskCountTxt,
-                        isHorizontal: true,
-                        chartData: item.labelStatusList
-                            .map(
-                              (e) => BarChartData(
-                                x: e.labelName,
-                                y: e.taskIdList.length.toDouble(),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                      StatusPieChart(
-                        legendName: _kTaskCountTxt,
-                        chartData: item.labelStatusList
-                            .map(
-                              (e) => e.taskIdList.isNotEmpty
-                                  ? PieChartData(
-                                      x: e.labelName,
-                                      y: e.taskIdList.length.toDouble(),
-                                      text: getFormattedPercent(
-                                        percent: (e.taskIdList.length /
-                                                item.totalLabelTaskCount *
-                                                100)
-                                            .toInt(),
-                                      ),
-                                    )
-                                  : null,
-                            )
-                            .whereType<PieChartData>()
-                            .toList(),
-                      )
+                      TaskWorkload(taskStatusModelList: item.taskStatusList),
+                      // 一旦使用しない
+                      // StatusBarChart(
+                      //   title: _kBarAchievementTitle,
+                      //   legendName: _kTaskCountTxt,
+                      //   isHorizontal: true,
+                      //   chartData: item.labelStatusList
+                      //       .map(
+                      //         (e) => BarChartData(
+                      //           x: e.labelName,
+                      //           y: e.taskIdList.length.toDouble(),
+                      //         ),
+                      //       )
+                      //       .toList(),
+                      // ),
+                      // StatusPieChart(
+                      //   legendName: _kTaskCountTxt,
+                      //   chartData: item.labelStatusList
+                      //       .map(
+                      //         (e) => e.taskIdList.isNotEmpty
+                      //             ? PieChartData(
+                      //                 x: e.labelName,
+                      //                 y: e.taskIdList.length.toDouble(),
+                      //                 text: getFormattedPercent(
+                      //                   percent: (e.taskIdList.length /
+                      //                           item.totalLabelTaskCount *
+                      //                           100)
+                      //                       .toInt(),
+                      //                 ),
+                      //               )
+                      //             : null,
+                      //       )
+                      //       .whereType<PieChartData>()
+                      //       .toList(),
+                      // )
                     ],
                   ),
                 ),

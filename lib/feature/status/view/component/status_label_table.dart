@@ -52,7 +52,7 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
       margin: _kContentMargin,
       constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.9,
-          maxHeight: MediaQuery.of(context).size.height * 0.4),
+          maxHeight: MediaQuery.of(context).size.height * 0.33),
       child: DataTable2(
         sortColumnIndex: sortedColumnIdx,
         sortAscending: sortAscending,

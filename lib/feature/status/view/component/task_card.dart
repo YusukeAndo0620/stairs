@@ -33,11 +33,9 @@ class TaskCard extends StatelessWidget {
   Widget build(BuildContext context) {
     _logger.d('===================================');
     _logger.d('ビルド開始');
-    final itemKey = GlobalKey();
     final theme = LoomTheme.of(context);
 
     return Container(
-      key: itemKey,
       width: MediaQuery.of(context).size.width * 0.28,
       padding: _kContentPadding,
       margin: _kContentMargin,
