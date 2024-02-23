@@ -1,9 +1,8 @@
 import 'package:stairs/loom/loom_package.dart';
 
 const _kRangeSpaceTxt = '-';
-const _kContentWidth = 300.0;
-const _kContentSpace = 8.0;
-const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
+const _kContentSpace = 2.0;
+const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0);
 
 /// 期間
 class DateRange extends StatelessWidget {
@@ -20,7 +19,6 @@ class DateRange extends StatelessWidget {
     final theme = LoomTheme.of(context);
 
     return Container(
-      width: _kContentWidth,
       padding: _kContentPadding,
       child: Row(
         children: [
@@ -46,7 +44,4 @@ class DateRange extends StatelessWidget {
       ),
     );
   }
-
-  String getFormattedDate(DateTime date) =>
-      '${date.year}/${date.month}/${date.day}';
 }

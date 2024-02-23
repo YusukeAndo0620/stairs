@@ -14,7 +14,7 @@ String getFormattedDate(DateTime date) {
 
 /// yyyy/mm/dd hh:mm 形式に変換
 String getFormattedDateTime(DateTime date) {
-  final formatter = DateFormat('yyyy/MM/dd hh:mm');
+  final formatter = DateFormat('yyyy/MM/dd HH:mm');
   return formatter.format(date);
 }
 

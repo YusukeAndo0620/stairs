@@ -6,7 +6,7 @@ import 'package:stairs/feature/status/view/component/task_workload_line.dart';
 import 'package:stairs/loom/loom_package.dart';
 
 const _kSelectTypeBarHeight = 30.0;
-const _kSelectTypeBarWidth = 30.0;
+const _kSelectTypeBarWidth = 20.0;
 
 const _kHeaderTitle = "工数短縮率";
 
@@ -45,6 +45,7 @@ class _TaskWorkloadState extends State<TaskWorkload> {
   Widget build(BuildContext context) {
     _logger.d('===================================');
     _logger.d('ビルド開始');
+    final theme = LoomTheme.of(context);
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.9,
@@ -53,6 +54,7 @@ class _TaskWorkloadState extends State<TaskWorkload> {
         children: [
           StatusHeader(
             title: _kHeaderTitle,
+            isShownDate: false,
             trailWidget: _SelectTypeBar(
               selectedType: selectedWorkloadType,
               onTap: (type) {
@@ -69,10 +71,58 @@ class _TaskWorkloadState extends State<TaskWorkload> {
               TaskWorkloadCard(
                   selectedWorkloadType: selectedWorkloadType,
                   taskStatusModelList: widget.taskStatusModelList),
-              TaskWorkloadLine(
-                taskStatusModelList: widget.taskStatusModelList,
+              // ダミーデータ
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.45,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      color: theme.colorFgDefaultWhite,
+                      borderRadius: BorderRadius.circular(5.0),
+                      border: Border.all(
+                        color: theme.colorFgDisabled,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.45,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      color: theme.colorFgDefaultWhite,
+                      borderRadius: BorderRadius.circular(5.0),
+                      border: Border.all(
+                        color: theme.colorFgDisabled,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.45,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      color: theme.colorFgDefaultWhite,
+                      borderRadius: BorderRadius.circular(5.0),
+                      border: Border.all(
+                        color: theme.colorFgDisabled,
+                        width: 1,
+                      ),
+                    ),
+                  )
+                ],
               )
             ],
+          ),
+          TaskWorkloadLine(
+            taskStatusModelList: widget.taskStatusModelList,
           ),
         ],
       ),

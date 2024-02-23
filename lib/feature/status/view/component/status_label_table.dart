@@ -74,7 +74,7 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
           ),
           DataColumn(
             label: Align(
-              alignment: Alignment.centerRight,
+              alignment: Alignment.center,
               child: Text(
                 _kHeaderTotalCountText,
                 style: theme.textStyleBody,
@@ -109,9 +109,9 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
                   ),
                   DataCell(
                     Align(
-                      alignment: Alignment.centerRight,
+                      alignment: Alignment.center,
                       child: Text(
-                        item.taskIdList.length.toString(),
+                        '${item.taskIdList.length.toString()} / ${widget.totalLabelTaskCount}',
                         style: theme.textStyleBody,
                       ),
                     ),

@@ -4,8 +4,10 @@ import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0);
+const _kLineMargin = EdgeInsets.symmetric(vertical: 16.0, horizontal: 0.0);
 const _kTooltipSpace = 8.0;
-const _kTaskWorkloadTxt = "工数短縮率";
+const _kTaskWorkloadTxt = "工数短縮率推移";
+const _kXAxisTxt = "タスク開始日";
 final _logger = stairsLogger(name: 'task_workload_line');
 
 class TaskWorkloadLine extends ConsumerWidget {
@@ -25,9 +27,9 @@ class TaskWorkloadLine extends ConsumerWidget {
         taskWorkloadLineProvider(taskStatusModelList: taskStatusModelList));
 
     return Container(
-      width: MediaQuery.of(context).size.width * 0.5,
+      // width: MediaQuery.of(context).size.width * 0.5,
       height: MediaQuery.of(context).size.height * 0.38,
-      padding: _kContentPadding,
+      // padding: _kContentPadding,
       child: _WorkLoadLine(chartData: taskWorkloadLineState),
     );
   }
@@ -43,14 +45,19 @@ class _WorkLoadLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = LoomTheme.of(context);
+
     return SfCartesianChart(
+      margin: _kLineMargin,
       legend: const Legend(
         isVisible: true,
         position: LegendPosition.bottom,
       ),
       primaryXAxis: DateTimeAxis(
+        title: AxisTitle(text: _kXAxisTxt, textStyle: theme.textStyleBody),
         dateFormat: DateFormat('MM/dd'),
         edgeLabelPlacement: EdgeLabelPlacement.none,
+        interval: 7,
       ),
       primaryYAxis: const NumericAxis(labelFormat: '{value}%'),
       tooltipBehavior: TooltipBehavior(

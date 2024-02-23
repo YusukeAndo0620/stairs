@@ -12,7 +12,7 @@ const _kSelectTypeBarWidth = 45.0;
 const _kBarAnimation = 700.0;
 const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0);
 const _kContentMargin = EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0);
-const _kChartAreaMargin = EdgeInsets.only(top: 40.0, right: 28.0, left: 28.0);
+const _kChartAreaMargin = EdgeInsets.only(top: 56.0, right: 28.0, left: 28.0);
 const _kChartMargin = EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0);
 const _kSelectTypeBarPadding =
     EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0);

@@ -104,7 +104,8 @@ class _TaskListItemState extends ConsumerState<TaskListItem> {
       }
     });
 
-    final theme = LoomTheme.of(context);
+    final taskTitleWidth = MediaQuery.of(context).size.width * 0.55;
+
     return AbsorbPointer(
       absorbing: widget.isReadOnly,
       child: Draggable<String>(
@@ -119,6 +120,7 @@ class _TaskListItemState extends ConsumerState<TaskListItem> {
         feedback: _DraggingListItem(
           key: ValueKey(taskItemState.taskItemId),
           title: taskItemState.title,
+          taskTitleWidth: taskTitleWidth,
           themeColor: widget.themeColor,
           dueDate: taskItemState.dueDate,
           labelList: taskItemState.labelList,
@@ -140,24 +142,10 @@ class _TaskListItemState extends ConsumerState<TaskListItem> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.55,
-                    child: Text(
-                      taskItemState.title,
-                      style: theme.textStyleBody,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: _kTitleMaxLine,
-                    ),
-                  ),
-                  _DueDateLabel(
-                    key: widget.key,
-                    dueDate: widget.dueDate,
-                  ),
-                ],
+              _TaskItemHeader(
+                title: taskItemState.title,
+                taskTitleWidth: taskTitleWidth,
+                dueDate: taskItemState.dueDate,
               ),
               const SizedBox(
                 height: _kTitleAndLabelSpace,
@@ -181,6 +169,7 @@ class _DraggingListItem extends StatelessWidget {
   const _DraggingListItem({
     super.key,
     required this.title,
+    required this.taskTitleWidth,
     required this.themeColor,
     required this.dueDate,
     required this.labelList,
@@ -188,6 +177,7 @@ class _DraggingListItem extends StatelessWidget {
   });
 
   final String title;
+  final double taskTitleWidth;
   final DateTime dueDate;
   final Color themeColor;
   final List<ColorLabelModel> labelList;
@@ -200,7 +190,7 @@ class _DraggingListItem extends StatelessWidget {
     return Transform.rotate(
       angle: 5 * pi / 180,
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
+        width: MediaQuery.of(context).size.width * 0.85,
         height: kDraggedItemHeight,
         padding: _kContentPadding,
         margin: _kContentMargin,
@@ -220,17 +210,9 @@ class _DraggingListItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.55,
-                  child: Text(
-                    title,
-                    style: theme.textStyleBody,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
-                ),
-                _DueDateLabel(
-                  key: key,
+                _TaskItemHeader(
+                  title: title,
+                  taskTitleWidth: taskTitleWidth,
                   dueDate: dueDate,
                 ),
               ],
@@ -248,6 +230,43 @@ class _DraggingListItem extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+///タスクアイテム ヘッダーエリア
+class _TaskItemHeader extends StatelessWidget {
+  const _TaskItemHeader({
+    required this.title,
+    required this.taskTitleWidth,
+    required this.dueDate,
+  });
+
+  final String title;
+  final double taskTitleWidth;
+  final DateTime dueDate;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = LoomTheme.of(context);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: taskTitleWidth,
+          child: Text(
+            title,
+            style: theme.textStyleBody,
+            overflow: TextOverflow.ellipsis,
+            maxLines: _kTitleMaxLine,
+          ),
+        ),
+        _DueDateLabel(
+          dueDate: dueDate,
+        ),
+      ],
     );
   }
 }

@@ -113,11 +113,10 @@ class _StatusScreenState extends ConsumerState<StatusScreen>
                           ),
                         ],
                       ),
-                      if (item.taskStatusList.isNotEmpty)
-                        TaskStatusChart(
-                          isHorizontal: true,
-                          taskStatusModelList: item.taskStatusList,
-                        ),
+                      TaskStatusChart(
+                        isHorizontal: true,
+                        taskStatusModelList: item.taskStatusList,
+                      ),
                       StatusLabelTable(
                         totalLabelTaskCount: item.totalLabelTaskCount,
                         labelStatusList: item.labelStatusList,

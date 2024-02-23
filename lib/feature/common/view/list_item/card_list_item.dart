@@ -4,7 +4,7 @@ const _kListItemContentPadding = EdgeInsets.all(8.0);
 const _kLabelWidth = 150.0;
 const _kIconWidth = 20.0;
 const _kLabelIconSpaceWidth = 8.0;
-const _kItemSpaceWidth = 16.0;
+const _kItemSpace = 16.0;
 const _kListBottomBorder = 1.0;
 const _kNoSelectedName = "-";
 
@@ -128,6 +128,7 @@ class CardLstItem extends StatelessWidget {
         );
   CardLstItem.labeWithIcon({
     Key? key,
+    required double width,
     required String label,
     required Color iconColor,
     required IconData iconData,
@@ -143,6 +144,7 @@ class CardLstItem extends StatelessWidget {
           ),
           secondaryItem: _SecondaryItem(
             widget: EventArea(
+              width: width,
               itemList: itemList,
               hintText: hintText,
               onTap: onTap,
@@ -179,7 +181,7 @@ class CardLstItem extends StatelessWidget {
               children: [
                 primaryItem,
                 const SizedBox(
-                  height: _kItemSpaceWidth,
+                  height: _kItemSpace,
                 ),
                 secondaryItem!,
               ],
@@ -191,7 +193,7 @@ class CardLstItem extends StatelessWidget {
                   children: [
                     primaryItem,
                     const SizedBox(
-                      width: _kItemSpaceWidth,
+                      width: _kItemSpace,
                     ),
                     secondaryItem!,
                   ],

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 const _kBorderWidth = 1.0;
 const _kWorkLoadHourSpace = 4.0;
-const _kCircularPercentRadius = 50.0;
+const _kCircularPercentRadius = 60.0;
 
 const _kBlankTxt = "-";
 const _kWorkloadStartDateTxt = "開始日:";
@@ -42,7 +42,7 @@ class TaskWorkloadCard extends ConsumerWidget {
         taskWorkloadCardProvider(taskStatusModelList: taskStatusModelList));
 
     return Container(
-      width: MediaQuery.of(context).size.width * 0.35,
+      width: MediaQuery.of(context).size.width * 0.4,
       padding: _kContentPadding,
       decoration: BoxDecoration(
         color: theme.colorFgDefaultWhite,

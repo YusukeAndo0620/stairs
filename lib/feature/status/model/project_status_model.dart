@@ -37,6 +37,17 @@ class ProjectStatusModel {
     return target;
   }
 
+  // 開発言語IDより、該当するタスクのIDリストを取得
+  List<String> getTaskIdListWithDevLangId({required String devLangId}) {
+    final List<String> targetList = [];
+    for (final task in taskStatusList) {
+      if (task.devLangId == devLangId) {
+        targetList.add(task.taskItemId);
+      }
+    }
+    return targetList;
+  }
+
   /// 完了したタスク数
   int get completedTaskCount {
     return taskStatusList
@@ -50,7 +61,7 @@ class ProjectStatusModel {
   int get overDueDateTaskCount {
     return taskStatusList
         .map((task) =>
-            task.doneDate != null && DateTime.now().isAfter(task.dueDate)
+            task.doneDate != null && task.dueDate.isAfter(DateTime.now())
                 ? task.taskItemId
                 : null)
         .whereType<String>()
@@ -84,7 +95,7 @@ class ProjectStatusModel {
     return (taskIdList.toSet().toList().length / taskStatusList.length * 100);
   }
 
-  /// ラベルに紐づく数タスク数
+  /// タスクに使用されているラベルの総数
   int get totalLabelTaskCount {
     int count = 0;
     for (final label in labelStatusList) {

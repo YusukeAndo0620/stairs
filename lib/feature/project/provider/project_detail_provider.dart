@@ -84,9 +84,13 @@ class ProjectDetail extends _$ProjectDetail {
 
   Future<void> createProject() async {
     _logger.d('プロジェクト作成 開始');
+    // トーストプロバイダー
+    final toastMsgNotifier = ref.watch(toastMsgProvider.notifier);
 
     if (state.value == null) {
       _logger.d('stateに値がないため処理終了');
+      await toastMsgNotifier.showToast(
+          type: MessageType.error, msg: msgList['err001']);
       return;
     }
     _logger.d('projectId: ${state.value!.projectId}');
@@ -95,8 +99,6 @@ class ProjectDetail extends _$ProjectDetail {
     final projectRepositoryProvider =
         Provider((ref) => ProjectRepository(db: database));
 
-    // トーストプロバイダー
-    final toastMsgNotifier = ref.watch(toastMsgProvider.notifier);
     // API通信開始
     final repository = ref.read(projectRepositoryProvider);
     try {

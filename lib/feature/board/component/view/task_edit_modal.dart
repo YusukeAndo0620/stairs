@@ -46,6 +46,7 @@ class TaskEditModal extends ConsumerWidget {
 
     final theme = LoomTheme.of(context);
     final titleTxtController = TextEditingController(text: taskItemState.title);
+    final secondaryItemWidth = MediaQuery.of(context).size.width * 0.6;
 
     return Modal(
       height: MediaQuery.of(context).size.height * 0.75,
@@ -86,6 +87,7 @@ class TaskEditModal extends ConsumerWidget {
           ),
           //開始日
           CardLstItem.labeWithIcon(
+            width: secondaryItemWidth,
             label: _kTaskItemStartDateTxt,
             iconColor: themeColor,
             iconData: theme.icons.calender,
@@ -125,6 +127,7 @@ class TaskEditModal extends ConsumerWidget {
           ),
           // 期日
           CardLstItem.labeWithIcon(
+            width: secondaryItemWidth,
             label: _kTaskItemEndDateTxt,
             iconColor: themeColor,
             iconData: theme.icons.calender,
@@ -164,6 +167,7 @@ class TaskEditModal extends ConsumerWidget {
           ),
           // ラベル
           CardLstItem.labeWithIcon(
+            width: secondaryItemWidth,
             label: _kLabelTxt,
             iconColor: themeColor,
             iconData: Icons.label,

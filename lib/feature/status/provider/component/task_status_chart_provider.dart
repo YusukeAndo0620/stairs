@@ -89,21 +89,22 @@ class TaskStatusChart extends _$TaskStatusChart {
       {required int displayedColumnCount,
       required List<TaskStatusModel> taskStatusModelList}) {
     final copyList = [...taskStatusModelList];
-    if (copyList.isEmpty) {
-      return TaskStatusChartState(
-        chartType: TaskChartType.weekly,
-        taskInitialDate: DateTime.now(),
-        taskStatusList: const [],
-        pageController: PageController(initialPage: 0),
-        progressCountMap: const {},
-        overDueDateCountMap: const {},
-        completedCountMap: const {},
-      );
-    }
+    // if (copyList.isEmpty) {
+    //   return TaskStatusChartState(
+    //     chartType: TaskChartType.weekly,
+    //     taskInitialDate: DateTime.now(),
+    //     taskStatusList: const [],
+    //     pageController: PageController(initialPage: 0),
+    //     progressCountMap: const {},
+    //     overDueDateCountMap: const {},
+    //     completedCountMap: const {},
+    //   );
+    // }
     // タスク登録日時でソート
     copyList.sort((a, b) => a.startDate.compareTo(b.startDate));
     // タスクの中で最も古い日付
-    final initialDate = copyList.first.startDate;
+    final initialDate =
+        copyList.isNotEmpty ? copyList.first.startDate : DateTime.now();
     // チャートx軸の開始基準の日付
     final criteriaDay = getWeeklyInitialDate(date: initialDate);
     final minusDays = (((getWeeklyInitialDate(date: DateTime.now())

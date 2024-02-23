@@ -3,13 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/cupertino.dart';
 
 const _kSpaceHeight = 120.0;
-const _kLabelWidth = 130.0;
-const _kContentPadding = EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0);
+const _kLabelWidth = 100.0;
+const _kLabelHeight = 60.0;
+const _kContentPadding = EdgeInsets.symmetric(vertical: 16.0, horizontal: 4.0);
 const _kLabelContentPadding =
     EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
 const _kListItemBorder = 1.0;
 const _kDeleteIconSize = 16.0;
-const _kSpaceWidth = 8.0;
+const _kSpaceWidth = 4.0;
 const _kDrumExtent = 40.0;
 
 /// リストボックス＋テキスト入力画面
@@ -202,7 +203,9 @@ class _ListItem extends StatelessWidget {
           TapAction(
             widget: Container(
               width: _kLabelWidth,
+              height: _kLabelHeight,
               padding: _kLabelContentPadding,
+              alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: theme.colorFgDefaultWhite,
                 border: Border.all(
@@ -257,10 +260,14 @@ class _ListItem extends StatelessWidget {
             width: _kSpaceWidth,
           ),
           SizedBox(
-            width: MediaQuery.of(context).size.width * 0.45,
+            width: MediaQuery.of(context).size.width * 0.85 -
+                _kLabelWidth -
+                _kSpaceWidth -
+                _kDeleteIconSize,
             child: TextInput(
               textController: TextEditingController(text: selectedItem.content),
               hintText: hintText,
+              maxLines: 2,
               onSubmitted: (value) => onTextSubmitted(value),
             ),
           ),

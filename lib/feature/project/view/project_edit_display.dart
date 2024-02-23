@@ -143,6 +143,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
       ),
       body: projectDetailState.when(
         data: (detail) {
+          final secondaryItemWidth = MediaQuery.of(context).size.width * 0.55;
           return detail == null
               ? const SizedBox.shrink()
               : Padding(
@@ -174,6 +175,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             }),
                         // 色
                         CardLstItem.labeWithIcon(
+                          width: secondaryItemWidth,
                           label: _kColorTxt,
                           iconData: Icons.palette,
                           iconColor: theme.colorPrimary,
@@ -237,8 +239,9 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             }
                           },
                         ),
-                        // 期日
+                        // 期間
                         CardLstItem.labeWithIcon(
+                          width: secondaryItemWidth,
                           label: _kDueTxt,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.calender,
@@ -307,6 +310,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         ),
                         // OS
                         CardLstItem.labeWithIcon(
+                          width: secondaryItemWidth,
                           label: _kOsTxt,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.resume,
@@ -341,6 +345,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         ),
                         // DB
                         CardLstItem.labeWithIcon(
+                          width: secondaryItemWidth,
                           label: _kDbTxt,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.resume,
@@ -375,6 +380,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         ),
                         // 開発言語
                         CardLstItem.labeWithIcon(
+                          width: secondaryItemWidth,
                           label: _kDevLangTxt,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.developers,
@@ -411,6 +417,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         ),
                         // 開発ツール
                         CardLstItem.labeWithIcon(
+                          width: secondaryItemWidth,
                           label: _kToolTxt,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.tool,
@@ -445,6 +452,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         ),
                         // 作業工程
                         CardLstItem.labeWithIcon(
+                          width: secondaryItemWidth,
                           label: _kProgressTxt,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.resume,
@@ -489,6 +497,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         ),
                         // ラベル
                         CardLstItem.labeWithIcon(
+                          width: secondaryItemWidth,
                           label: _kLabelTxt,
                           iconColor: theme.colorPrimary,
                           iconData: Icons.label,
