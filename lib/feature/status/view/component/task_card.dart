@@ -5,7 +5,7 @@ const _kSpaceHeight = 8.0;
 const _kTitleAndIconSpace = 4.0;
 const _kIconSize = 16.0;
 
-const _kLastMonthTxt = '（1ヶ月前';
+const _kLastMonthTxt = '（1ヶ月前）';
 const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0);
 const _kContentMargin = EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0);
 

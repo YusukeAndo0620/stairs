@@ -70,6 +70,15 @@ final colorList = [
     colorCodeId: Value(const Color.fromARGB(255, 136, 255, 150).getColorId),
   ),
   MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 107, 33, 255).getColorId),
+  ),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 255, 90, 153).getColorId),
+  ),
+  MColorCompanion(
+    colorCodeId: Value(const Color.fromARGB(255, 25, 27, 149).getColorId),
+  ),
+  MColorCompanion(
     colorCodeId: Value(const Color.fromARGB(255, 178, 178, 178).getColorId),
   ),
 ];

@@ -60,11 +60,17 @@ class LabelTip extends StatelessWidget {
               width: _kIconAndContentsSpace,
             ),
           ],
-          Text(
-            label,
-            style: theme.textStyleFootnote
-                .copyWith(color: textColor ?? theme.colorFgDefault),
-            overflow: TextOverflow.ellipsis,
+          SizedBox(
+            width: width != null
+                ? (width! - _kContentPadding.horizontal * 1.5) * 0.7
+                : null,
+            child: Text(
+              label,
+              style: theme.textStyleFootnote
+                  .copyWith(color: textColor ?? theme.colorFgDefault),
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),

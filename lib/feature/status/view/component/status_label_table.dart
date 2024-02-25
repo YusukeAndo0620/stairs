@@ -3,12 +3,14 @@ import 'package:stairs/loom/loom_package.dart';
 
 const _kHeaderLabelText = "ラベル名";
 const _kHeaderTotalCountText = "総数";
-const _kHeaderPercentText = "比率";
+const _kEmptyText = "タスクに設定されているラベルがありません。";
+
+const _kBorderWidth = 1.0;
 const _kHeaderHeight = 20.0;
-const _kLabelNameWidth = 120.0;
+const _kCountWidth = 40.0;
 const _kProgressPercentHeight = 20.0;
+const _kEmptyIconAndTxtSpace = 8.0;
 const _kProgressPercentAnimation = 1000;
-const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0);
 const _kContentMargin = EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0);
 
 final _logger = stairsLogger(name: 'status_label_table');
@@ -48,17 +50,25 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
     final theme = LoomTheme.of(context);
 
     return Container(
-      padding: _kContentPadding,
       margin: _kContentMargin,
       constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.9,
           maxHeight: MediaQuery.of(context).size.height * 0.33),
+      decoration: BoxDecoration(
+        color: theme.colorFgDefaultWhite,
+        borderRadius: BorderRadius.circular(5.0),
+        border: Border.all(
+          color: theme.colorFgDisabled,
+          width: _kBorderWidth,
+        ),
+      ),
       child: DataTable2(
         sortColumnIndex: sortedColumnIdx,
         sortAscending: sortAscending,
         headingRowHeight: _kHeaderHeight,
         columnSpacing: 10.0,
         horizontalMargin: 10.0,
+        empty: const _EmptyArea(),
         headingRowColor: MaterialStateProperty.resolveWith(
             (states) => theme.colorFgDisabled.withOpacity(0.3)),
         columns: [
@@ -83,17 +93,6 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
             onSort: (columnIndex, ascending) =>
                 sortList(columnIdx: columnIndex, isAsc: ascending),
           ),
-          DataColumn(
-            label: Align(
-              alignment: Alignment.center,
-              child: Text(
-                _kHeaderPercentText,
-                style: theme.textStyleBody,
-              ),
-            ),
-            onSort: (columnIndex, ascending) =>
-                sortList(columnIdx: columnIndex, isAsc: ascending),
-          ),
         ],
         rows: [
           if (list.isNotEmpty) ...[
@@ -102,39 +101,45 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
                 cells: [
                   DataCell(
                     LabelTip(
-                      width: _kLabelNameWidth,
+                      width: MediaQuery.of(context).size.width * 0.5,
                       label: item.labelName,
                       themeColor: item.themeColorModel.color,
                     ),
                   ),
                   DataCell(
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        '${item.taskIdList.length.toString()} / ${widget.totalLabelTaskCount}',
-                        style: theme.textStyleBody,
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    LinearPercentIndicator(
-                      animation: true,
-                      lineHeight: _kProgressPercentHeight,
-                      animationDuration: _kProgressPercentAnimation,
-                      percent:
-                          item.taskIdList.length / widget.totalLabelTaskCount,
-                      center: Text(
-                        getFormattedPercent(
-                          percent: (item.taskIdList.length /
-                                  widget.totalLabelTaskCount *
-                                  100)
-                              .toInt(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: _kCountWidth,
+                          child: Text(
+                            '${item.taskIdList.length.toString()} / ${widget.totalLabelTaskCount}',
+                            style: theme.textStyleBody,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        style: theme.textStyleBody,
-                      ),
-                      barRadius: const Radius.circular(10),
-                      backgroundColor: theme.colorFgDisabled,
-                      progressColor: theme.colorPrimary,
+                        LinearPercentIndicator(
+                          width: MediaQuery.of(context).size.width * 0.28,
+                          animation: true,
+                          lineHeight: _kProgressPercentHeight,
+                          animationDuration: _kProgressPercentAnimation,
+                          percent: item.taskIdList.length /
+                              widget.totalLabelTaskCount,
+                          center: Text(
+                            getFormattedPercent(
+                              percent: (item.taskIdList.length /
+                                      widget.totalLabelTaskCount *
+                                      100)
+                                  .toInt(),
+                            ),
+                            style: theme.textStyleBody,
+                          ),
+                          barRadius: const Radius.circular(10),
+                          backgroundColor: theme.colorFgDisabled,
+                          progressColor: theme.colorPrimary,
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -177,5 +182,31 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
       sortAscending = isAsc;
       sortedColumnIdx = columnIdx;
     });
+  }
+}
+
+class _EmptyArea extends StatelessWidget {
+  const _EmptyArea();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = LoomTheme.of(context);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.info,
+          color: theme.colorPrimary,
+        ),
+        const SizedBox(
+          width: _kEmptyIconAndTxtSpace,
+        ),
+        Text(
+          _kEmptyText,
+          style: theme.textStyleBody,
+        )
+      ],
+    );
   }
 }
