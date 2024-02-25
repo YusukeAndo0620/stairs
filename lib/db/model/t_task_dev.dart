@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:stairs/db/db_package.dart';
 
 /// タスク開発言語紐付け
-@TableIndex(name: 'task_dev_id', columns: {#id})
+@TableIndex(name: 'task_dev_id', columns: {#taskId})
 class TTaskDev extends Table {
   TextColumn get taskId =>
       text().withLength(min: 1, max: 50).references(TTask, #taskId)();

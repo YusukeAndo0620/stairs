@@ -1,5 +1,5 @@
 import 'package:stairs/db/provider/database_provider.dart';
-import 'package:stairs/feature/project/component/provider/dev_lang_provider.dart';
+import 'package:stairs/feature/project/provider/component/dev_lang_provider.dart';
 import 'package:stairs/feature/project/enum/project_update_param.dart';
 import 'package:stairs/feature/project/provider/project_detail_provider.dart';
 import 'package:stairs/feature/project/provider/project_list_provider.dart';

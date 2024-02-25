@@ -1,6 +1,6 @@
-import 'package:stairs/feature/board/component/provider/board_position_provider.dart';
-import 'package:stairs/feature/board/component/view/board_adding_card.dart';
-import 'package:stairs/feature/board/component/view/board_card.dart';
+import 'package:stairs/feature/board/provider/board_position_provider.dart';
+import 'package:stairs/feature/board/view/component/board_adding_card.dart';
+import 'package:stairs/feature/board/view/component/board_card.dart';
 import 'package:stairs/feature/board/component/view/carousel_display.dart';
 import 'package:stairs/feature/board/provider/board_provider.dart';
 import 'package:stairs/loom/loom_package.dart';

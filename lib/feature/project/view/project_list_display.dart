@@ -1,6 +1,6 @@
 import 'package:stairs/feature/board/view/board_screen.dart';
 import 'package:stairs/feature/common/provider/view/toast_msg_provider.dart';
-import 'package:stairs/feature/project/component/view/project_list_item.dart';
+import 'package:stairs/feature/project/view/component/project_list_item.dart';
 import 'package:stairs/feature/project/model/project_detail_model.dart';
 import 'package:stairs/feature/project/model/project_list_item_model.dart';
 import 'package:stairs/feature/project/provider/project_detail_provider.dart';

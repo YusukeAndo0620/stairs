@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:collection/collection.dart';
-import 'package:stairs/feature/board/component/provider/board_position_provider.dart';
+import 'package:stairs/feature/board/provider/component/board_position_provider.dart';
 import 'package:stairs/feature/board/model/task_item_model.dart';
 import 'package:stairs/feature/board/provider/task_item_provider.dart';
 import 'package:stairs/loom/loom_package.dart';

@@ -1,8 +1,8 @@
-import 'package:stairs/feature/board/component/provider/board_position_provider.dart';
-import 'package:stairs/feature/board/component/view/new_task_item.dart';
-import 'package:stairs/feature/board/component/view/shrink_list_item.dart';
-import 'package:stairs/feature/board/component/view/task_edit_modal.dart';
-import 'package:stairs/feature/board/component/view/task_list_item.dart';
+import 'package:stairs/feature/board/provider/board_position_provider.dart';
+import 'package:stairs/feature/board/view/component/new_task_item.dart';
+import 'package:stairs/feature/board/view/component/shrink_list_item.dart';
+import 'package:stairs/feature/board/view/component/task_edit_modal.dart';
+import 'package:stairs/feature/board/view/component/task_list_item.dart';
 import 'package:stairs/feature/board/model/board_position_model.dart';
 import 'package:stairs/feature/board/model/task_item_model.dart';
 import 'package:stairs/feature/board/provider/board_provider.dart';

@@ -60,6 +60,13 @@ flutter pub cache repair
 
 ## DB path
 
-# SQLite の DB 格納先（MAC）は以下に配置されます。
+# SQLite の DB 格納先（MAC）は以下に配置されます。初期化したい場合は、stairs.sqlite を削除し、サーバーを起動してください。（新規作成されます。）
 
-/Users/xxxxxxxx/Library/Containers/com.example.stairs/Data/Documents/db.sqlite
+/Users/xxxxxxxx/Library/Containers/com.example.stairs/Data/Documents/stairs.sqlite
+
+## 拡張機能
+
+1. Flutter
+2. Dart
+3. SQLite
+4. Code Spell Checker
