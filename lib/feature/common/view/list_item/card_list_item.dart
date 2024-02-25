@@ -264,7 +264,7 @@ class _DropDown extends StatelessWidget {
         DropdownMenuItem(
           value: '',
           child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.43,
+            width: MediaQuery.of(context).size.width * 0.4,
             child: Text(
               _kNoSelectedName,
               style: theme.textStyleBody,
@@ -276,7 +276,7 @@ class _DropDown extends StatelessWidget {
               (item) => DropdownMenuItem(
                 value: item.id,
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.43,
+                  width: MediaQuery.of(context).size.width * 0.4,
                   child: Text(
                     item.labelName,
                     style: theme.textStyleBody,

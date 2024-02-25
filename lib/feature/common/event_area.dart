@@ -72,7 +72,7 @@ class _EventAreaState extends State<EventArea> {
             children: [
               widget.itemList.isEmpty
                   ? SizedBox(
-                      width: widget.width - _kIconWidth * 1.8,
+                      width: widget.width - _kIconWidth * 2.5,
                       child: Text(
                         widget.hintText,
                         style: theme.textStyleFootnote,

@@ -7,19 +7,23 @@ const kShrinkId = 'shrinkId';
 
 class DraggingItemState {
   const DraggingItemState({
-    required this.boardId,
+    required this.beforeBoardId,
+    required this.currentBoardId,
     this.draggingItem,
   });
 
-  final String boardId;
+  final String beforeBoardId;
+  final String currentBoardId;
   final TaskItemModel? draggingItem;
 
   DraggingItemState copyWith({
-    String? boardId,
+    String? beforeBoardId,
+    String? currentBoardId,
     TaskItemModel? draggingItem,
   }) =>
       DraggingItemState(
-        boardId: boardId ?? this.boardId,
+        beforeBoardId: beforeBoardId ?? this.beforeBoardId,
+        currentBoardId: currentBoardId ?? this.currentBoardId,
         draggingItem: draggingItem ?? this.draggingItem,
       );
 }
@@ -28,27 +32,29 @@ class DraggingItemState {
 class DragItem extends _$DragItem {
   @override
   DraggingItemState build() => const DraggingItemState(
-        boardId: '',
+        beforeBoardId: '',
+        currentBoardId: '',
         draggingItem: null,
       );
 
   void init() {
     state = const DraggingItemState(
-      boardId: '',
+      beforeBoardId: '',
+      currentBoardId: '',
       draggingItem: null,
     );
   }
 
   void setItem({
-    required String boardId,
+    String? beforeBoardId,
+    required String currentBoardId,
     TaskItemModel? draggingItem,
   }) {
     state = DraggingItemState(
-      boardId: boardId,
+      beforeBoardId: beforeBoardId ?? state.beforeBoardId,
+      currentBoardId: currentBoardId,
       draggingItem:
-          draggingItem ?? state.draggingItem?.copyWith(boardId: boardId),
+          draggingItem ?? state.draggingItem?.copyWith(boardId: currentBoardId),
     );
   }
 }
-
-

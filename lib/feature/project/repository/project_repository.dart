@@ -371,6 +371,7 @@ ProjectDetailModel _convertProjectDetailToModel({
   }
 
   for (var i = 0; i < tagRelData.length; i++) {
+    // idはTagRelのidとする
     tagList.add(
       ColorLabelModel(
         id: tagRelData[i].id.toString(),

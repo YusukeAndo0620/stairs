@@ -6,7 +6,7 @@ part of 'task_workload_card_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$taskWorkloadCardHash() => r'8f4f7c4707d4cedbc1fd80e5caf7a818a2ff466b';
+String _$taskWorkloadCardHash() => r'4582c58855920b6a0e96bcaca8aaea204f8bef8b';
 
 /// Copied from Dart SDK
 class _SystemHash {

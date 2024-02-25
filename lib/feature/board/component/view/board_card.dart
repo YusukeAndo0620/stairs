@@ -1,4 +1,3 @@
-import 'package:stairs/db/provider/database_provider.dart';
 import 'package:stairs/feature/board/component/provider/board_position_provider.dart';
 import 'package:stairs/feature/board/component/view/new_task_item.dart';
 import 'package:stairs/feature/board/component/view/shrink_list_item.dart';
@@ -10,6 +9,7 @@ import 'package:stairs/feature/board/provider/board_provider.dart';
 import 'package:stairs/feature/board/provider/drag_item_provider.dart';
 import 'package:stairs/feature/board/provider/task_item_provider.dart';
 import 'package:stairs/feature/board/view/board_screen.dart';
+import 'package:stairs/feature/common/provider/view/toast_msg_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -136,10 +136,8 @@ class _BoardCardState extends ConsumerState<BoardCard> {
 
         // ポジション
         final positionState = ref.watch(boardPositionProvider);
-        final boardNotifier = ref.read(boardProvider(
-                projectId: widget.projectId,
-                database: ref.watch(databaseProvider))
-            .notifier);
+        final boardNotifier =
+            ref.read(boardProvider(projectId: widget.projectId).notifier);
         const previousCriteria = -10.0;
         const nextCriteria = 200.0;
 
@@ -165,20 +163,34 @@ class _BoardCardState extends ConsumerState<BoardCard> {
           );
         }
       },
+      // ドラッグ終了
       onAcceptWithDetails: (details) {
         _logger
             .d('[event] onAcceptWithDetails {対象のboard title:${widget.title}}');
-        if (dragItemState.draggingItem != null) {
-          final boardNotifier = ref.read(boardProvider(
-                  projectId: widget.projectId,
-                  database: ref.watch(databaseProvider))
-              .notifier);
-          final dragItemNotifier = ref.read(dragItemProvider.notifier);
-          boardNotifier.replaceDraggedItem(
-              draggingItem: dragItemState.draggingItem!);
+        //　board notifier
+        final boardNotifier = ref.read(boardProvider(
+          projectId: widget.projectId,
+        ).notifier);
 
-          dragItemNotifier.init();
+        // ドラッグアイテムがnullの場合、DBからボードリストを取得
+        if (dragItemState.draggingItem == null) {
+          _logger.e('draggingItemがありません。');
+          // ボード一覧取得し、stateに設定
+          boardNotifier.setBoardList(projectId: widget.projectId);
+          // トーストプロバイダー
+          final toastMsgNotifier = ref.watch(toastMsgProvider.notifier);
+          toastMsgNotifier.showToast(
+              type: MessageType.error, msg: msgList['brd-err002']);
+        } else {
+          //ドラッグ中の要素に置換
+          boardNotifier.replaceDraggedItem(
+              beforeBoardId: dragItemState.beforeBoardId,
+              draggingItem: dragItemState.draggingItem!);
         }
+        //　drag notifier
+        final dragItemNotifier = ref.read(dragItemProvider.notifier);
+        // ドラッグ中の状態を初期化
+        dragItemNotifier.init();
         setState(() {
           _isMovingReady = false;
         });
@@ -189,10 +201,10 @@ class _BoardCardState extends ConsumerState<BoardCard> {
         });
       },
       onWillAccept: (data) {
-        if (dragItemState.boardId != widget.boardId) {
+        if (dragItemState.currentBoardId != widget.boardId) {
           final dragItemNotifier = ref.read(dragItemProvider.notifier);
           dragItemNotifier.setItem(
-            boardId: widget.boardId,
+            currentBoardId: widget.boardId,
           );
         }
         if (!_isMovingReady) {
@@ -260,10 +272,9 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                                 },
                               );
                               if (result == null) {
-                                final boardNotifier = ref.read(boardProvider(
-                                        projectId: widget.projectId,
-                                        database: ref.watch(databaseProvider))
-                                    .notifier);
+                                final boardNotifier = ref.read(
+                                    boardProvider(projectId: widget.projectId)
+                                        .notifier);
                                 final taskItemState = ref.watch(
                                     taskItemProvider(
                                         taskItemId: taskItem.taskItemId));
@@ -276,6 +287,7 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                                   orderNo: taskItemState.orderNo,
                                   startDate: taskItemState.startDate,
                                   dueDate: taskItemState.dueDate,
+                                  doneDate: taskItemState.doneDate,
                                   labelList: taskItemState.labelList,
                                 );
                               }
@@ -285,13 +297,13 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                                   '[event] onDragStarted {board_title:${widget.title}}');
                               final dragItemNotifier =
                                   ref.read(dragItemProvider.notifier);
-                              final boardNotifier = ref.read(boardProvider(
-                                      projectId: widget.projectId,
-                                      database: ref.watch(databaseProvider))
-                                  .notifier);
+                              final boardNotifier = ref.read(
+                                  boardProvider(projectId: widget.projectId)
+                                      .notifier);
 
                               dragItemNotifier.setItem(
-                                boardId: item.boardId,
+                                beforeBoardId: item.boardId,
+                                currentBoardId: item.boardId,
                                 draggingItem: item,
                               );
 
@@ -310,23 +322,21 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                               _logger.d(
                                   '[event] onDragEnd {board_title:${widget.title}}');
                             },
+                            // ドラッグキャンセル
                             onDraggableCanceled: (velocity, offset) {
                               _logger.d(
                                   '[event] onDraggableCanceled {board_title:${widget.title}}');
-                              if (dragItemState.draggingItem == null) {
-                                _logger.d('draggingItemがありません。');
-                                return;
-                              }
+                              //　board notifier
+                              final boardNotifier = ref.read(
+                                  boardProvider(projectId: widget.projectId)
+                                      .notifier);
+                              // ボード一覧取得し、stateに設定
+                              boardNotifier.setBoardList(
+                                  projectId: widget.projectId);
+                              //　drag notifier
                               final dragItemNotifier =
                                   ref.read(dragItemProvider.notifier);
-                              final boardNotifier = ref.read(boardProvider(
-                                      projectId: widget.projectId,
-                                      database: ref.watch(databaseProvider))
-                                  .notifier);
-
-                              boardNotifier.replaceDraggedItem(
-                                  draggingItem: dragItemState.draggingItem!);
-
+                              // ドラッグアイテム初期化
                               dragItemNotifier.init();
                               setState(() {
                                 _isMovingReady = false;
@@ -393,10 +403,9 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                               _isMovingLast = true;
                             },
                           );
-                          final boardNotifier = ref.read(boardProvider(
-                                  projectId: widget.projectId,
-                                  database: ref.watch(databaseProvider))
-                              .notifier);
+                          final boardNotifier = ref.read(
+                              boardProvider(projectId: widget.projectId)
+                                  .notifier);
                           final taskItemNotifier = ref
                               .read(taskItemProvider(taskItemId: '').notifier);
 

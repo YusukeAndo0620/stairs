@@ -164,8 +164,9 @@ class BoardRepository {
 
     for (var i = 0; i < taskTagData.length; i++) {
       // 追加するタグの情報
+      // idはTagRelのidとする
       final tag = ColorLabelModel(
-        id: tagData[i].id.toString(),
+        id: taskTagData[i].tagRelId.toString(),
         labelName: tagData[i].name,
         isReadOnly: tagData[i].isReadOnly,
         colorModel: ColorModel(
@@ -203,15 +204,16 @@ class BoardRepository {
       taskList.add(taskItem);
     }
 
-    // 表示順で並び替え
+    // タスク表示順で並び替え
     taskList.sort((a, b) => a.orderNo.compareTo(b.orderNo));
 
     return BoardModel(
-        projectId: boardData.projectId,
-        boardId: boardData.boardId,
-        title: boardData.name,
-        orderNo: boardData.orderNo,
-        taskItemList: taskList);
+      projectId: boardData.projectId,
+      boardId: boardData.boardId,
+      title: boardData.name,
+      orderNo: boardData.orderNo,
+      taskItemList: taskList,
+    );
   }
 
   // プロジェクト詳細 model to entity
@@ -222,6 +224,7 @@ class BoardRepository {
       projectId: Value(boardModel.projectId),
       boardId: Value(boardModel.boardId),
       name: Value(boardModel.title),
+      orderNo: Value(boardModel.orderNo),
       isCompleted: const Value(false),
       updateAt: Value(DateTime.now().toIso8601String()),
     );

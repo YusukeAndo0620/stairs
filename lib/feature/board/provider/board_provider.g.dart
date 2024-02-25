@@ -6,7 +6,7 @@ part of 'board_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$boardHash() => r'4801cdd7bec65a305993be124b6d0f9a68884a64';
+String _$boardHash() => r'd6b56141eff30931ada3c26fff6d89073b27187a';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,14 +29,11 @@ class _SystemHash {
   }
 }
 
-abstract class _$Board
-    extends BuildlessAutoDisposeAsyncNotifier<List<BoardModel>> {
+abstract class _$Board extends BuildlessAutoDisposeAsyncNotifier<BoardState> {
   late final String projectId;
-  late final StairsDatabase database;
 
-  FutureOr<List<BoardModel>> build({
+  FutureOr<BoardState> build({
     required String projectId,
-    required StairsDatabase database,
   });
 }
 
@@ -45,18 +42,16 @@ abstract class _$Board
 const boardProvider = BoardFamily();
 
 /// See also [Board].
-class BoardFamily extends Family<AsyncValue<List<BoardModel>>> {
+class BoardFamily extends Family<AsyncValue<BoardState>> {
   /// See also [Board].
   const BoardFamily();
 
   /// See also [Board].
   BoardProvider call({
     required String projectId,
-    required StairsDatabase database,
   }) {
     return BoardProvider(
       projectId: projectId,
-      database: database,
     );
   }
 
@@ -66,7 +61,6 @@ class BoardFamily extends Family<AsyncValue<List<BoardModel>>> {
   ) {
     return call(
       projectId: provider.projectId,
-      database: provider.database,
     );
   }
 
@@ -87,15 +81,12 @@ class BoardFamily extends Family<AsyncValue<List<BoardModel>>> {
 
 /// See also [Board].
 class BoardProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<Board, List<BoardModel>> {
+    extends AutoDisposeAsyncNotifierProviderImpl<Board, BoardState> {
   /// See also [Board].
   BoardProvider({
     required String projectId,
-    required StairsDatabase database,
   }) : this._internal(
-          () => Board()
-            ..projectId = projectId
-            ..database = database,
+          () => Board()..projectId = projectId,
           from: boardProvider,
           name: r'boardProvider',
           debugGetCreateSourceHash:
@@ -105,7 +96,6 @@ class BoardProvider
           dependencies: BoardFamily._dependencies,
           allTransitiveDependencies: BoardFamily._allTransitiveDependencies,
           projectId: projectId,
-          database: database,
         );
 
   BoardProvider._internal(
@@ -116,19 +106,16 @@ class BoardProvider
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.projectId,
-    required this.database,
   }) : super.internal();
 
   final String projectId;
-  final StairsDatabase database;
 
   @override
-  FutureOr<List<BoardModel>> runNotifierBuild(
+  FutureOr<BoardState> runNotifierBuild(
     covariant Board notifier,
   ) {
     return notifier.build(
       projectId: projectId,
-      database: database,
     );
   }
 
@@ -137,60 +124,48 @@ class BoardProvider
     return ProviderOverride(
       origin: this,
       override: BoardProvider._internal(
-        () => create()
-          ..projectId = projectId
-          ..database = database,
+        () => create()..projectId = projectId,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         projectId: projectId,
-        database: database,
       ),
     );
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<Board, List<BoardModel>>
-      createElement() {
+  AutoDisposeAsyncNotifierProviderElement<Board, BoardState> createElement() {
     return _BoardProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is BoardProvider &&
-        other.projectId == projectId &&
-        other.database == database;
+    return other is BoardProvider && other.projectId == projectId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, projectId.hashCode);
-    hash = _SystemHash.combine(hash, database.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
-mixin BoardRef on AutoDisposeAsyncNotifierProviderRef<List<BoardModel>> {
+mixin BoardRef on AutoDisposeAsyncNotifierProviderRef<BoardState> {
   /// The parameter `projectId` of this provider.
   String get projectId;
-
-  /// The parameter `database` of this provider.
-  StairsDatabase get database;
 }
 
 class _BoardProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<Board, List<BoardModel>>
+    extends AutoDisposeAsyncNotifierProviderElement<Board, BoardState>
     with BoardRef {
   _BoardProviderElement(super.provider);
 
   @override
   String get projectId => (origin as BoardProvider).projectId;
-  @override
-  StairsDatabase get database => (origin as BoardProvider).database;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

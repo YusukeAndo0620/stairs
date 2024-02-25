@@ -4438,7 +4438,7 @@ class $TTaskTable extends TTask with TableInfo<$TTaskTable, TTaskData> {
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
       'description', aliasedName, false,
       additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 500),
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 500),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
   static const VerificationMeta _orderNoMeta =
@@ -5214,15 +5214,6 @@ class $TTaskDevTable extends TTaskDev
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $TTaskDevTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
   static const VerificationMeta _taskIdMeta = const VerificationMeta('taskId');
   @override
   late final GeneratedColumn<String> taskId = GeneratedColumn<String>(
@@ -5261,8 +5252,7 @@ class $TTaskDevTable extends TTaskDev
       requiredDuringInsert: false,
       clientDefault: () => DateTime.now().toIso8601String());
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, taskId, devLangId, createAt, updateAt];
+  List<GeneratedColumn> get $columns => [taskId, devLangId, createAt, updateAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -5273,9 +5263,6 @@ class $TTaskDevTable extends TTaskDev
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
     if (data.containsKey('task_id')) {
       context.handle(_taskIdMeta,
           taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta));
@@ -5302,13 +5289,11 @@ class $TTaskDevTable extends TTaskDev
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {taskId};
   @override
   TTaskDevData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TTaskDevData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       taskId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}task_id'])!,
       devLangId: attachedDatabase.typeMapping
@@ -5327,21 +5312,18 @@ class $TTaskDevTable extends TTaskDev
 }
 
 class TTaskDevData extends DataClass implements Insertable<TTaskDevData> {
-  final int id;
   final String taskId;
   final String devLangId;
   final String createAt;
   final String updateAt;
   const TTaskDevData(
-      {required this.id,
-      required this.taskId,
+      {required this.taskId,
       required this.devLangId,
       required this.createAt,
       required this.updateAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
     map['task_id'] = Variable<String>(taskId);
     map['dev_lang_id'] = Variable<String>(devLangId);
     map['create_at'] = Variable<String>(createAt);
@@ -5351,7 +5333,6 @@ class TTaskDevData extends DataClass implements Insertable<TTaskDevData> {
 
   TTaskDevCompanion toCompanion(bool nullToAbsent) {
     return TTaskDevCompanion(
-      id: Value(id),
       taskId: Value(taskId),
       devLangId: Value(devLangId),
       createAt: Value(createAt),
@@ -5363,7 +5344,6 @@ class TTaskDevData extends DataClass implements Insertable<TTaskDevData> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TTaskDevData(
-      id: serializer.fromJson<int>(json['id']),
       taskId: serializer.fromJson<String>(json['taskId']),
       devLangId: serializer.fromJson<String>(json['devLangId']),
       createAt: serializer.fromJson<String>(json['createAt']),
@@ -5374,7 +5354,6 @@ class TTaskDevData extends DataClass implements Insertable<TTaskDevData> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
       'taskId': serializer.toJson<String>(taskId),
       'devLangId': serializer.toJson<String>(devLangId),
       'createAt': serializer.toJson<String>(createAt),
@@ -5383,13 +5362,11 @@ class TTaskDevData extends DataClass implements Insertable<TTaskDevData> {
   }
 
   TTaskDevData copyWith(
-          {int? id,
-          String? taskId,
+          {String? taskId,
           String? devLangId,
           String? createAt,
           String? updateAt}) =>
       TTaskDevData(
-        id: id ?? this.id,
         taskId: taskId ?? this.taskId,
         devLangId: devLangId ?? this.devLangId,
         createAt: createAt ?? this.createAt,
@@ -5398,7 +5375,6 @@ class TTaskDevData extends DataClass implements Insertable<TTaskDevData> {
   @override
   String toString() {
     return (StringBuffer('TTaskDevData(')
-          ..write('id: $id, ')
           ..write('taskId: $taskId, ')
           ..write('devLangId: $devLangId, ')
           ..write('createAt: $createAt, ')
@@ -5408,12 +5384,11 @@ class TTaskDevData extends DataClass implements Insertable<TTaskDevData> {
   }
 
   @override
-  int get hashCode => Object.hash(id, taskId, devLangId, createAt, updateAt);
+  int get hashCode => Object.hash(taskId, devLangId, createAt, updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TTaskDevData &&
-          other.id == this.id &&
           other.taskId == this.taskId &&
           other.devLangId == this.devLangId &&
           other.createAt == this.createAt &&
@@ -5421,63 +5396,60 @@ class TTaskDevData extends DataClass implements Insertable<TTaskDevData> {
 }
 
 class TTaskDevCompanion extends UpdateCompanion<TTaskDevData> {
-  final Value<int> id;
   final Value<String> taskId;
   final Value<String> devLangId;
   final Value<String> createAt;
   final Value<String> updateAt;
+  final Value<int> rowid;
   const TTaskDevCompanion({
-    this.id = const Value.absent(),
     this.taskId = const Value.absent(),
     this.devLangId = const Value.absent(),
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
   TTaskDevCompanion.insert({
-    this.id = const Value.absent(),
     required String taskId,
     required String devLangId,
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
+    this.rowid = const Value.absent(),
   })  : taskId = Value(taskId),
         devLangId = Value(devLangId);
   static Insertable<TTaskDevData> custom({
-    Expression<int>? id,
     Expression<String>? taskId,
     Expression<String>? devLangId,
     Expression<String>? createAt,
     Expression<String>? updateAt,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
-      if (id != null) 'id': id,
       if (taskId != null) 'task_id': taskId,
       if (devLangId != null) 'dev_lang_id': devLangId,
       if (createAt != null) 'create_at': createAt,
       if (updateAt != null) 'update_at': updateAt,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
   TTaskDevCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? taskId,
+      {Value<String>? taskId,
       Value<String>? devLangId,
       Value<String>? createAt,
-      Value<String>? updateAt}) {
+      Value<String>? updateAt,
+      Value<int>? rowid}) {
     return TTaskDevCompanion(
-      id: id ?? this.id,
       taskId: taskId ?? this.taskId,
       devLangId: devLangId ?? this.devLangId,
       createAt: createAt ?? this.createAt,
       updateAt: updateAt ?? this.updateAt,
+      rowid: rowid ?? this.rowid,
     );
   }
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
     if (taskId.present) {
       map['task_id'] = Variable<String>(taskId.value);
     }
@@ -5490,17 +5462,20 @@ class TTaskDevCompanion extends UpdateCompanion<TTaskDevData> {
     if (updateAt.present) {
       map['update_at'] = Variable<String>(updateAt.value);
     }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
     return map;
   }
 
   @override
   String toString() {
     return (StringBuffer('TTaskDevCompanion(')
-          ..write('id: $id, ')
           ..write('taskId: $taskId, ')
           ..write('devLangId: $devLangId, ')
           ..write('createAt: $createAt, ')
-          ..write('updateAt: $updateAt')
+          ..write('updateAt: $updateAt, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -5556,7 +5531,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final Index taskTagId =
       Index('task_tag_id', 'CREATE INDEX task_tag_id ON t_task_tag (id)');
   late final Index taskDevId =
-      Index('task_dev_id', 'CREATE INDEX task_dev_id ON t_task_dev (id)');
+      Index('task_dev_id', 'CREATE INDEX task_dev_id ON t_task_dev ()');
   late final MAccountDao mAccountDao = MAccountDao(this as StairsDatabase);
   late final TProjectDao tProjectDao = TProjectDao(this as StairsDatabase);
   late final TOsInfoDao tOsInfoDao = TOsInfoDao(this as StairsDatabase);

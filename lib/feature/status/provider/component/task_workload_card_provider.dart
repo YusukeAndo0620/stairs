@@ -170,7 +170,7 @@ class TaskWorkloadCard extends _$TaskWorkloadCard {
         addingHour: _kWorkHour,
       );
     }
-    final workloadPercent = workloadHour == 0.0
+    final workloadPercent = workloadHour == 0.0 || actualWorkloadHour == 0.0
         ? 0.0
         : double.parse(
             ((1 - actualWorkloadHour / workloadHour) * 100).toStringAsFixed(2),

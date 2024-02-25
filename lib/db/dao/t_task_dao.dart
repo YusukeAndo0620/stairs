@@ -116,7 +116,7 @@ class TTaskDao extends DatabaseAccessor<StairsDatabase> with _$TTaskDaoMixin {
   }) async {
     try {
       _logger.d('updateTask 通信開始');
-      _logger.d('taskData:  $taskData');
+      _logger.d('taskData: $taskData');
       await db.update(db.tTask).replace(taskData);
     } on Exception catch (exception) {
       _logger.e(exception);

@@ -46,7 +46,7 @@ class TaskEditModal extends ConsumerWidget {
 
     final theme = LoomTheme.of(context);
     final titleTxtController = TextEditingController(text: taskItemState.title);
-    final secondaryItemWidth = MediaQuery.of(context).size.width * 0.6;
+    final secondaryItemWidth = MediaQuery.of(context).size.width * 0.5;
 
     return Modal(
       height: MediaQuery.of(context).size.height * 0.75,

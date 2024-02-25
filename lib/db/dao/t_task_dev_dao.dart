@@ -108,4 +108,20 @@ class TTaskDevDao extends DatabaseAccessor<StairsDatabase>
       _logger.d('deleteTaskDevByTaskId 通信終了');
     }
   }
+
+  /// タスク開発言語 更新
+  Future<void> updateTaskDev({
+    required TTaskDevCompanion taskDevData,
+  }) async {
+    try {
+      _logger.d('updateTaskDev 通信開始');
+      _logger.d('taskDevData:  $taskDevData');
+      await db.update(db.tTaskDev).replace(taskDevData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('updateTaskDev 通信終了');
+    }
+  }
 }

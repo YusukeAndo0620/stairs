@@ -113,6 +113,22 @@ class TTaskTagDao extends DatabaseAccessor<StairsDatabase>
     }
   }
 
+  /// タスクタグ 更新
+  Future<void> updateTaskTag({
+    required TTaskTagCompanion taskTagData,
+  }) async {
+    try {
+      _logger.d('updateTaskTag 通信開始');
+      _logger.d('taskTagData:  $taskTagData');
+      await db.update(db.tTaskTag).replace(taskTagData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('updateTaskTag 通信終了');
+    }
+  }
+
   /// タスクタグ taskIdで削除
   Future<void> deleteTaskTagByTaskId({
     required String taskId,

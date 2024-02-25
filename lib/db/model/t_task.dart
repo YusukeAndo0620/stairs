@@ -6,7 +6,7 @@ import 't_board.dart';
 class TTask extends Table {
   TextColumn get taskId => text().withLength(min: 1, max: 50)();
   TextColumn get name => text().withLength(min: 1, max: 100)();
-  TextColumn get description => text().withLength(min: 1, max: 500)();
+  TextColumn get description => text().withLength(min: 0, max: 500)();
   IntColumn get orderNo => integer()();
   TextColumn get startDate =>
       text().clientDefault(() => DateTime.now().toIso8601String())();

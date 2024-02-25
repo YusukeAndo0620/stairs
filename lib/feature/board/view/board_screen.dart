@@ -1,4 +1,3 @@
-import 'package:stairs/db/provider/database_provider.dart';
 import 'package:stairs/feature/board/component/provider/board_position_provider.dart';
 import 'package:stairs/feature/board/component/view/board_adding_card.dart';
 import 'package:stairs/feature/board/component/view/board_card.dart';
@@ -54,8 +53,7 @@ class _BoardScreenState extends ConsumerState<BoardScreen> {
     final theme = LoomTheme.of(context);
 
     // ボード
-    final boardState = ref.watch(boardProvider(
-        projectId: widget.projectId, database: ref.watch(databaseProvider)));
+    final boardState = ref.watch(boardProvider(projectId: widget.projectId));
 
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
@@ -85,11 +83,11 @@ class _BoardScreenState extends ConsumerState<BoardScreen> {
         width: MediaQuery.of(context).size.width,
         color: widget.themeColor.withOpacity(0.1),
         child: boardState.when(
-          data: (list) {
+          data: (state) {
             return CarouselDisplay(
               controller: controller,
               widgets: [
-                for (final item in list)
+                for (final item in state.boardList)
                   BoardCard(
                     projectId: widget.projectId,
                     boardId: item.boardId,
@@ -102,7 +100,8 @@ class _BoardScreenState extends ConsumerState<BoardScreen> {
                       switch (pageAction) {
                         case PageAction.next:
                           if (controller.positions.isEmpty) return;
-                          if (controller.page!.toInt() < list.length - 1) {
+                          if (controller.page!.toInt() <
+                              state.boardList.length - 1) {
                             _moveNext();
                           }
                         case PageAction.previous:
@@ -116,10 +115,8 @@ class _BoardScreenState extends ConsumerState<BoardScreen> {
                   themeColor: widget.themeColor,
                   onOpenCard: () => _moveLastPage(),
                   onTapAddingBtn: (inputValue) {
-                    final boardNotifier = ref.watch(boardProvider(
-                            projectId: widget.projectId,
-                            database: ref.watch(databaseProvider))
-                        .notifier);
+                    final boardNotifier = ref.watch(
+                        boardProvider(projectId: widget.projectId).notifier);
                     boardNotifier.addBoard(
                         projectId: widget.projectId, title: inputValue);
                   },

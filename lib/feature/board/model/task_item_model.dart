@@ -92,7 +92,7 @@ class TaskItemModel {
     data['orderNo'] = orderNo;
     data['start_date'] = startDate.toIso8601String();
     data['end_date'] = dueDate.toIso8601String();
-    data['done_date'] = doneDate!.toIso8601String();
+    data['done_date'] = doneDate != null ? doneDate!.toIso8601String() : '';
     data['label_list'] = labelList.map((e) => e.toJson()).toList();
     return data;
   }
@@ -109,7 +109,7 @@ class TaskItemModel {
         dev_lang_id: $devLangId,
         start_date: ${startDate.toString()},
         due_date: ${dueDate.toString()},
-        done_date: ${doneDate.toString()},
+        done_date: ${doneDate != null ? doneDate.toString() : ''},
         orderNo: ${orderNo.toString()},
         label_list: ${labelList.map((e) => e.toJson()).toList()},
       }''';

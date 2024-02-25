@@ -5,6 +5,7 @@ const _kSpaceHeight = 8.0;
 const _kTitleAndIconSpace = 4.0;
 const _kIconSize = 16.0;
 
+const _kLastMonthTxt = '（1ヶ月前';
 const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0);
 const _kContentMargin = EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0);
 
@@ -112,11 +113,13 @@ class _Content extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
     final formattedPercent = changedPercent > 0
-        ? "+${getFormattedPercent(percent: changedPercent.isNaN ? 0 : changedPercent.toInt())}（1ヶ月前）"
-        : "${getFormattedPercent(percent: changedPercent.isNaN ? 0 : changedPercent.toInt())}（1ヶ月前）";
+        ? "+${getFormattedPercent(percent: changedPercent.isNaN ? 0 : changedPercent.toInt())}"
+        : "${getFormattedPercent(percent: changedPercent.isNaN ? 0 : changedPercent.toInt())} ";
     return Container(
       padding: _kContentPadding,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             count.toString(),
@@ -124,6 +127,10 @@ class _Content extends StatelessWidget {
           ),
           Text(
             formattedPercent,
+            style: theme.textStyleFootnote,
+          ),
+          Text(
+            _kLastMonthTxt,
             style: theme.textStyleFootnote,
           ),
         ],
