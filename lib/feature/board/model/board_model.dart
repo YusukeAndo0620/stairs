@@ -8,6 +8,7 @@ class BoardModel extends Equatable {
     required this.boardId,
     required this.title,
     required this.orderNo,
+    this.isCompleted = false,
     required this.taskItemList,
   });
 
@@ -15,6 +16,7 @@ class BoardModel extends Equatable {
   final String boardId;
   final String title;
   final int orderNo;
+  final bool isCompleted;
   final List<TaskItemModel> taskItemList;
 
   @override
@@ -23,6 +25,7 @@ class BoardModel extends Equatable {
         boardId,
         title,
         orderNo,
+        isCompleted,
         taskItemList,
       ];
 
@@ -31,6 +34,7 @@ class BoardModel extends Equatable {
     String? boardId,
     String? title,
     int? orderNo,
+    bool? isCompleted,
     List<TaskItemModel>? taskItemList,
   }) =>
       BoardModel(
@@ -38,6 +42,7 @@ class BoardModel extends Equatable {
         boardId: boardId ?? this.boardId,
         title: title ?? this.title,
         orderNo: orderNo ?? this.orderNo,
+        isCompleted: isCompleted ?? this.isCompleted,
         taskItemList: taskItemList ?? this.taskItemList,
       );
 
@@ -46,6 +51,7 @@ class BoardModel extends Equatable {
     final boardId = json['board_id'];
     final title = json['title'];
     final orderNo = json['order_no'];
+    final isCompleted = json['is_completed'];
     final taskItemList = json['task_item_list'];
 
     final model = BoardModel(
@@ -53,6 +59,7 @@ class BoardModel extends Equatable {
       projectId: projectId,
       title: title,
       orderNo: orderNo,
+      isCompleted: isCompleted,
       taskItemList: taskItemList,
     );
 
@@ -65,6 +72,7 @@ class BoardModel extends Equatable {
     data['board_id'] = boardId;
     data['title'] = title;
     data['order_no'] = orderNo;
+    data['is_completed'] = isCompleted;
     data['task_item_list'] = taskItemList.map((e) => e.toJson()).toList();
 
     return data;
@@ -79,6 +87,7 @@ class BoardModel extends Equatable {
         board_id: $boardId,
         title: $title,
         orderNo: $orderNo,
+        isCompleted: $isCompleted,
         task_item_list: ${taskItemList.map((e) => e.toJson()).toList()},
       }''';
   }

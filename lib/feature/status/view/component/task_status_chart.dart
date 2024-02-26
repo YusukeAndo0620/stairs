@@ -45,7 +45,7 @@ class TaskStatusChart extends ConsumerStatefulWidget {
 
 class _TaskStatusChartState extends ConsumerState<TaskStatusChart> {
   TaskChartType selectedDisplayType = TaskChartType.weekly;
-  bool isDisabledPrevious = false;
+  bool isDisabledPrevious = true;
   bool isDisabledNext = true;
 
   @override

@@ -11,6 +11,9 @@ enum PageAction {
   previous,
 }
 
+const _kCompletedTxt = '完了';
+const _kCompletedBoardOrderNo = 999;
+
 final _logger = stairsLogger(name: 'board_screen');
 
 class BoardScreen extends ConsumerStatefulWidget {
@@ -84,6 +87,19 @@ class _BoardScreenState extends ConsumerState<BoardScreen> {
         color: widget.themeColor.withOpacity(0.1),
         child: boardState.when(
           data: (state) {
+            // 完了ボード作成
+            if (state.boardList.isEmpty) {
+              // ボード notifier
+              final boardNotifier = ref
+                  .watch(boardProvider(projectId: widget.projectId).notifier);
+              boardNotifier.addBoard(
+                projectId: widget.projectId,
+                title: _kCompletedTxt,
+                orderNo: _kCompletedBoardOrderNo,
+                isCompleted: true,
+              );
+              return const SizedBox.shrink();
+            }
             return CarouselDisplay(
               controller: controller,
               widgets: [

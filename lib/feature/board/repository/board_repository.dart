@@ -212,6 +212,7 @@ class BoardRepository {
       boardId: boardData.boardId,
       title: boardData.name,
       orderNo: boardData.orderNo,
+      isCompleted: boardData.isCompleted,
       taskItemList: taskList,
     );
   }
@@ -225,8 +226,7 @@ class BoardRepository {
       boardId: Value(boardModel.boardId),
       name: Value(boardModel.title),
       orderNo: Value(boardModel.orderNo),
-      isCompleted: const Value(false),
-      updateAt: Value(DateTime.now().toIso8601String()),
+      isCompleted: Value(boardModel.isCompleted),
     );
   }
 }

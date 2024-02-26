@@ -141,17 +141,20 @@ class Board extends _$Board {
   Future<void> addBoard({
     required String projectId,
     required String title,
+    int? orderNo,
+    bool isCompleted = false,
   }) async {
     _logger.d('ボード追加 開始');
 
     const uuid = Uuid();
-    final orderNo = state.value!.boardList.length + 1;
+    final calculatedOrderNo = orderNo ?? state.value!.boardList.length;
     try {
       final board = BoardModel(
         projectId: projectId,
         boardId: uuid.v4(),
         title: title,
-        orderNo: orderNo,
+        orderNo: calculatedOrderNo,
+        isCompleted: isCompleted,
         taskItemList: const <TaskItemModel>[],
       );
       // DB更新
@@ -437,7 +440,7 @@ class Board extends _$Board {
       final currentShrinkItemBoardIndex =
           getBoardIndexByTaskId(taskItemId: kShrinkId);
       if (currentShrinkItemBoardIndex == -1) {
-        _logger.e("shrink itemがボード内に存在しません。");
+        _logger.e("ShrinkItemがボード内に存在しません。");
         throw Exception();
       }
 
@@ -446,7 +449,7 @@ class Board extends _$Board {
         taskItemId: kShrinkId,
       );
       if (currentShrinkItemTaskItemIndex == -1) {
-        _logger.e("shrink itemのindexが取得できません。");
+        _logger.e("ShrinkItemのindexが取得できません。");
         throw Exception();
       }
 
@@ -455,10 +458,17 @@ class Board extends _$Board {
       final orderNo = targetList[currentShrinkItemBoardIndex]
           .taskItemList[currentShrinkItemTaskItemIndex]
           .orderNo;
+      // 完了ボードの場合、終了日を現在時刻で登録。
+      // 別ボードの場合、終了日をnullに変更
+      final doneDate = targetList[currentShrinkItemBoardIndex].isCompleted
+          ? DateTime.now()
+          : null;
+      // ドラッグしたタスクを差し替え
       targetList[currentShrinkItemBoardIndex]
           .taskItemList[currentShrinkItemTaskItemIndex] = draggingItem.copyWith(
         boardId: targetList[currentShrinkItemBoardIndex].boardId,
         orderNo: orderNo,
+        doneDate: doneDate,
       );
       // DB更新
       // DBプロバイダー

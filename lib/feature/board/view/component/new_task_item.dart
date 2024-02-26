@@ -92,7 +92,7 @@ class _NewTaskItemState extends State<NewTaskItem> {
                     type: LabelTipType.square,
                     label: getFormattedDate(widget.dueDate),
                     textColor:
-                        widget.dueDate.difference(DateTime.now()).inDays < 3
+                        widget.dueDate.difference(DateTime.now()).inDays <= 0
                             ? theme.colorDangerBgDefault
                             : theme.colorFgDefault,
                     themeColor: theme.colorDisabled,

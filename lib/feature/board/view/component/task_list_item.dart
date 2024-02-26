@@ -331,7 +331,7 @@ class _DueDateLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
-    final color = dueDate.difference(DateTime.now()).inDays < 3
+    final color = dueDate.difference(DateTime.now()).inDays <= 0
         ? theme.colorDangerBgDefault
         : theme.colorFgDefault;
     return Row(

@@ -20,7 +20,7 @@ final dummyBoardList = [
     projectId: Value("1"),
     boardId: Value("3"),
     name: Value('完了'),
-    orderNo: Value(3),
+    orderNo: Value(999),
     isCompleted: Value(true),
   ),
   const TBoardCompanion(
@@ -34,7 +34,7 @@ final dummyBoardList = [
     projectId: Value("2"),
     boardId: Value("5"),
     name: Value('完了'),
-    orderNo: Value(2),
+    orderNo: Value(999),
     isCompleted: Value(true),
   ),
 ];

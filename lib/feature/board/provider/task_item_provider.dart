@@ -18,7 +18,7 @@ class TaskItem extends _$TaskItem {
         devLangId: '',
         orderNo: 1,
         startDate: DateTime.now(),
-        dueDate: DateTime.now().add(const Duration(days: 7)),
+        dueDate: DateTime.now().add(const Duration(days: 3)),
         labelList: [],
       );
 
@@ -31,7 +31,7 @@ class TaskItem extends _$TaskItem {
       devLangId: '',
       orderNo: 1,
       startDate: DateTime.now(),
-      dueDate: DateTime.now().add(const Duration(days: 7)),
+      dueDate: DateTime.now().add(const Duration(days: 3)),
       labelList: [],
     );
   }
