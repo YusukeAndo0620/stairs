@@ -30,7 +30,13 @@ String getFormattedYearMonthDate(DateTime date) {
   return formatter.format(date);
 }
 
-// 対象日付が指定した範囲内の日付に存在するかどうか
+/// xxxx/xx/xx ~ xxxxx/xx/xx形式に変換
+String getFixedWeeklyTitle(
+    {required DateTime firstDate, required DateTime lastDate}) {
+  return '${getFormattedDate(firstDate)}~${getFormattedDate(lastDate)}';
+}
+
+/// 対象日付が指定した範囲内の日付に存在するかどうか
 bool isDateBetweenRange({
   required DateTime start,
   required DateTime end,
@@ -39,16 +45,18 @@ bool isDateBetweenRange({
   return start == target || (start.isBefore(target) && end.isAfter(target));
 }
 
-// 対象日付週の月曜日の日付を取得
+/// 対象日付週の月曜日の日付を取得
 DateTime getWeeklyInitialDate({required DateTime date}) {
-  return date
+  //時刻は初期化
+  final targetDate = DateTime(date.year, date.month, date.day);
+  return targetDate
       .subtract(
         Duration(days: date.weekday),
       )
       .add(const Duration(days: 1));
 }
 
-// 対象日付間で、土日を除いた時間(h)を取得
+/// 対象日付間で、土日を除いた時間(h)を取得
 double getWeekdaysDifferenceInHours({
   required DateTime startDate,
   required DateTime endDate,

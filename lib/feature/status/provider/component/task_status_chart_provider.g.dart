@@ -6,7 +6,7 @@ part of 'task_status_chart_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$taskStatusChartHash() => r'b7d265fd09cc2fc7d32adfca573f0235f3b29ba4';
+String _$taskStatusChartHash() => r'6fe514242482389884ded1aa9f9c0b9e3d4406a8';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,11 +31,9 @@ class _SystemHash {
 
 abstract class _$TaskStatusChart
     extends BuildlessAutoDisposeNotifier<TaskStatusChartState> {
-  late final int displayedColumnCount;
   late final List<TaskStatusModel> taskStatusModelList;
 
   TaskStatusChartState build({
-    required int displayedColumnCount,
     required List<TaskStatusModel> taskStatusModelList,
   });
 }
@@ -51,11 +49,9 @@ class TaskStatusChartFamily extends Family<TaskStatusChartState> {
 
   /// See also [TaskStatusChart].
   TaskStatusChartProvider call({
-    required int displayedColumnCount,
     required List<TaskStatusModel> taskStatusModelList,
   }) {
     return TaskStatusChartProvider(
-      displayedColumnCount: displayedColumnCount,
       taskStatusModelList: taskStatusModelList,
     );
   }
@@ -65,7 +61,6 @@ class TaskStatusChartFamily extends Family<TaskStatusChartState> {
     covariant TaskStatusChartProvider provider,
   ) {
     return call(
-      displayedColumnCount: provider.displayedColumnCount,
       taskStatusModelList: provider.taskStatusModelList,
     );
   }
@@ -90,12 +85,9 @@ class TaskStatusChartProvider extends AutoDisposeNotifierProviderImpl<
     TaskStatusChart, TaskStatusChartState> {
   /// See also [TaskStatusChart].
   TaskStatusChartProvider({
-    required int displayedColumnCount,
     required List<TaskStatusModel> taskStatusModelList,
   }) : this._internal(
-          () => TaskStatusChart()
-            ..displayedColumnCount = displayedColumnCount
-            ..taskStatusModelList = taskStatusModelList,
+          () => TaskStatusChart()..taskStatusModelList = taskStatusModelList,
           from: taskStatusChartProvider,
           name: r'taskStatusChartProvider',
           debugGetCreateSourceHash:
@@ -105,7 +97,6 @@ class TaskStatusChartProvider extends AutoDisposeNotifierProviderImpl<
           dependencies: TaskStatusChartFamily._dependencies,
           allTransitiveDependencies:
               TaskStatusChartFamily._allTransitiveDependencies,
-          displayedColumnCount: displayedColumnCount,
           taskStatusModelList: taskStatusModelList,
         );
 
@@ -116,11 +107,9 @@ class TaskStatusChartProvider extends AutoDisposeNotifierProviderImpl<
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.displayedColumnCount,
     required this.taskStatusModelList,
   }) : super.internal();
 
-  final int displayedColumnCount;
   final List<TaskStatusModel> taskStatusModelList;
 
   @override
@@ -128,7 +117,6 @@ class TaskStatusChartProvider extends AutoDisposeNotifierProviderImpl<
     covariant TaskStatusChart notifier,
   ) {
     return notifier.build(
-      displayedColumnCount: displayedColumnCount,
       taskStatusModelList: taskStatusModelList,
     );
   }
@@ -138,15 +126,12 @@ class TaskStatusChartProvider extends AutoDisposeNotifierProviderImpl<
     return ProviderOverride(
       origin: this,
       override: TaskStatusChartProvider._internal(
-        () => create()
-          ..displayedColumnCount = displayedColumnCount
-          ..taskStatusModelList = taskStatusModelList,
+        () => create()..taskStatusModelList = taskStatusModelList,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        displayedColumnCount: displayedColumnCount,
         taskStatusModelList: taskStatusModelList,
       ),
     );
@@ -161,14 +146,12 @@ class TaskStatusChartProvider extends AutoDisposeNotifierProviderImpl<
   @override
   bool operator ==(Object other) {
     return other is TaskStatusChartProvider &&
-        other.displayedColumnCount == displayedColumnCount &&
         other.taskStatusModelList == taskStatusModelList;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, displayedColumnCount.hashCode);
     hash = _SystemHash.combine(hash, taskStatusModelList.hashCode);
 
     return _SystemHash.finish(hash);
@@ -177,9 +160,6 @@ class TaskStatusChartProvider extends AutoDisposeNotifierProviderImpl<
 
 mixin TaskStatusChartRef
     on AutoDisposeNotifierProviderRef<TaskStatusChartState> {
-  /// The parameter `displayedColumnCount` of this provider.
-  int get displayedColumnCount;
-
   /// The parameter `taskStatusModelList` of this provider.
   List<TaskStatusModel> get taskStatusModelList;
 }
@@ -189,9 +169,6 @@ class _TaskStatusChartProviderElement
         TaskStatusChartState> with TaskStatusChartRef {
   _TaskStatusChartProviderElement(super.provider);
 
-  @override
-  int get displayedColumnCount =>
-      (origin as TaskStatusChartProvider).displayedColumnCount;
   @override
   List<TaskStatusModel> get taskStatusModelList =>
       (origin as TaskStatusChartProvider).taskStatusModelList;

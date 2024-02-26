@@ -7,6 +7,7 @@ const _kEmptyText = "タスクに設定されているラベルがありませ�
 
 const _kBorderWidth = 1.0;
 const _kHeaderHeight = 20.0;
+const _kRowHeight = 48.0;
 const _kCountWidth = 40.0;
 const _kProgressPercentHeight = 20.0;
 const _kEmptyIconAndTxtSpace = 8.0;
@@ -53,7 +54,10 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
       margin: _kContentMargin,
       constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.9,
-          maxHeight: MediaQuery.of(context).size.height * 0.33),
+          maxHeight: list.isEmpty
+              ? MediaQuery.of(context).size.height * 0.15
+              : _kHeaderHeight +
+                  _kRowHeight * (list.length <= 4 ? list.length : 4)),
       decoration: BoxDecoration(
         color: theme.colorFgDefaultWhite,
         borderRadius: BorderRadius.circular(5.0),

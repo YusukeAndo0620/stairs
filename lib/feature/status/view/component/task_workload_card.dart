@@ -134,6 +134,7 @@ class _WorkLoadCircularPercent extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // 工数
             Text(
               '$_kTotalWorkloadTxt${workload.totalWorkloadHour}H',
               style: theme.textStyleBody,
@@ -141,6 +142,7 @@ class _WorkLoadCircularPercent extends StatelessWidget {
             const SizedBox(
               height: _kWorkLoadHourSpace,
             ),
+            // 実工数
             Text(
               '$_kActualWorkloadTxt${workload.actualWorkloadHour}H',
               style: theme.textStyleBody,
@@ -148,6 +150,7 @@ class _WorkLoadCircularPercent extends StatelessWidget {
             const SizedBox(
               height: _kWorkLoadHourSpace,
             ),
+            // 開始日
             Text(
               workload.firstDate == null
                   ? _kWorkloadStartDateTxt + _kBlankTxt
@@ -156,6 +159,7 @@ class _WorkLoadCircularPercent extends StatelessWidget {
               style:
                   theme.textStyleFootnote.copyWith(color: theme.colorDisabled),
             ),
+            // 終了日
             Text(
               workload.lastDate == null
                   ? _kWorkloadEndDateTxt + _kBlankTxt

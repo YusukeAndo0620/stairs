@@ -48,21 +48,16 @@ class TaskWorkloadLine extends _$TaskWorkloadLine {
     copyList.sort((a, b) => a.startDate.compareTo(b.startDate));
     // タスクの中で最も古い日付
     final initialDate = copyList.first.startDate;
-    // チャートx軸の開始基準の日付
+    // チャートx軸の開始基準の日付。対象日付の週初めを取得。
     final criteriaDay = getWeeklyInitialDate(date: initialDate);
 
     // 工数Map key: 週初めの曜日, value: 工数短縮率
     Map<DateTime, double> workloadMap = {};
 
-    // x軸の個数(データ数)
-    final xAxisCount =
-        ((DateTime.now().difference(criteriaDay).inDays) / 7).ceil();
-
-    for (int i = 0; i < xAxisCount; i++) {
-      // 週初め
-      DateTime weekDay = DateTime(
-          criteriaDay.year, criteriaDay.month, criteriaDay.day + (i * 7));
-
+    // 1週間ごと
+    for (DateTime weekDay = criteriaDay;
+        weekDay.isBefore(DateTime.now());
+        weekDay = weekDay.add(const Duration(days: 7))) {
       // 対象週の末日
       final thisWeekend =
           weekDay.add(const Duration(days: 6, hours: 23, minutes: 59));
@@ -77,10 +72,13 @@ class TaskWorkloadLine extends _$TaskWorkloadLine {
             startHour: _kWorkStartHourTime,
             addingHour: _kWorkHour,
           );
-          // 完了日を元に取得。完了していない場合は現在時刻。
+          // 完了日を元に取得。完了していない場合、期日が本日を越えて入れば本日、そうでない場合は期日をendに設定
           final actualWorkloadHour = getWeekdaysDifferenceInHours(
             startDate: task.startDate,
-            endDate: task.doneDate ?? DateTime.now(),
+            endDate: task.doneDate ??
+                (task.dueDate.isAfter(DateTime.now())
+                    ? task.dueDate
+                    : DateTime.now()),
             startHour: _kWorkStartHourTime,
             addingHour: _kWorkHour,
           );

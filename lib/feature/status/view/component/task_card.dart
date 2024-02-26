@@ -78,13 +78,6 @@ class _Header extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            title,
-            style: theme.textStyleBody,
-          ),
-          const SizedBox(
-            width: _kTitleAndIconSpace,
-          ),
           Icon(
             headerType == HeaderType.total
                 ? Icons.task
@@ -94,6 +87,13 @@ class _Header extends StatelessWidget {
                         ? theme.icons.done
                         : Icons.abc,
             size: _kIconSize,
+          ),
+          const SizedBox(
+            width: _kTitleAndIconSpace,
+          ),
+          Text(
+            title,
+            style: theme.textStyleBody,
           ),
         ],
       ),

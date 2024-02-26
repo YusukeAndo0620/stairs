@@ -5,22 +5,19 @@ import 'package:stairs/feature/status/view/component/status_header.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const _kDisplayedColumnCount = 4;
-const _kPageTransitionIconSize = 20.0;
 const _kSelectTypeBarHeight = 30.0;
 const _kSelectTypeBarWidth = 45.0;
 const _kBarAnimation = 700.0;
+const _kRebuildAnimation = Duration(milliseconds: 700);
 const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0);
-const _kContentMargin = EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0);
-const _kChartAreaMargin = EdgeInsets.only(top: 56.0, right: 28.0, left: 28.0);
 const _kChartMargin = EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0);
 const _kSelectTypeBarPadding =
     EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0);
 
 const _kHeaderTitle = "タスク数推移";
-const _kProgressTitle = "進行中タスク";
-const _kOverDueTitle = "期限切れタスク";
-const _kCompletedTitle = "完了タスク";
+const _kProgressTitle = "進行中";
+const _kOverDueTitle = "期限切れ";
+const _kCompletedTitle = "完了";
 
 final _logger = stairsLogger(name: 'task_status_chart');
 
@@ -45,8 +42,8 @@ class TaskStatusChart extends ConsumerStatefulWidget {
 
 class _TaskStatusChartState extends ConsumerState<TaskStatusChart> {
   TaskChartType selectedDisplayType = TaskChartType.weekly;
-  bool isDisabledPrevious = true;
-  bool isDisabledNext = true;
+  // リビルド用
+  bool isReady = true;
 
   @override
   void initState() {
@@ -65,47 +62,49 @@ class _TaskStatusChartState extends ConsumerState<TaskStatusChart> {
 
     final theme = LoomTheme.of(context);
     final taskStatusChartState = ref.watch(taskStatusChartProvider(
-        displayedColumnCount: _kDisplayedColumnCount,
         taskStatusModelList: widget.taskStatusModelList));
 
-    final taskStatusChartNotifier = ref.watch(taskStatusChartProvider(
-            displayedColumnCount: _kDisplayedColumnCount,
-            taskStatusModelList: widget.taskStatusModelList)
-        .notifier);
+    final taskStatusChartNotifier = ref.watch(
+        taskStatusChartProvider(taskStatusModelList: widget.taskStatusModelList)
+            .notifier);
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.9,
-      height: MediaQuery.of(context).size.height * 0.5,
       padding: _kContentPadding,
-      margin: _kContentMargin,
-      child: Stack(
-        fit: StackFit.loose,
-        alignment: Alignment.center,
+      child: Column(
         children: [
-          Container(
-            margin: _kChartAreaMargin,
-            child: PageView(
-              controller: taskStatusChartState.pageController,
-              onPageChanged: (index) => _onPageChanged(
-                  index: index,
-                  taskListLength: taskStatusChartState.taskStatusList.length),
-              children: [
-                // タスク数推移チャート
-                for (int i = 0;
-                    i <
-                        taskStatusChartState.taskStatusList.length /
-                            _kDisplayedColumnCount.ceil();
-                    i++) ...[
-                  _TaskBarChart(
-                    title: _getFixedWeeklyTitle(
-                      firstDate: taskStatusChartState
-                          .taskStatusList[i * _kDisplayedColumnCount].firstDate,
+          // ヘッダー
+          StatusHeader(
+            title: _kHeaderTitle,
+            trailWidget: _SelectTypeBar(
+              selectedType: selectedDisplayType,
+              onTap: (type) {
+                setState(
+                  () {
+                    selectedDisplayType = type;
+                    isReady = false;
+                  },
+                );
+                taskStatusChartNotifier.setItem(type: type);
+                // 遅延させてから表示
+                Future.delayed(_kRebuildAnimation).then((value) {
+                  setState(() {
+                    isReady = true;
+                  });
+                });
+              },
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.4,
+            child: isReady
+                ? _TaskBarChart(
+                    title: getFixedWeeklyTitle(
+                      firstDate:
+                          taskStatusChartState.taskStatusList[0].firstDate,
                       lastDate: taskStatusChartState
-                          .taskStatusList[taskStatusChartState
-                                      .taskStatusList.length <=
-                                  (i + 1) * _kDisplayedColumnCount
-                              ? taskStatusChartState.taskStatusList.length - 1
-                              : (i + 1) * _kDisplayedColumnCount - 1]
+                          .taskStatusList[
+                              taskStatusChartState.taskStatusList.length - 1]
                           .lastDate,
                     ),
                     y1Color: widget.y1Color ?? theme.colorProgress,
@@ -115,79 +114,16 @@ class _TaskStatusChartState extends ConsumerState<TaskStatusChart> {
                     y2LegendName: _kOverDueTitle,
                     y3LegendName: _kCompletedTitle,
                     isHorizontal: widget.isHorizontal,
-                    chartData: taskStatusChartState.taskStatusList.sublist(
-                        i * _kDisplayedColumnCount,
-                        taskStatusChartState.taskStatusList.length <
-                                (i + 1) * _kDisplayedColumnCount
-                            ? taskStatusChartState.taskStatusList.length
-                            : (i + 1) * _kDisplayedColumnCount),
+                    chartData: taskStatusChartState.taskStatusList,
+                  )
+                : Align(
+                    child: CircularProgressIndicator(
+                      color: theme.colorPrimary,
+                    ),
                   ),
-                ],
-              ],
-            ),
-          ),
-          // ヘッダー
-          Align(
-            alignment: const Alignment(0, -1),
-            child: StatusHeader(
-              title: _kHeaderTitle,
-              trailWidget: _SelectTypeBar(
-                selectedType: selectedDisplayType,
-                onTap: (type) {
-                  taskStatusChartNotifier.setItem(
-                      type: type, displayedColumnCount: _kDisplayedColumnCount);
-                  setState(
-                    () {
-                      selectedDisplayType = type;
-                    },
-                  );
-                },
-              ),
-            ),
-          ),
-          // ページインジケーター
-          Align(
-            alignment: const Alignment(0, 0.1),
-            child: _PageIndicator(
-              isDisabledPrevious: isDisabledPrevious,
-              isDisabledNext: isDisabledNext,
-              onMovePrevious: () {
-                if (taskStatusChartState.pageController.page! == 0) return;
-                taskStatusChartState.pageController.animateToPage(
-                  taskStatusChartState.pageController.page!.toInt() - 1,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeOut,
-                );
-              },
-              onMoveNext: () {
-                if (taskStatusChartState.pageController.page! ==
-                    (taskStatusChartState.taskStatusList.length /
-                                _kDisplayedColumnCount)
-                            .ceil() -
-                        1) {
-                  return;
-                }
-                taskStatusChartState.pageController.animateToPage(
-                  taskStatusChartState.pageController.page!.toInt() + 1,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeOut,
-                );
-              },
-            ),
           ),
         ],
       ),
-    );
-  }
-
-  void _onPageChanged({required int index, required int taskListLength}) {
-    setState(
-      () {
-        isDisabledPrevious = index == 0;
-        isDisabledNext =
-            (taskListLength / _kDisplayedColumnCount).ceil() - 1 == 0 ||
-                index == (taskListLength / _kDisplayedColumnCount).ceil() - 1;
-      },
     );
   }
 }
@@ -225,6 +161,13 @@ class _TaskBarChart extends StatelessWidget {
       title: title != null
           ? ChartTitle(text: title!, textStyle: theme.textStyleBody)
           : const ChartTitle(),
+      legend: Legend(
+        isVisible: true,
+        position: LegendPosition.bottom,
+        overflowMode: LegendItemOverflowMode.none,
+        textStyle:
+            theme.textStyleFootnote.copyWith(color: theme.colorFgDefault),
+      ),
       margin: _kChartMargin,
       primaryXAxis: const CategoryAxis(),
       primaryYAxis: const NumericAxis(
@@ -260,59 +203,6 @@ class _TaskBarChart extends StatelessWidget {
           width: 0.3,
           color: y3Color ?? theme.colorPrimary,
           animationDuration: _kBarAnimation,
-        ),
-      ],
-    );
-  }
-}
-
-// チャート ページ遷移操作
-class _PageIndicator extends StatelessWidget {
-  const _PageIndicator({
-    this.isDisabledPrevious = false,
-    this.isDisabledNext = false,
-    required this.onMovePrevious,
-    required this.onMoveNext,
-  });
-
-  final bool isDisabledPrevious;
-  final bool isDisabledNext;
-  final VoidCallback onMovePrevious;
-  final VoidCallback onMoveNext;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = LoomTheme.of(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        AbsorbPointer(
-          absorbing: isDisabledPrevious,
-          child: IconButton(
-            iconSize: _kPageTransitionIconSize,
-            onPressed: () => onMovePrevious(),
-            icon: Icon(
-              Icons.skip_previous,
-              size: _kPageTransitionIconSize,
-              color: isDisabledPrevious
-                  ? theme.colorDisabled
-                  : theme.colorFgDefault.withOpacity(0.7),
-            ),
-          ),
-        ),
-        AbsorbPointer(
-          absorbing: isDisabledNext,
-          child: IconButton(
-            iconSize: _kPageTransitionIconSize,
-            onPressed: () => onMoveNext(),
-            icon: Icon(
-              Icons.skip_next,
-              size: _kPageTransitionIconSize,
-              color: isDisabledNext
-                  ? theme.colorDisabled
-                  : theme.colorFgDefault.withOpacity(0.7),
-            ),
-          ),
         ),
       ],
     );
@@ -357,10 +247,4 @@ class _SelectTypeBar extends StatelessWidget {
       ],
     );
   }
-}
-
-// xxxx/xx/xx ~ xxxxx/xx/xx形式に変換
-String _getFixedWeeklyTitle(
-    {required DateTime firstDate, required DateTime lastDate}) {
-  return '${getFormattedDate(firstDate)}~${getFormattedDate(lastDate)}';
 }

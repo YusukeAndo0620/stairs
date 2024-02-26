@@ -162,10 +162,13 @@ class TaskWorkloadCard extends _$TaskWorkloadCard {
         startHour: _kWorkStartHourTime,
         addingHour: _kWorkHour,
       );
-      // 完了日を元に取得。完了していない場合は現在時刻。
+      // 完了日を元に取得。完了していない場合、期日が本日を越えて入れば本日、そうでない場合は期日をendに設定
       actualWorkloadHour += getWeekdaysDifferenceInHours(
         startDate: task.startDate,
-        endDate: task.doneDate ?? DateTime.now(),
+        endDate: task.doneDate ??
+            (task.dueDate.isAfter(DateTime.now())
+                ? task.dueDate
+                : DateTime.now()),
         startHour: _kWorkStartHourTime,
         addingHour: _kWorkHour,
       );

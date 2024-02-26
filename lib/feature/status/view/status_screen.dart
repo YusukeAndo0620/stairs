@@ -11,7 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 const _kAppBarHeight = 10.0;
 const _kTotalTitle = "全タスク";
 const _kProgressTitle = "進行中";
-const _kCompletedTitle = "完了タスク";
+const _kCompletedTitle = "完了";
 const _kBarAchievementTitle = "実績";
 const _kTaskCountTxt = "タスク数";
 
@@ -64,6 +64,8 @@ class _StatusScreenState extends ConsumerState<StatusScreen>
           appBar: AppBar(
             toolbarHeight: _kAppBarHeight,
             bottom: TabBar(
+              isScrollable: true,
+              tabAlignment: TabAlignment.center,
               controller: _tabController,
               labelStyle:
                   theme.textStyleFootnote.copyWith(color: theme.colorFgDefault),
