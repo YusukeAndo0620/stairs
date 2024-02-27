@@ -3,7 +3,6 @@ import 'package:stairs/feature/status/provider/component/task_workload_line_prov
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0);
 const _kLineMargin = EdgeInsets.symmetric(vertical: 16.0, horizontal: 0.0);
 const _kTooltipSpace = 8.0;
 const _kTaskWorkloadTxt = "工数短縮率推移";
@@ -26,10 +25,8 @@ class TaskWorkloadLine extends ConsumerWidget {
     final taskWorkloadLineState = ref.watch(
         taskWorkloadLineProvider(taskStatusModelList: taskStatusModelList));
 
-    return Container(
-      // width: MediaQuery.of(context).size.width * 0.5,
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.38,
-      // padding: _kContentPadding,
       child: _WorkLoadLine(chartData: taskWorkloadLineState),
     );
   }

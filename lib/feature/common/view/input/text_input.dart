@@ -90,7 +90,7 @@ class TextInputState extends State<TextInput> {
           FocusScope.of(context).unfocus();
         },
         decoration: InputDecoration(
-          icon: widget.icon != null ? widget.icon! : null,
+          icon: widget.icon,
           counterText: '',
           hintStyle: theme.textStyleFootnote,
           hintText: widget.hintText,

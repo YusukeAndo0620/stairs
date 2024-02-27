@@ -6,7 +6,7 @@ part of 'task_workload_line_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$taskWorkloadLineHash() => r'95465226a6907396bfe048e4cb255c1bc4906742';
+String _$taskWorkloadLineHash() => r'175938e531828ce5adef2c914259dd86cc050ddb';
 
 /// Copied from Dart SDK
 class _SystemHash {

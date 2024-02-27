@@ -3,16 +3,16 @@ import 'package:stairs/feature/status/enum/workload_type.dart';
 import 'package:stairs/feature/status/model/task_status_model.dart';
 import 'package:stairs/loom/loom_package.dart';
 
-part 'task_workload_card_provider.g.dart';
+part 'task_workload_provider.g.dart';
 
 // 1日8時間労働
 const _kWorkHour = 8;
 // 9:00始業とする
 const _kWorkStartHourTime = 9;
 
-final _logger = stairsLogger(name: 'task_workload_card_provider');
+final _logger = stairsLogger(name: 'task_workload_provider');
 
-final _initialState = TaskWorkloadCardState(
+final _initialState = TaskWorkloadState(
   weekLyWorkload: Workload(
     firstDate: DateTime.now(),
     lastDate: DateTime.now(),
@@ -52,8 +52,8 @@ class Workload {
   final double workloadPercent;
 }
 
-class TaskWorkloadCardState extends Equatable {
-  const TaskWorkloadCardState({
+class TaskWorkloadState extends Equatable {
+  const TaskWorkloadState({
     required this.weekLyWorkload,
     required this.monthlyWorkload,
     required this.totalWorkload,
@@ -75,12 +75,12 @@ class TaskWorkloadCardState extends Equatable {
   /// 全期間の工数
   final Workload totalWorkload;
 
-  TaskWorkloadCardState copyWith({
+  TaskWorkloadState copyWith({
     Workload? weekLyWorkload,
     Workload? monthlyWorkload,
     Workload? totalWorkload,
   }) =>
-      TaskWorkloadCardState(
+      TaskWorkloadState(
         weekLyWorkload: weekLyWorkload ?? this.weekLyWorkload,
         monthlyWorkload: monthlyWorkload ?? this.monthlyWorkload,
         totalWorkload: totalWorkload ?? this.totalWorkload,
@@ -88,9 +88,9 @@ class TaskWorkloadCardState extends Equatable {
 }
 
 @riverpod
-class TaskWorkloadCard extends _$TaskWorkloadCard {
+class TaskWorkload extends _$TaskWorkload {
   @override
-  TaskWorkloadCardState build({
+  TaskWorkloadState build({
     required List<TaskStatusModel> taskStatusModelList,
   }) {
     if (taskStatusModelList.isEmpty) {
@@ -106,7 +106,7 @@ class TaskWorkloadCard extends _$TaskWorkloadCard {
         workloadType: WorkloadType.all,
         taskStatusModelList: taskStatusModelList);
     // 初回表示は全期間で表示
-    return TaskWorkloadCardState(
+    return TaskWorkloadState(
       weekLyWorkload: weekLyWorkload,
       monthlyWorkload: monthlyWorkload,
       totalWorkload: totalWorkload,

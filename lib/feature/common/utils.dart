@@ -6,6 +6,11 @@ String getFormattedCommaSeparated({required int value}) {
   return formatter.format(value);
 }
 
+/// 「xxx: 」を取得
+String getAddingColonTxt(String value) {
+  return '$value: ';
+}
+
 /// yyyy/mm/dd 形式に変換
 String getFormattedDate(DateTime date) {
   final formatter = DateFormat('yyyy/MM/dd');

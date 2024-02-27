@@ -4,11 +4,12 @@ import 'package:stairs/feature/status/view/component/status_label_table.dart';
 import 'package:stairs/feature/status/view/component/status_pie_chart.dart';
 import 'package:stairs/feature/status/view/component/task_card.dart';
 import 'package:stairs/feature/status/view/component/task_status_chart.dart';
-import 'package:stairs/feature/status/view/component/task_workload.dart';
+import 'package:stairs/feature/status/view/component/workload/task_workload_area.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const _kAppBarHeight = 10.0;
+const _kAppBarHeight = 30.0;
+const _kTabWidth = 120.0;
 const _kTotalTitle = "全タスク";
 const _kProgressTitle = "進行中";
 const _kCompletedTitle = "完了";
@@ -73,12 +74,15 @@ class _StatusScreenState extends ConsumerState<StatusScreen>
               unselectedLabelColor: theme.colorFgDefault.withOpacity(0.3),
               tabs: <Widget>[
                 for (final item in list) ...[
-                  Tab(
-                    icon: Icon(
-                      theme.icons.project,
-                      color: item.themeColorModel.color,
+                  SizedBox(
+                    width: _kTabWidth,
+                    child: Tab(
+                      icon: Icon(
+                        theme.icons.project,
+                        color: item.themeColorModel.color,
+                      ),
+                      text: item.projectName,
                     ),
-                    text: item.projectName,
                   ),
                 ],
               ],
@@ -123,7 +127,8 @@ class _StatusScreenState extends ConsumerState<StatusScreen>
                         totalLabelTaskCount: item.totalLabelTaskCount,
                         labelStatusList: item.labelStatusList,
                       ),
-                      TaskWorkload(taskStatusModelList: item.taskStatusList),
+                      TaskWorkloadArea(
+                          taskStatusModelList: item.taskStatusList),
                       // 一旦使用しない
                       // StatusBarChart(
                       //   title: _kBarAchievementTitle,

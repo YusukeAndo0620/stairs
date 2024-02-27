@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'task_workload_card_provider.dart';
+part of 'task_workload_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$taskWorkloadCardHash() => r'ea9af454dcd038a40f10980077afe42467864b3e';
+String _$taskWorkloadHash() => r'0e47c234dbb7aaecd2521763cbdc2adb7c8b5443';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,36 +29,36 @@ class _SystemHash {
   }
 }
 
-abstract class _$TaskWorkloadCard
-    extends BuildlessAutoDisposeNotifier<TaskWorkloadCardState> {
+abstract class _$TaskWorkload
+    extends BuildlessAutoDisposeNotifier<TaskWorkloadState> {
   late final List<TaskStatusModel> taskStatusModelList;
 
-  TaskWorkloadCardState build({
+  TaskWorkloadState build({
     required List<TaskStatusModel> taskStatusModelList,
   });
 }
 
-/// See also [TaskWorkloadCard].
-@ProviderFor(TaskWorkloadCard)
-const taskWorkloadCardProvider = TaskWorkloadCardFamily();
+/// See also [TaskWorkload].
+@ProviderFor(TaskWorkload)
+const taskWorkloadProvider = TaskWorkloadFamily();
 
-/// See also [TaskWorkloadCard].
-class TaskWorkloadCardFamily extends Family<TaskWorkloadCardState> {
-  /// See also [TaskWorkloadCard].
-  const TaskWorkloadCardFamily();
+/// See also [TaskWorkload].
+class TaskWorkloadFamily extends Family<TaskWorkloadState> {
+  /// See also [TaskWorkload].
+  const TaskWorkloadFamily();
 
-  /// See also [TaskWorkloadCard].
-  TaskWorkloadCardProvider call({
+  /// See also [TaskWorkload].
+  TaskWorkloadProvider call({
     required List<TaskStatusModel> taskStatusModelList,
   }) {
-    return TaskWorkloadCardProvider(
+    return TaskWorkloadProvider(
       taskStatusModelList: taskStatusModelList,
     );
   }
 
   @override
-  TaskWorkloadCardProvider getProviderOverride(
-    covariant TaskWorkloadCardProvider provider,
+  TaskWorkloadProvider getProviderOverride(
+    covariant TaskWorkloadProvider provider,
   ) {
     return call(
       taskStatusModelList: provider.taskStatusModelList,
@@ -77,30 +77,30 @@ class TaskWorkloadCardFamily extends Family<TaskWorkloadCardState> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'taskWorkloadCardProvider';
+  String? get name => r'taskWorkloadProvider';
 }
 
-/// See also [TaskWorkloadCard].
-class TaskWorkloadCardProvider extends AutoDisposeNotifierProviderImpl<
-    TaskWorkloadCard, TaskWorkloadCardState> {
-  /// See also [TaskWorkloadCard].
-  TaskWorkloadCardProvider({
+/// See also [TaskWorkload].
+class TaskWorkloadProvider
+    extends AutoDisposeNotifierProviderImpl<TaskWorkload, TaskWorkloadState> {
+  /// See also [TaskWorkload].
+  TaskWorkloadProvider({
     required List<TaskStatusModel> taskStatusModelList,
   }) : this._internal(
-          () => TaskWorkloadCard()..taskStatusModelList = taskStatusModelList,
-          from: taskWorkloadCardProvider,
-          name: r'taskWorkloadCardProvider',
+          () => TaskWorkload()..taskStatusModelList = taskStatusModelList,
+          from: taskWorkloadProvider,
+          name: r'taskWorkloadProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$taskWorkloadCardHash,
-          dependencies: TaskWorkloadCardFamily._dependencies,
+                  : _$taskWorkloadHash,
+          dependencies: TaskWorkloadFamily._dependencies,
           allTransitiveDependencies:
-              TaskWorkloadCardFamily._allTransitiveDependencies,
+              TaskWorkloadFamily._allTransitiveDependencies,
           taskStatusModelList: taskStatusModelList,
         );
 
-  TaskWorkloadCardProvider._internal(
+  TaskWorkloadProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -113,8 +113,8 @@ class TaskWorkloadCardProvider extends AutoDisposeNotifierProviderImpl<
   final List<TaskStatusModel> taskStatusModelList;
 
   @override
-  TaskWorkloadCardState runNotifierBuild(
-    covariant TaskWorkloadCard notifier,
+  TaskWorkloadState runNotifierBuild(
+    covariant TaskWorkload notifier,
   ) {
     return notifier.build(
       taskStatusModelList: taskStatusModelList,
@@ -122,10 +122,10 @@ class TaskWorkloadCardProvider extends AutoDisposeNotifierProviderImpl<
   }
 
   @override
-  Override overrideWith(TaskWorkloadCard Function() create) {
+  Override overrideWith(TaskWorkload Function() create) {
     return ProviderOverride(
       origin: this,
-      override: TaskWorkloadCardProvider._internal(
+      override: TaskWorkloadProvider._internal(
         () => create()..taskStatusModelList = taskStatusModelList,
         from: from,
         name: null,
@@ -138,14 +138,14 @@ class TaskWorkloadCardProvider extends AutoDisposeNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeNotifierProviderElement<TaskWorkloadCard, TaskWorkloadCardState>
+  AutoDisposeNotifierProviderElement<TaskWorkload, TaskWorkloadState>
       createElement() {
-    return _TaskWorkloadCardProviderElement(this);
+    return _TaskWorkloadProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is TaskWorkloadCardProvider &&
+    return other is TaskWorkloadProvider &&
         other.taskStatusModelList == taskStatusModelList;
   }
 
@@ -158,20 +158,19 @@ class TaskWorkloadCardProvider extends AutoDisposeNotifierProviderImpl<
   }
 }
 
-mixin TaskWorkloadCardRef
-    on AutoDisposeNotifierProviderRef<TaskWorkloadCardState> {
+mixin TaskWorkloadRef on AutoDisposeNotifierProviderRef<TaskWorkloadState> {
   /// The parameter `taskStatusModelList` of this provider.
   List<TaskStatusModel> get taskStatusModelList;
 }
 
-class _TaskWorkloadCardProviderElement
-    extends AutoDisposeNotifierProviderElement<TaskWorkloadCard,
-        TaskWorkloadCardState> with TaskWorkloadCardRef {
-  _TaskWorkloadCardProviderElement(super.provider);
+class _TaskWorkloadProviderElement
+    extends AutoDisposeNotifierProviderElement<TaskWorkload, TaskWorkloadState>
+    with TaskWorkloadRef {
+  _TaskWorkloadProviderElement(super.provider);
 
   @override
   List<TaskStatusModel> get taskStatusModelList =>
-      (origin as TaskWorkloadCardProvider).taskStatusModelList;
+      (origin as TaskWorkloadProvider).taskStatusModelList;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

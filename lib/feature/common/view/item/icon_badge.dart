@@ -1,4 +1,3 @@
-import 'package:badges/badges.dart';
 import 'package:stairs/loom/loom_package.dart';
 
 ///丸型アイコンバッチ

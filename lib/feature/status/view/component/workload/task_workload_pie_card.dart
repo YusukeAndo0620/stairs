@@ -1,20 +1,16 @@
-import 'package:stairs/feature/status/enum/workload_type.dart';
-import 'package:stairs/feature/status/model/task_status_model.dart';
-import 'package:stairs/feature/status/provider/component/task_workload_card_provider.dart';
+import 'package:stairs/feature/status/provider/component/task_workload_provider.dart';
+import 'package:stairs/feature/status/view/component/workload/task_workload_card.dart';
 import 'package:stairs/loom/loom_package.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const _kBorderWidth = 1.0;
 const _kWorkLoadHourSpace = 4.0;
 const _kCircularPercentRadius = 60.0;
 
 const _kBlankTxt = "-";
-const _kWorkloadStartDateTxt = "開始日:";
-const _kWorkloadEndDateTxt = "終了日:";
-const _kTotalWorkloadTxt = "全工数: ";
-const _kActualWorkloadTxt = "実工数: ";
+const _kWorkloadStartDateTxt = "開始日";
+const _kWorkloadEndDateTxt = "終了日";
+const _kTotalWorkloadTxt = "全工数";
+const _kActualWorkloadTxt = "実工数";
 
-const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0);
 const _kCircularPercentHeaderPadding =
     EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0);
 const _kCircularPercentFooterPadding =
@@ -22,52 +18,34 @@ const _kCircularPercentFooterPadding =
 
 final _logger = stairsLogger(name: 'task_workload_card');
 
-class TaskWorkloadCard extends ConsumerWidget {
-  const TaskWorkloadCard({
+/// 工数短縮円グラフ表示カード
+class TaskWorkloadPieCard extends TaskWorkloadCard {
+  const TaskWorkloadPieCard({
     super.key,
-    required this.taskStatusModelList,
-    required this.selectedWorkloadType,
+    required super.width,
+    required super.height,
+    required super.padding,
+    required this.title,
+    required this.workload,
   });
 
-  final List<TaskStatusModel> taskStatusModelList;
-  final WorkloadType selectedWorkloadType;
+  final String title;
+  final Workload workload;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget buildMainContents(BuildContext context) {
     _logger.d('===================================');
     _logger.d('ビルド開始');
-    final theme = LoomTheme.of(context);
 
-    final taskWorkloadCardState = ref.watch(
-        taskWorkloadCardProvider(taskStatusModelList: taskStatusModelList));
-
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.4,
-      padding: _kContentPadding,
-      decoration: BoxDecoration(
-        color: theme.colorFgDefaultWhite,
-        borderRadius: BorderRadius.circular(5.0),
-        border: Border.all(
-          color: theme.colorFgDisabled,
-          width: _kBorderWidth,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _WorkLoadCircularPercent(
+          centerTitle: title,
+          workload: workload,
         ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _WorkLoadCircularPercent(
-            centerTitle: selectedWorkloadType.typeValue,
-            workload: selectedWorkloadType == WorkloadType.all
-                ? taskWorkloadCardState.totalWorkload
-                : selectedWorkloadType == WorkloadType.monthly
-                    ? taskWorkloadCardState.monthlyWorkload
-                    : selectedWorkloadType == WorkloadType.weekly
-                        ? taskWorkloadCardState.weekLyWorkload
-                        : taskWorkloadCardState.totalWorkload,
-          ),
-        ],
-      ),
+      ],
     );
   }
 }
@@ -136,7 +114,7 @@ class _WorkLoadCircularPercent extends StatelessWidget {
           children: [
             // 工数
             Text(
-              '$_kTotalWorkloadTxt${workload.totalWorkloadHour}H',
+              '${getAddingColonTxt(_kTotalWorkloadTxt)}${workload.totalWorkloadHour}H',
               style: theme.textStyleBody,
             ),
             const SizedBox(
@@ -144,7 +122,7 @@ class _WorkLoadCircularPercent extends StatelessWidget {
             ),
             // 実工数
             Text(
-              '$_kActualWorkloadTxt${workload.actualWorkloadHour}H',
+              '${getAddingColonTxt(_kActualWorkloadTxt)}${workload.actualWorkloadHour}H',
               style: theme.textStyleBody,
             ),
             const SizedBox(
@@ -153,8 +131,8 @@ class _WorkLoadCircularPercent extends StatelessWidget {
             // 開始日
             Text(
               workload.firstDate == null
-                  ? _kWorkloadStartDateTxt + _kBlankTxt
-                  : _kWorkloadStartDateTxt +
+                  ? getAddingColonTxt(_kWorkloadStartDateTxt) + _kBlankTxt
+                  : getAddingColonTxt(_kWorkloadStartDateTxt) +
                       getFormattedDateTime(workload.firstDate!),
               style:
                   theme.textStyleFootnote.copyWith(color: theme.colorDisabled),
@@ -162,8 +140,8 @@ class _WorkLoadCircularPercent extends StatelessWidget {
             // 終了日
             Text(
               workload.lastDate == null
-                  ? _kWorkloadEndDateTxt + _kBlankTxt
-                  : _kWorkloadEndDateTxt +
+                  ? getAddingColonTxt(_kWorkloadEndDateTxt) + _kBlankTxt
+                  : getAddingColonTxt(_kWorkloadEndDateTxt) +
                       getFormattedDateTime(workload.lastDate!),
               style:
                   theme.textStyleFootnote.copyWith(color: theme.colorDisabled),

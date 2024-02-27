@@ -6,7 +6,7 @@ part of 'task_status_chart_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$taskStatusChartHash() => r'6fe514242482389884ded1aa9f9c0b9e3d4406a8';
+String _$taskStatusChartHash() => r'8a70da10b4d3ac26bb045e90de4c47336a9955a5';
 
 /// Copied from Dart SDK
 class _SystemHash {

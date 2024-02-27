@@ -15,6 +15,7 @@ export 'view/item/date_range.dart';
 export 'view/item/empty_display.dart';
 export 'view/item/icon_badge.dart';
 export 'view/item/tap_action.dart';
+export 'view/item/text_icon.dart';
 
 export 'view/list_item/card_list_item.dart';
 export 'view/list_item/check_list_item.dart';

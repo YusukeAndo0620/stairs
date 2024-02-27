@@ -322,7 +322,6 @@ class _LabelArea extends StatelessWidget {
 ///期日ラベル
 class _DueDateLabel extends StatelessWidget {
   const _DueDateLabel({
-    super.key,
     required this.dueDate,
   });
 

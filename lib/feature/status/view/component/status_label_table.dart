@@ -54,6 +54,7 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
       margin: _kContentMargin,
       constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.9,
+          // 4レコードまで一覧に表示
           maxHeight: list.isEmpty
               ? MediaQuery.of(context).size.height * 0.15
               : _kHeaderHeight +

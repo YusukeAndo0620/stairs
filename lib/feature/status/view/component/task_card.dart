@@ -1,8 +1,6 @@
 import 'package:stairs/loom/loom_package.dart';
 
 const _kBorderWidth = 1.0;
-const _kSpaceHeight = 8.0;
-const _kTitleAndIconSpace = 4.0;
 const _kIconSize = 16.0;
 
 const _kLastMonthTxt = '（1ヶ月前）';
@@ -50,51 +48,20 @@ class TaskCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _Header(title: title, headerType: headerType),
-          const SizedBox(
-            height: _kSpaceHeight,
+          TextIcon(
+            title: title,
+            icon: Icon(
+              headerType == HeaderType.total
+                  ? Icons.task
+                  : headerType == HeaderType.inProgress
+                      ? Icons.access_time
+                      : headerType == HeaderType.completed
+                          ? theme.icons.done
+                          : Icons.abc,
+              size: _kIconSize,
+            ),
           ),
           _Content(count: count, changedPercent: changedPercent),
-        ],
-      ),
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  const _Header({
-    required this.title,
-    required this.headerType,
-  });
-  final String title;
-  final HeaderType headerType;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = LoomTheme.of(context);
-
-    return Container(
-      padding: _kContentPadding,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            headerType == HeaderType.total
-                ? Icons.task
-                : headerType == HeaderType.inProgress
-                    ? Icons.access_time
-                    : headerType == HeaderType.completed
-                        ? theme.icons.done
-                        : Icons.abc,
-            size: _kIconSize,
-          ),
-          const SizedBox(
-            width: _kTitleAndIconSpace,
-          ),
-          Text(
-            title,
-            style: theme.textStyleBody,
-          ),
         ],
       ),
     );

@@ -1,3 +1,5 @@
+import 'package:stairs/loom/loom_package.dart';
+
 class TaskStatusModel {
   TaskStatusModel({
     required this.taskItemId,
@@ -66,5 +68,38 @@ class TaskStatusModel {
         due_date: ${dueDate.toString()},
         done_date: ${doneDate.toString()},
       }''';
+  }
+
+  /// 期日を越えているタスクかどうか
+  bool isOverDuDate({
+    required DateTime firstDate,
+    required DateTime lastDate,
+  }) {
+    // タスク開始日が対象日付の間にない場合チェックしない
+    if (!isDateBetweenRange(
+        start: firstDate, end: lastDate, target: startDate)) {
+      return false;
+    }
+    if (doneDate != null) {
+      // 完了日が期日を越えている
+      return doneDate!.isAfter(dueDate);
+    } else {
+      // 期日が現在日時を越えている
+      return DateTime.now().isAfter(dueDate);
+    }
+  }
+
+  /// 期日前に完了したタスクかどうか
+  bool isBeforeDuDate({
+    required DateTime firstDate,
+    required DateTime lastDate,
+  }) {
+    // タスク開始日が対象日付の間にない場合チェックしない
+    if (!isDateBetweenRange(
+        start: firstDate, end: lastDate, target: startDate)) {
+      return false;
+    }
+    // 期日前に完了
+    return doneDate != null && doneDate!.isBefore(dueDate);
   }
 }
