@@ -9,6 +9,7 @@ class ProjectStatusModel {
     required this.themeColorModel,
     required this.startDate,
     required this.endDate,
+    required this.devLangMap,
     required this.taskStatusList,
     required this.labelStatusList,
   });
@@ -20,9 +21,20 @@ class ProjectStatusModel {
   final DateTime startDate;
   // 終了日
   final DateTime endDate;
+  // 開発言語 key: devLangId, value: 開発言語名
+  final Map<String, String> devLangMap;
   // 全てのタスク
   final List<TaskStatusModel> taskStatusList;
   final List<LabelStatusModel> labelStatusList;
+
+  /// タスクに使用されているラベルの総数
+  int get totalLabelTaskCount {
+    int count = 0;
+    for (final label in labelStatusList) {
+      count += label.taskIdList.length;
+    }
+    return count;
+  }
 
   /// ラベルが設定されているタスクリスト
   List<TaskStatusModel> getTaskListWithLabel({required String labelId}) {
@@ -61,7 +73,7 @@ class ProjectStatusModel {
   int get overDueDateTaskCount {
     return taskStatusList
         .map((task) =>
-            task.doneDate != null && task.dueDate.isAfter(DateTime.now())
+            task.doneDate == null && task.dueDate.isBefore(DateTime.now())
                 ? task.taskItemId
                 : null)
         .whereType<String>()
@@ -69,8 +81,26 @@ class ProjectStatusModel {
         .length;
   }
 
-  /// 先月と比較した完了タスク率
-  double get completedTaskPercent {
+  /// 先月の進行中タスク数
+  int get lastMonthProgressTaskCount {
+    final now = DateTime.now();
+    final List<String> taskIdList = taskStatusList
+        .map((task) =>
+            task.startDate.isAfter(DateTime(now.year, now.month - 1)) &&
+                    task.doneDate == null &&
+                    task.dueDate.isBefore(DateTime(now.year, now.month - 1))
+                ? task.taskItemId
+                : null)
+        .whereType<String>()
+        .toList();
+    return (taskStatusList.length - overDueDateTaskCount - completedTaskCount) <
+            taskIdList.length
+        ? taskIdList.length * -1
+        : taskIdList.length;
+  }
+
+  /// 先月の完了タスク数
+  int get lastMonthCompletedTaskCount {
     final now = DateTime.now();
     final List<String> taskIdList = taskStatusList
         .map((task) => task.doneDate != null &&
@@ -79,11 +109,28 @@ class ProjectStatusModel {
             : null)
         .whereType<String>()
         .toList();
-    return (taskIdList.toSet().toList().length / completedTaskCount * 100);
+    return completedTaskCount < taskIdList.length
+        ? taskIdList.length * -1
+        : taskIdList.length;
   }
 
-  /// 先月と比較した総タスク率
-  double get totalTaskPercent {
+  /// 先月の期限切れタスク数
+  int get lastMonthOverDueDateTaskCount {
+    final now = DateTime.now();
+    final List<String> taskIdList = taskStatusList
+        .map((task) => task.doneDate == null &&
+                task.dueDate.isAfter(DateTime(now.year, now.month - 1))
+            ? task.taskItemId
+            : null)
+        .whereType<String>()
+        .toList();
+    return overDueDateTaskCount < taskIdList.length
+        ? taskIdList.length * -1
+        : taskIdList.length;
+  }
+
+  /// 先月の総タスク数
+  int get lastMonthTotalTaskCount {
     final now = DateTime.now();
     final List<String> taskIdList = taskStatusList
         .map((task) => task.startDate.isAfter(DateTime(now.year, now.month - 1))
@@ -91,17 +138,7 @@ class ProjectStatusModel {
             : null)
         .whereType<String>()
         .toList();
-
-    return (taskIdList.toSet().toList().length / taskStatusList.length * 100);
-  }
-
-  /// タスクに使用されているラベルの総数
-  int get totalLabelTaskCount {
-    int count = 0;
-    for (final label in labelStatusList) {
-      count += label.taskIdList.length;
-    }
-    return count;
+    return taskIdList.length;
   }
 
   ProjectStatusModel copyWith({
@@ -110,6 +147,7 @@ class ProjectStatusModel {
     ColorModel? themeColorModel,
     DateTime? startDate,
     DateTime? endDate,
+    Map<String, String>? devLangMap,
     List<TaskStatusModel>? taskStatusList,
     List<LabelStatusModel>? labelStatusList,
   }) =>
@@ -119,6 +157,7 @@ class ProjectStatusModel {
         themeColorModel: themeColorModel ?? this.themeColorModel,
         startDate: startDate ?? this.startDate,
         endDate: endDate ?? this.endDate,
+        devLangMap: devLangMap ?? this.devLangMap,
         taskStatusList: taskStatusList ?? this.taskStatusList,
         labelStatusList: labelStatusList ?? this.labelStatusList,
       );
@@ -129,6 +168,7 @@ class ProjectStatusModel {
     final startDate = DateTime.parse(json['start_date']);
     final endDate = DateTime.parse(json['end_date']);
     final themeColorModel = ColorModel.fromJson(json['theme_color_model']);
+    final devLangMap = json['dev_lang_map'];
     final List<TaskStatusModel> taskList = [];
     for (final item in json['task_status_list']) {
       final taskStatus = TaskStatusModel.fromJson(item);
@@ -146,6 +186,7 @@ class ProjectStatusModel {
       startDate: startDate,
       endDate: endDate,
       themeColorModel: themeColorModel,
+      devLangMap: devLangMap,
       taskStatusList: taskList,
       labelStatusList: labelList,
     );
@@ -160,6 +201,7 @@ class ProjectStatusModel {
     data['start_date'] = startDate.toIso8601String();
     data['end_date'] = endDate.toIso8601String();
     data['theme_color_model'] = themeColorModel.toJson();
+    data['dev_lang_map'] = devLangMap;
     data['task_status_list'] = taskStatusList.map((e) => e.toJson()).toList();
     data['label_status_list'] = labelStatusList.map((e) => e.toJson()).toList();
     return data;
@@ -175,6 +217,7 @@ class ProjectStatusModel {
         start_date: ${startDate.toString()},
         end_date: ${endDate.toString()},
         theme_color_model: ${themeColorModel.toString()},
+        dev_lang_map: ${devLangMap.toString()},
         task_status_list: ${taskStatusList.map((e) => e.toString()).toList()},
         label_status_list: ${labelStatusList.map((e) => e.toString()).toList()},
       }''';

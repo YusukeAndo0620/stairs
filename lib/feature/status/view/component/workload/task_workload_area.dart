@@ -99,6 +99,7 @@ class _TaskWorkloadAreaState extends ConsumerState<TaskWorkloadArea> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     WorkloadFluctuationCard(
+                      width: MediaQuery.of(context).size.width * 0.45,
                       height: _kWorkloadFluctuationHeight,
                       workload: displayedWorkload.totalWorkloadHour,
                       actualWorkload: displayedWorkload.actualWorkloadHour,
@@ -107,6 +108,7 @@ class _TaskWorkloadAreaState extends ConsumerState<TaskWorkloadArea> {
                       height: _kInformationCardSpace,
                     ),
                     WorkloadReductionCard(
+                      width: MediaQuery.of(context).size.width * 0.45,
                       height: (_kWorkloadAreaHeight -
                           _kWorkloadFluctuationHeight -
                           _kInformationCardSpace),

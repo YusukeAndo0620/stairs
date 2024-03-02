@@ -1,4 +1,5 @@
 import 'package:stairs/feature/status/model/label_status_model.dart';
+import 'package:stairs/feature/status/view/component/count_indicator.dart';
 import 'package:stairs/loom/loom_package.dart';
 
 const _kHeaderLabelText = "ラベル名";
@@ -9,19 +10,17 @@ const _kBorderWidth = 1.0;
 const _kHeaderHeight = 20.0;
 const _kRowHeight = 48.0;
 const _kCountWidth = 40.0;
-const _kProgressPercentHeight = 20.0;
 const _kEmptyIconAndTxtSpace = 8.0;
-const _kProgressPercentAnimation = 1000;
-const _kContentMargin = EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0);
 
-final _logger = stairsLogger(name: 'status_label_table');
-
+// ラベル一覧表
 class StatusLabelTable extends StatefulWidget {
   const StatusLabelTable({
     super.key,
+    this.margin,
     required this.totalLabelTaskCount,
     required this.labelStatusList,
   });
+  final EdgeInsets? margin;
   final int totalLabelTaskCount;
   final List<LabelStatusModel> labelStatusList;
   @override
@@ -46,12 +45,10 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
 
   @override
   Widget build(BuildContext context) {
-    _logger.d('===================================');
-    _logger.d('ビルド開始');
     final theme = LoomTheme.of(context);
 
     return Container(
-      margin: _kContentMargin,
+      margin: widget.margin,
       constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.9,
           // 4レコードまで一覧に表示
@@ -112,39 +109,12 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
                     ),
                   ),
                   DataCell(
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: _kCountWidth,
-                          child: Text(
-                            '${item.taskIdList.length.toString()} / ${widget.totalLabelTaskCount}',
-                            style: theme.textStyleBody,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        LinearPercentIndicator(
-                          width: MediaQuery.of(context).size.width * 0.28,
-                          animation: true,
-                          lineHeight: _kProgressPercentHeight,
-                          animationDuration: _kProgressPercentAnimation,
-                          percent: item.taskIdList.length /
-                              widget.totalLabelTaskCount,
-                          center: Text(
-                            getFormattedPercent(
-                              percent: (item.taskIdList.length /
-                                      widget.totalLabelTaskCount *
-                                      100)
-                                  .toInt(),
-                            ),
-                            style: theme.textStyleBody,
-                          ),
-                          barRadius: const Radius.circular(10),
-                          backgroundColor: theme.colorFgDisabled,
-                          progressColor: theme.colorPrimary,
-                        ),
-                      ],
+                    CountIndicator(
+                      countWidth: _kCountWidth,
+                      percentIndicatorWidth:
+                          MediaQuery.of(context).size.width * 0.28,
+                      count: item.taskIdList.length,
+                      totalCount: widget.totalLabelTaskCount,
                     ),
                   ),
                 ],

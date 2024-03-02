@@ -1,5 +1,4 @@
 import 'package:stairs/feature/status/provider/component/task_workload_provider.dart';
-import 'package:stairs/feature/status/view/component/workload/task_workload_card.dart';
 import 'package:stairs/loom/loom_package.dart';
 
 const _kWorkLoadHourSpace = 4.0;
@@ -16,36 +15,39 @@ const _kCircularPercentHeaderPadding =
 const _kCircularPercentFooterPadding =
     EdgeInsets.symmetric(vertical: 4.0, horizontal: 0.0);
 
-final _logger = stairsLogger(name: 'task_workload_card');
-
 /// 工数短縮円グラフ表示カード
-class TaskWorkloadPieCard extends TaskWorkloadCard {
+class TaskWorkloadPieCard extends StatelessWidget {
   const TaskWorkloadPieCard({
     super.key,
-    required super.width,
-    required super.height,
-    required super.padding,
+    required this.width,
+    required this.height,
+    required this.padding,
     required this.title,
     required this.workload,
   });
 
+  final double width;
+  final double height;
+  final EdgeInsets padding;
   final String title;
   final Workload workload;
 
   @override
-  Widget buildMainContents(BuildContext context) {
-    _logger.d('===================================');
-    _logger.d('ビルド開始');
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _WorkLoadCircularPercent(
-          centerTitle: title,
-          workload: workload,
-        ),
-      ],
+  Widget build(BuildContext context) {
+    return CardBox(
+      width: width,
+      height: height,
+      padding: padding,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _WorkLoadCircularPercent(
+            centerTitle: title,
+            workload: workload,
+          ),
+        ],
+      ),
     );
   }
 }

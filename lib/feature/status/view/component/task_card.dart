@@ -1,67 +1,82 @@
 import 'package:stairs/loom/loom_package.dart';
 
-const _kBorderWidth = 1.0;
 const _kIconSize = 16.0;
+const _kTitleAndCountSpace = 8.0;
+const _kCountSpace = 8.0;
 
 const _kLastMonthTxt = '（1ヶ月前）';
-const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0);
-const _kContentMargin = EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0);
+const _kContentPadding = EdgeInsets.all(4.0);
+const _kContentMargin = EdgeInsets.all(8.0);
 
 final _logger = stairsLogger(name: 'task_card');
 
 enum HeaderType {
   total,
   inProgress,
+  overDueDate,
   completed,
 }
 
+// タスク数を表示するカード
 class TaskCard extends StatelessWidget {
   const TaskCard({
     super.key,
     required this.title,
     required this.headerType,
     required this.count,
-    required this.changedPercent,
+    required this.lastMonthTaskCount,
   });
   final String title;
   final HeaderType headerType;
   final int count;
-  final double changedPercent;
+  final int lastMonthTaskCount;
 
   @override
   Widget build(BuildContext context) {
     _logger.d('===================================');
     _logger.d('ビルド開始');
     final theme = LoomTheme.of(context);
+    final icon = headerType == HeaderType.total
+        ? Icons.task
+        : headerType == HeaderType.inProgress
+            ? Icons.access_time
+            : headerType == HeaderType.overDueDate
+                ? theme.icons.calender
+                : headerType == HeaderType.completed
+                    ? theme.icons.done
+                    : Icons.abc;
+    // アイコン色
+    final iconColor = headerType == HeaderType.total
+        ? theme.colorFgDefault
+        : headerType == HeaderType.inProgress
+            ? theme.colorProgress
+            : headerType == HeaderType.overDueDate
+                ? theme.colorDangerBgDefault
+                : headerType == HeaderType.completed
+                    ? theme.colorPrimary
+                    : theme.colorFgDefault;
+    // 背景色
+    final color = headerType == HeaderType.total
+        ? theme.colorFgDefaultWhite
+        : iconColor.withOpacity(0.1);
 
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.28,
+    return CardBox(
+      width: MediaQuery.of(context).size.width * 0.43,
+      color: color,
+      borderColor: theme.colorFgDefault.withOpacity(0.7),
       padding: _kContentPadding,
       margin: _kContentMargin,
-      decoration: BoxDecoration(
-        color: theme.colorFgDefaultWhite,
-        borderRadius: BorderRadius.circular(5.0),
-        border: Border.all(
-          color: theme.colorFgDisabled,
-          width: _kBorderWidth,
-        ),
-      ),
       child: Column(
         children: [
-          TextIcon(
-            title: title,
-            icon: Icon(
-              headerType == HeaderType.total
-                  ? Icons.task
-                  : headerType == HeaderType.inProgress
-                      ? Icons.access_time
-                      : headerType == HeaderType.completed
-                          ? theme.icons.done
-                          : Icons.abc,
-              size: _kIconSize,
-            ),
-          ),
-          _Content(count: count, changedPercent: changedPercent),
+          _Content(
+              title: title,
+              icon: Icon(
+                icon,
+                size: _kIconSize,
+                color: iconColor,
+              ),
+              count: count,
+              lastMonthTaskCount: lastMonthTaskCount),
         ],
       ),
     );
@@ -70,35 +85,59 @@ class TaskCard extends StatelessWidget {
 
 class _Content extends StatelessWidget {
   const _Content({
+    required this.title,
+    required this.icon,
     required this.count,
-    required this.changedPercent,
+    required this.lastMonthTaskCount,
   });
+  final String title;
+  final Icon icon;
   final int count;
-  final double changedPercent;
+  final int lastMonthTaskCount;
 
   @override
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
-    final formattedPercent = changedPercent > 0
-        ? "+${getFormattedPercent(percent: changedPercent.isNaN ? 0 : changedPercent.toInt())}"
-        : "${getFormattedPercent(percent: changedPercent.isNaN ? 0 : changedPercent.toInt())} ";
+    final formattedCount = 0 <= lastMonthTaskCount
+        ? "+$lastMonthTaskCount件"
+        : "$lastMonthTaskCount件";
     return Container(
       padding: _kContentPadding,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            count.toString(),
-            style: theme.textStyleSubHeading,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    count.toString(),
+                    style: theme.textStyleSubHeading
+                        .copyWith(color: theme.colorFgDefault),
+                  ),
+                  const SizedBox(width: _kCountSpace),
+                  Text(
+                    formattedCount,
+                    style: theme.textStyleFootnote
+                        .copyWith(color: theme.colorDisabled),
+                  ),
+                  Text(
+                    _kLastMonthTxt,
+                    style: theme.textStyleFootnote
+                        .copyWith(color: theme.colorDisabled),
+                  ),
+                ],
+              ),
+              icon,
+            ],
           ),
+          const SizedBox(height: _kTitleAndCountSpace),
           Text(
-            formattedPercent,
-            style: theme.textStyleFootnote,
-          ),
-          Text(
-            _kLastMonthTxt,
-            style: theme.textStyleFootnote,
+            title,
+            style: theme.textStyleBody,
           ),
         ],
       ),

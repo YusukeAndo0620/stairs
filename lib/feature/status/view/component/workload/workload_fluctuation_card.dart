@@ -1,4 +1,3 @@
-import 'package:stairs/feature/status/view/component/workload/task_workload_card.dart';
 import 'package:stairs/loom/loom_package.dart';
 
 const _kWorkloadFluctuationAnimation = 500;
@@ -15,18 +14,23 @@ const _kWorkloadFluctuationTitlePadding = EdgeInsets.zero;
 const _kWorkloadLabelPadding = EdgeInsets.symmetric(vertical: 4.0);
 
 // 工数変動カード
-class WorkloadFluctuationCard extends TaskWorkloadCard {
+class WorkloadFluctuationCard extends StatelessWidget {
   const WorkloadFluctuationCard({
     super.key,
-    required super.height,
+    required this.width,
+    required this.height,
+    this.padding,
     required this.workload,
     required this.actualWorkload,
   });
+  final double width;
+  final double height;
+  final EdgeInsets? padding;
   final double workload;
   final double actualWorkload;
 
   @override
-  Widget buildMainContents(BuildContext context) {
+  Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
     // 工数削減時間
     final workLoadDiff = workload - actualWorkload;
@@ -40,72 +44,80 @@ class WorkloadFluctuationCard extends TaskWorkloadCard {
     // 色
     final color =
         workLoadDiff >= 0 ? theme.colorPrimary : theme.colorDangerBgDefault;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // タイトル
-        TextIcon(
-          title: title,
-          padding: _kWorkloadFluctuationTitlePadding,
-          icon: Icon(
-            Icons.info,
-            size: _kWorkloadFluctuationIconSize,
-            color: theme.colorPrimary,
-          ),
-        ),
-        const SizedBox(
-          height: _kWorkloadFluctuationSpace,
-        ),
-        // 工数削減、超過時間 インジケーター
-        LinearPercentIndicator(
-          animation: true,
-          animationDuration: _kWorkloadFluctuationAnimation,
-          lineHeight: _kWorkloadFluctuationPercentHeight,
-          percent: workLoadDiff == 0
-              ? 0
-              : workLoadDiff < 0
-                  ? workLoadDiff.abs() / actualWorkload
-                  : workLoadDiff.abs() / workload,
-          center: Text(
-            '${workLoadDiff.abs().toString()}H',
-            style: theme.textStyleBody,
-          ),
-          backgroundColor: theme.colorFgDisabled.withOpacity(0.5),
-          progressColor: color,
-        ),
-        // インジケーター補足ラベルエリア
-        Row(
+    return CardBox(
+      width: width,
+      height: height,
+      padding: padding,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.45,
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // タイトル
             TextIcon(
               title: title,
-              padding: _kWorkloadLabelPadding,
+              padding: _kWorkloadFluctuationTitlePadding,
               icon: Icon(
-                Icons.bar_chart,
-                color: color,
-                size: _kWorkloadChartIconSize,
+                Icons.info,
+                size: _kWorkloadFluctuationIconSize,
+                color: theme.colorPrimary,
               ),
-              style:
-                  theme.textStyleFootnote.copyWith(color: theme.colorDisabled),
             ),
             const SizedBox(
-              width: _kWorkloadFluctuationSpace,
+              height: _kWorkloadFluctuationSpace,
             ),
-            TextIcon(
-              title: workloadLabel,
-              padding: _kWorkloadLabelPadding,
-              icon: Icon(
-                Icons.bar_chart,
-                color: theme.colorFgDisabled,
-                size: _kWorkloadChartIconSize,
+            // 工数削減、超過時間 インジケーター
+            LinearPercentIndicator(
+              animation: true,
+              animationDuration: _kWorkloadFluctuationAnimation,
+              lineHeight: _kWorkloadFluctuationPercentHeight,
+              percent: workLoadDiff == 0
+                  ? 0
+                  : workLoadDiff < 0
+                      ? workLoadDiff.abs() / actualWorkload
+                      : workLoadDiff.abs() / workload,
+              center: Text(
+                '${workLoadDiff.abs().toString()}H',
+                style: theme.textStyleBody,
               ),
-              style:
-                  theme.textStyleFootnote.copyWith(color: theme.colorDisabled),
+              backgroundColor: theme.colorFgDisabled.withOpacity(0.5),
+              progressColor: color,
+            ),
+            // インジケーター補足ラベルエリア
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TextIcon(
+                  title: title,
+                  padding: _kWorkloadLabelPadding,
+                  icon: Icon(
+                    Icons.bar_chart,
+                    color: color,
+                    size: _kWorkloadChartIconSize,
+                  ),
+                  style: theme.textStyleFootnote
+                      .copyWith(color: theme.colorDisabled),
+                ),
+                const SizedBox(
+                  width: _kWorkloadFluctuationSpace,
+                ),
+                TextIcon(
+                  title: workloadLabel,
+                  padding: _kWorkloadLabelPadding,
+                  icon: Icon(
+                    Icons.bar_chart,
+                    color: theme.colorFgDisabled,
+                    size: _kWorkloadChartIconSize,
+                  ),
+                  style: theme.textStyleFootnote
+                      .copyWith(color: theme.colorDisabled),
+                ),
+              ],
             ),
           ],
-        )
-      ],
+        ),
+      ),
     );
   }
 }

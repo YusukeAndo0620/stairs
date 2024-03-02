@@ -21,6 +21,7 @@ const _kCompletedTitle = "完了";
 
 final _logger = stairsLogger(name: 'task_status_chart');
 
+// タスクの進捗状況チャート
 class TaskStatusChart extends ConsumerStatefulWidget {
   const TaskStatusChart({
     super.key,

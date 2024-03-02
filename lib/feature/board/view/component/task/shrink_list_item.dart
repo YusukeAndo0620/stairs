@@ -1,5 +1,5 @@
 import 'package:stairs/feature/board/provider/board_position_provider.dart';
-import 'package:stairs/feature/board/view/component/task_list_item.dart';
+import 'package:stairs/feature/board/view/component/task/task_list_item.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

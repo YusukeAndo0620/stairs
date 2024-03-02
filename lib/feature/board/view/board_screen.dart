@@ -1,7 +1,7 @@
 import 'package:stairs/feature/board/provider/board_position_provider.dart';
-import 'package:stairs/feature/board/view/component/board_adding_card.dart';
-import 'package:stairs/feature/board/view/component/board_card.dart';
-import 'package:stairs/feature/board/view/component/carousel_display.dart';
+import 'package:stairs/feature/board/view/component/board/board_adding_card.dart';
+import 'package:stairs/feature/board/view/component/board/board_card.dart';
+import 'package:stairs/feature/board/view/component/board/carousel_display.dart';
 import 'package:stairs/feature/board/provider/board_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

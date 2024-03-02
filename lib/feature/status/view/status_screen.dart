@@ -1,7 +1,6 @@
 import 'package:stairs/feature/status/provider/status_provider.dart';
-import 'package:stairs/feature/status/view/component/status_bar_chart.dart';
-import 'package:stairs/feature/status/view/component/status_label_table.dart';
-import 'package:stairs/feature/status/view/component/status_pie_chart.dart';
+import 'package:stairs/feature/status/view/component/development_language/dev_lang_area.dart';
+import 'package:stairs/feature/status/view/component/status_label_area.dart';
 import 'package:stairs/feature/status/view/component/task_card.dart';
 import 'package:stairs/feature/status/view/component/task_status_chart.dart';
 import 'package:stairs/feature/status/view/component/workload/task_workload_area.dart';
@@ -11,10 +10,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 const _kAppBarHeight = 30.0;
 const _kTabWidth = 120.0;
 const _kTotalTitle = "全タスク";
+const _kOverDueDateTitle = "期限切れ";
 const _kProgressTitle = "進行中";
 const _kCompletedTitle = "完了";
-const _kBarAchievementTitle = "実績";
-const _kTaskCountTxt = "タスク数";
 
 final _logger = stairsLogger(name: 'status_screen');
 
@@ -36,11 +34,6 @@ class _StatusScreenState extends ConsumerState<StatusScreen>
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -95,74 +88,56 @@ class _StatusScreenState extends ConsumerState<StatusScreen>
                 SingleChildScrollView(
                   child: Column(
                     children: [
+                      // タスクカード
                       Wrap(
                         alignment: WrapAlignment.spaceAround,
                         children: [
                           TaskCard(
-                            title: _kTotalTitle,
-                            headerType: HeaderType.total,
-                            count: item.taskStatusList.length,
-                            changedPercent: item.totalTaskPercent,
-                          ),
-                          TaskCard(
                             title: _kProgressTitle,
                             headerType: HeaderType.inProgress,
                             count: item.taskStatusList.length -
+                                item.overDueDateTaskCount -
                                 item.completedTaskCount,
-                            changedPercent: 20.0,
+                            lastMonthTaskCount: item.lastMonthProgressTaskCount,
                           ),
                           TaskCard(
                             title: _kCompletedTitle,
                             headerType: HeaderType.completed,
                             count: item.completedTaskCount,
-                            changedPercent: item.completedTaskPercent,
+                            lastMonthTaskCount:
+                                item.lastMonthCompletedTaskCount,
+                          ),
+                          TaskCard(
+                            title: _kOverDueDateTitle,
+                            headerType: HeaderType.overDueDate,
+                            count: item.overDueDateTaskCount,
+                            lastMonthTaskCount:
+                                item.lastMonthOverDueDateTaskCount,
+                          ),
+                          TaskCard(
+                            title: _kTotalTitle,
+                            headerType: HeaderType.total,
+                            count: item.taskStatusList.length,
+                            lastMonthTaskCount: item.lastMonthTotalTaskCount,
                           ),
                         ],
                       ),
+                      // タスク数推移
                       TaskStatusChart(
                         isHorizontal: true,
                         taskStatusModelList: item.taskStatusList,
                       ),
-                      StatusLabelTable(
+                      // ラベル内訳テーブル
+                      StatusLabelArea(
                         totalLabelTaskCount: item.totalLabelTaskCount,
                         labelStatusList: item.labelStatusList,
                       ),
+                      // 開発言語内訳
+                      if (item.devLangMap.isNotEmpty)
+                        DevLangArea(projectStatusModel: item),
+                      // 工数短縮率
                       TaskWorkloadArea(
                           taskStatusModelList: item.taskStatusList),
-                      // 一旦使用しない
-                      // StatusBarChart(
-                      //   title: _kBarAchievementTitle,
-                      //   legendName: _kTaskCountTxt,
-                      //   isHorizontal: true,
-                      //   chartData: item.labelStatusList
-                      //       .map(
-                      //         (e) => BarChartData(
-                      //           x: e.labelName,
-                      //           y: e.taskIdList.length.toDouble(),
-                      //         ),
-                      //       )
-                      //       .toList(),
-                      // ),
-                      // StatusPieChart(
-                      //   legendName: _kTaskCountTxt,
-                      //   chartData: item.labelStatusList
-                      //       .map(
-                      //         (e) => e.taskIdList.isNotEmpty
-                      //             ? PieChartData(
-                      //                 x: e.labelName,
-                      //                 y: e.taskIdList.length.toDouble(),
-                      //                 text: getFormattedPercent(
-                      //                   percent: (e.taskIdList.length /
-                      //                           item.totalLabelTaskCount *
-                      //                           100)
-                      //                       .toInt(),
-                      //                 ),
-                      //               )
-                      //             : null,
-                      //       )
-                      //       .whereType<PieChartData>()
-                      //       .toList(),
-                      // )
                     ],
                   ),
                 ),

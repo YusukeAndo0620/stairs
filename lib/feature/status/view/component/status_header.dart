@@ -9,12 +9,12 @@ class StatusHeader extends StatelessWidget {
   const StatusHeader({
     super.key,
     required this.title,
-    required this.trailWidget,
+    this.trailWidget,
     this.isShownDate = true,
   });
 
   final String title;
-  final Widget trailWidget;
+  final Widget? trailWidget;
   final bool isShownDate;
 
   @override
@@ -45,7 +45,7 @@ class StatusHeader extends StatelessWidget {
                 ),
             ],
           ),
-          trailWidget,
+          trailWidget ?? const SizedBox.shrink()
         ],
       ),
     );

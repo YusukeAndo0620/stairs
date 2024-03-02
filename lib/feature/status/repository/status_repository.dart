@@ -28,10 +28,18 @@ class StatusRepository {
         final taskResponse = await db.tTaskDao.getTaskDetailByProjectId(
             projectId: projectRow.readTable(db.tProject).projectId);
 
+        // プロジェクトで使用されている開発言語
+        final projectDevLangResponse = await db.tDevLangRelDao.getDevLangList(
+            projectId: projectRow.readTable(db.tProject).projectId);
+
         projectStatusList.add(
           _convertProjectStatusModel(
             projectData: projectRow.readTable(db.tProject),
             projectColorData: projectRow.readTable(db.mColor),
+            projectDevLangData: projectDevLangResponse
+                .map((e) => e.readTableOrNull(db.tDevLanguage))
+                .whereType<TDevLanguageData>()
+                .toList(),
             taskData: taskResponse.map((e) => e.readTable(db.tTask)).toList(),
             taskTagData: taskResponse
                 .map((e) => e.readTableOrNull(db.tTaskTag))
@@ -62,6 +70,7 @@ class StatusRepository {
   ProjectStatusModel _convertProjectStatusModel({
     required TProjectData projectData,
     required MColorData projectColorData,
+    required List<TDevLanguageData> projectDevLangData,
     required List<TTaskData> taskData,
     required List<TTaskTagData?> taskTagData,
     required List<TTagData?> tagData,
@@ -140,6 +149,11 @@ class StatusRepository {
         labelStatusList.add(item.copyWith(taskIdList: labelMap[item.labelId]));
       }
     }
+    // 開発言語 key: devLangId, value: 開発言語名
+    Map<String, String> projectDevLangMap = {};
+    for (final projectDev in projectDevLangData) {
+      projectDevLangMap[projectDev.devLangId] = projectDev.name;
+    }
 
     return ProjectStatusModel(
       projectId: projectData.projectId,
@@ -148,6 +162,7 @@ class StatusRepository {
         id: projectColorData.id,
         color: getColorFromCode(code: projectColorData.colorCodeId),
       ),
+      devLangMap: projectDevLangMap,
       startDate: DateTime.parse(projectData.startDate).toLocal(),
       endDate: DateTime.parse(projectData.endDate).toLocal(),
       taskStatusList: taskStatusList,
