@@ -18,7 +18,7 @@ import 'package:stairs/db/dao/t_task_tag_dao.dart';
 import 'package:stairs/db/dao/t_tool_dao.dart';
 import 'package:stairs/db/dummy/board_list.dart';
 import 'package:stairs/db/dummy/dummy_project_detail.dart';
-import 'package:stairs/db/constant/t_dev_language_list.dart';
+import 'package:stairs/db/constant/dev_language_list.dart';
 import 'package:stairs/db/dummy/task_list.dart';
 import 'package:stairs/loom/stairs_logger.dart';
 
@@ -117,6 +117,10 @@ class StairsDatabase extends _$StairsDatabase {
                 ),
               );
             }
+          }
+          // プロジェクト 開発言語紐付けダミーデータ
+          for (final item in dummyProjectDevLangRelList) {
+            await into(tDevLanguageRel).insert(item);
           }
           // ボードダミーダータ
           for (final item in dummyBoardList) {

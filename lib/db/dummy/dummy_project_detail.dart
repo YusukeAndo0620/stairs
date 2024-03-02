@@ -27,3 +27,10 @@ List<TProjectCompanion> dummyProjectDetailList = [
     accountId: Value('1'),
   ),
 ];
+List<TDevLanguageRelCompanion> dummyProjectDevLangRelList = [
+  // Java
+  const TDevLanguageRelCompanion(
+    projectId: Value('1'),
+    devLangId: Value('1e399688-9d4c-4b8e-98d7-6e02af716ab8'),
+  )
+];

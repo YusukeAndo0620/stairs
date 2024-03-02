@@ -835,6 +835,16 @@ class $TDevLanguageTable extends TDevLanguage
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
+  static const VerificationMeta _isFrameworkMeta =
+      const VerificationMeta('isFramework');
+  @override
+  late final GeneratedColumn<bool> isFramework = GeneratedColumn<bool>(
+      'is_framework', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("is_framework" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _isReadOnlyMeta =
       const VerificationMeta('isReadOnly');
   @override
@@ -874,7 +884,7 @@ class $TDevLanguageTable extends TDevLanguage
       clientDefault: () => DateTime.now().toIso8601String());
   @override
   List<GeneratedColumn> get $columns =>
-      [devLangId, name, isReadOnly, accountId, createAt, updateAt];
+      [devLangId, name, isFramework, isReadOnly, accountId, createAt, updateAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -898,6 +908,12 @@ class $TDevLanguageTable extends TDevLanguage
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('is_framework')) {
+      context.handle(
+          _isFrameworkMeta,
+          isFramework.isAcceptableOrUnknown(
+              data['is_framework']!, _isFrameworkMeta));
     }
     if (data.containsKey('is_read_only')) {
       context.handle(
@@ -932,6 +948,8 @@ class $TDevLanguageTable extends TDevLanguage
           .read(DriftSqlType.string, data['${effectivePrefix}dev_lang_id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      isFramework: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_framework'])!,
       isReadOnly: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_read_only'])!,
       accountId: attachedDatabase.typeMapping
@@ -953,6 +971,7 @@ class TDevLanguageData extends DataClass
     implements Insertable<TDevLanguageData> {
   final String devLangId;
   final String name;
+  final bool isFramework;
   final bool isReadOnly;
   final String accountId;
   final String createAt;
@@ -960,6 +979,7 @@ class TDevLanguageData extends DataClass
   const TDevLanguageData(
       {required this.devLangId,
       required this.name,
+      required this.isFramework,
       required this.isReadOnly,
       required this.accountId,
       required this.createAt,
@@ -969,6 +989,7 @@ class TDevLanguageData extends DataClass
     final map = <String, Expression>{};
     map['dev_lang_id'] = Variable<String>(devLangId);
     map['name'] = Variable<String>(name);
+    map['is_framework'] = Variable<bool>(isFramework);
     map['is_read_only'] = Variable<bool>(isReadOnly);
     map['account_id'] = Variable<String>(accountId);
     map['create_at'] = Variable<String>(createAt);
@@ -980,6 +1001,7 @@ class TDevLanguageData extends DataClass
     return TDevLanguageCompanion(
       devLangId: Value(devLangId),
       name: Value(name),
+      isFramework: Value(isFramework),
       isReadOnly: Value(isReadOnly),
       accountId: Value(accountId),
       createAt: Value(createAt),
@@ -993,6 +1015,7 @@ class TDevLanguageData extends DataClass
     return TDevLanguageData(
       devLangId: serializer.fromJson<String>(json['devLangId']),
       name: serializer.fromJson<String>(json['name']),
+      isFramework: serializer.fromJson<bool>(json['isFramework']),
       isReadOnly: serializer.fromJson<bool>(json['isReadOnly']),
       accountId: serializer.fromJson<String>(json['accountId']),
       createAt: serializer.fromJson<String>(json['createAt']),
@@ -1005,6 +1028,7 @@ class TDevLanguageData extends DataClass
     return <String, dynamic>{
       'devLangId': serializer.toJson<String>(devLangId),
       'name': serializer.toJson<String>(name),
+      'isFramework': serializer.toJson<bool>(isFramework),
       'isReadOnly': serializer.toJson<bool>(isReadOnly),
       'accountId': serializer.toJson<String>(accountId),
       'createAt': serializer.toJson<String>(createAt),
@@ -1015,6 +1039,7 @@ class TDevLanguageData extends DataClass
   TDevLanguageData copyWith(
           {String? devLangId,
           String? name,
+          bool? isFramework,
           bool? isReadOnly,
           String? accountId,
           String? createAt,
@@ -1022,6 +1047,7 @@ class TDevLanguageData extends DataClass
       TDevLanguageData(
         devLangId: devLangId ?? this.devLangId,
         name: name ?? this.name,
+        isFramework: isFramework ?? this.isFramework,
         isReadOnly: isReadOnly ?? this.isReadOnly,
         accountId: accountId ?? this.accountId,
         createAt: createAt ?? this.createAt,
@@ -1032,6 +1058,7 @@ class TDevLanguageData extends DataClass
     return (StringBuffer('TDevLanguageData(')
           ..write('devLangId: $devLangId, ')
           ..write('name: $name, ')
+          ..write('isFramework: $isFramework, ')
           ..write('isReadOnly: $isReadOnly, ')
           ..write('accountId: $accountId, ')
           ..write('createAt: $createAt, ')
@@ -1041,14 +1068,15 @@ class TDevLanguageData extends DataClass
   }
 
   @override
-  int get hashCode =>
-      Object.hash(devLangId, name, isReadOnly, accountId, createAt, updateAt);
+  int get hashCode => Object.hash(
+      devLangId, name, isFramework, isReadOnly, accountId, createAt, updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TDevLanguageData &&
           other.devLangId == this.devLangId &&
           other.name == this.name &&
+          other.isFramework == this.isFramework &&
           other.isReadOnly == this.isReadOnly &&
           other.accountId == this.accountId &&
           other.createAt == this.createAt &&
@@ -1058,6 +1086,7 @@ class TDevLanguageData extends DataClass
 class TDevLanguageCompanion extends UpdateCompanion<TDevLanguageData> {
   final Value<String> devLangId;
   final Value<String> name;
+  final Value<bool> isFramework;
   final Value<bool> isReadOnly;
   final Value<String> accountId;
   final Value<String> createAt;
@@ -1066,6 +1095,7 @@ class TDevLanguageCompanion extends UpdateCompanion<TDevLanguageData> {
   const TDevLanguageCompanion({
     this.devLangId = const Value.absent(),
     this.name = const Value.absent(),
+    this.isFramework = const Value.absent(),
     this.isReadOnly = const Value.absent(),
     this.accountId = const Value.absent(),
     this.createAt = const Value.absent(),
@@ -1075,6 +1105,7 @@ class TDevLanguageCompanion extends UpdateCompanion<TDevLanguageData> {
   TDevLanguageCompanion.insert({
     required String devLangId,
     required String name,
+    this.isFramework = const Value.absent(),
     this.isReadOnly = const Value.absent(),
     required String accountId,
     this.createAt = const Value.absent(),
@@ -1086,6 +1117,7 @@ class TDevLanguageCompanion extends UpdateCompanion<TDevLanguageData> {
   static Insertable<TDevLanguageData> custom({
     Expression<String>? devLangId,
     Expression<String>? name,
+    Expression<bool>? isFramework,
     Expression<bool>? isReadOnly,
     Expression<String>? accountId,
     Expression<String>? createAt,
@@ -1095,6 +1127,7 @@ class TDevLanguageCompanion extends UpdateCompanion<TDevLanguageData> {
     return RawValuesInsertable({
       if (devLangId != null) 'dev_lang_id': devLangId,
       if (name != null) 'name': name,
+      if (isFramework != null) 'is_framework': isFramework,
       if (isReadOnly != null) 'is_read_only': isReadOnly,
       if (accountId != null) 'account_id': accountId,
       if (createAt != null) 'create_at': createAt,
@@ -1106,6 +1139,7 @@ class TDevLanguageCompanion extends UpdateCompanion<TDevLanguageData> {
   TDevLanguageCompanion copyWith(
       {Value<String>? devLangId,
       Value<String>? name,
+      Value<bool>? isFramework,
       Value<bool>? isReadOnly,
       Value<String>? accountId,
       Value<String>? createAt,
@@ -1114,6 +1148,7 @@ class TDevLanguageCompanion extends UpdateCompanion<TDevLanguageData> {
     return TDevLanguageCompanion(
       devLangId: devLangId ?? this.devLangId,
       name: name ?? this.name,
+      isFramework: isFramework ?? this.isFramework,
       isReadOnly: isReadOnly ?? this.isReadOnly,
       accountId: accountId ?? this.accountId,
       createAt: createAt ?? this.createAt,
@@ -1130,6 +1165,9 @@ class TDevLanguageCompanion extends UpdateCompanion<TDevLanguageData> {
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (isFramework.present) {
+      map['is_framework'] = Variable<bool>(isFramework.value);
     }
     if (isReadOnly.present) {
       map['is_read_only'] = Variable<bool>(isReadOnly.value);
@@ -1154,6 +1192,7 @@ class TDevLanguageCompanion extends UpdateCompanion<TDevLanguageData> {
     return (StringBuffer('TDevLanguageCompanion(')
           ..write('devLangId: $devLangId, ')
           ..write('name: $name, ')
+          ..write('isFramework: $isFramework, ')
           ..write('isReadOnly: $isReadOnly, ')
           ..write('accountId: $accountId, ')
           ..write('createAt: $createAt, ')
