@@ -6,8 +6,8 @@ import 'm_account.dart';
 class TDevLanguage extends Table {
   TextColumn get devLangId => text().withLength(min: 1, max: 50)();
   TextColumn get name => text().withLength(min: 1, max: 50)();
-  BoolColumn get isFramework => boolean().withDefault(const Constant(false))();
   BoolColumn get isReadOnly => boolean().withDefault(const Constant(false))();
+  BoolColumn get isFramework => boolean().withDefault(const Constant(false))();
   TextColumn get accountId =>
       text().withLength(min: 1, max: 50).references(MAccount, #accountId)();
 

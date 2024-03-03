@@ -77,68 +77,76 @@ class StairsDatabase extends _$StairsDatabase {
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) async {
           _logger.i('===Database: 作成開始====');
-          await m.createAll();
-          // アカウント
-          await into(mAccount).insert(
-            const MAccountCompanion(
-              accountId: Value('1'),
-              address: Value('ando08620@gmail.com'),
-            ),
-          );
-          // カラー
-          for (final item in colorList) {
-            await into(mColor).insert(item);
-          }
-          // 開発言語
-          for (final item in defaultTDevLangList) {
-            await into(tDevLanguage).insert(item);
-          }
-          // 開発工程
-          for (final item in defaultDevProgressList) {
-            await into(mDevProgressList).insert(item);
-          }
-          // タグ（ラベル）
-          for (final item in defaultTagList) {
-            await into(tTag).insert(item);
-          }
-          final tagListQuery = select(tTag)
-            ..where((tbl) => tbl.accountId.equals('1'));
-          final tagList = await tagListQuery.get();
-
-          // プロジェクトダミーダータ
-          for (final item in dummyProjectDetailList) {
-            await into(tProject).insert(item);
-            for (final tagItem in tagList) {
-              await into(tTagRel).insert(
-                TTagRelCompanion(
-                  colorId: Value(tagItem.colorId),
-                  projectId: item.projectId,
-                  tagId: Value(tagItem.id),
+          try {
+            await transaction(() async {
+              await m.createAll();
+              // アカウント
+              await into(mAccount).insert(
+                const MAccountCompanion(
+                  accountId: Value('1'),
+                  address: Value('ando08620@gmail.com'),
                 ),
               );
-            }
+              // カラー
+              for (final item in colorList) {
+                await into(mColor).insert(item);
+              }
+              // 開発言語
+              for (final item in defaultTDevLangList) {
+                await into(tDevLanguage).insert(item);
+              }
+              // 開発工程
+              for (final item in defaultDevProgressList) {
+                await into(mDevProgressList).insert(item);
+              }
+              // タグ（ラベル）
+              for (final item in defaultTagList) {
+                await into(tTag).insert(item);
+              }
+              final tagListQuery = select(tTag)
+                ..where((tbl) => tbl.accountId.equals('1'));
+              final tagList = await tagListQuery.get();
+
+              // プロジェクトダミーダータ
+              for (final item in dummyProjectDetailList) {
+                await into(tProject).insert(item);
+                for (final tagItem in tagList) {
+                  await into(tTagRel).insert(
+                    TTagRelCompanion(
+                      colorId: Value(tagItem.colorId),
+                      projectId: item.projectId,
+                      tagId: Value(tagItem.id),
+                    ),
+                  );
+                }
+              }
+              // プロジェクト 開発言語紐付けダミーデータ
+              for (final item in dummyProjectDevLangRelList) {
+                await into(tDevLanguageRel).insert(item);
+              }
+              // ボードダミーダータ
+              for (final item in dummyBoardList) {
+                await into(tBoard).insert(item);
+              }
+              // タスクダミーダータ
+              for (final item in dummyTaskList) {
+                await into(tTask).insert(item);
+              }
+              // タスクタグダミーダータ
+              for (final item in dummyTaskTagList) {
+                await into(tTaskTag).insert(item);
+              }
+              // タスク開発言語ダミーダータ
+              for (final item in dummyTaskDevList) {
+                await into(tTaskDev).insert(item);
+              }
+            });
+          } on Exception catch (exception) {
+            _logger.e(exception);
+            rethrow;
+          } finally {
+            _logger.i('===Database: 作成終了===');
           }
-          // プロジェクト 開発言語紐付けダミーデータ
-          for (final item in dummyProjectDevLangRelList) {
-            await into(tDevLanguageRel).insert(item);
-          }
-          // ボードダミーダータ
-          for (final item in dummyBoardList) {
-            await into(tBoard).insert(item);
-          }
-          // タスクダミーダータ
-          for (final item in dummyTaskList) {
-            await into(tTask).insert(item);
-          }
-          // タスクタグダミーダータ
-          for (final item in dummyTaskTagList) {
-            await into(tTaskTag).insert(item);
-          }
-          // タスク開発言語ダミーダータ
-          for (final item in dummyTaskDevList) {
-            await into(tTaskDev).insert(item);
-          }
-          _logger.i('===Database: 作成終了===');
         },
         onUpgrade: (m, from, to) async {
           _logger.i('===Database: 更新開始 schemaVersion: $schemaVersion===');

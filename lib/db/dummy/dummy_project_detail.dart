@@ -32,5 +32,6 @@ List<TDevLanguageRelCompanion> dummyProjectDevLangRelList = [
   const TDevLanguageRelCompanion(
     projectId: Value('1'),
     devLangId: Value('1e399688-9d4c-4b8e-98d7-6e02af716ab8'),
+    content: Value(''),
   )
 ];

@@ -5,7 +5,8 @@ import 'package:stairs/db/db_package.dart';
 @TableIndex(name: 'dev_lang_rel_id', columns: {#id})
 class TDevLanguageRel extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get content => text().withLength(min: 0, max: 50)();
+  TextColumn get content =>
+      text().withLength(min: 0, max: 50).clientDefault(() => '')();
   TextColumn get projectId =>
       text().withLength(min: 1, max: 50).references(TProject, #projectId)();
   TextColumn get devLangId =>
