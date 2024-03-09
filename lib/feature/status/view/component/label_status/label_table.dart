@@ -1,4 +1,6 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stairs/feature/status/model/label_status_model.dart';
+import 'package:stairs/feature/status/provider/component/label_table_provider.dart';
 import 'package:stairs/feature/status/view/component/count_indicator.dart';
 import 'package:stairs/loom/loom_package.dart';
 
@@ -13,8 +15,8 @@ const _kCountWidth = 40.0;
 const _kEmptyIconAndTxtSpace = 8.0;
 
 // ラベル一覧表
-class StatusLabelTable extends StatefulWidget {
-  const StatusLabelTable({
+class LabelTable extends ConsumerWidget {
+  const LabelTable({
     super.key,
     this.margin,
     required this.totalLabelTaskCount,
@@ -23,39 +25,29 @@ class StatusLabelTable extends StatefulWidget {
   final EdgeInsets? margin;
   final int totalLabelTaskCount;
   final List<LabelStatusModel> labelStatusList;
-  @override
-  State<StatefulWidget> createState() => _StatusLabelTableState();
-}
-
-class _StatusLabelTableState extends State<StatusLabelTable> {
-  bool sortAscending = true;
-  int sortedColumnIdx = 0;
-  final List<LabelStatusModel> list = [];
 
   @override
-  void initState() {
-    super.initState();
-    list.addAll(widget.labelStatusList);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = LoomTheme.of(context);
 
+    final labelTableState =
+        ref.watch(labelTableProvider(labelStatusList: labelStatusList));
+    final labelTableNotifier = ref
+        .watch(labelTableProvider(labelStatusList: labelStatusList).notifier);
+
     return Container(
-      margin: widget.margin,
+      margin: margin,
       constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.9,
-          // 4レコードまで一覧に表示
-          maxHeight: list.isEmpty
-              ? MediaQuery.of(context).size.height * 0.15
-              : _kHeaderHeight +
-                  _kRowHeight * (list.length <= 4 ? list.length : 4)),
+        maxWidth: MediaQuery.of(context).size.width * 0.9,
+        // 4レコードまで一覧に表示
+        maxHeight: labelTableState.list.isEmpty
+            ? MediaQuery.of(context).size.height * 0.15
+            : _kHeaderHeight +
+                _kRowHeight *
+                    (labelTableState.list.length <= 4
+                        ? labelTableState.list.length
+                        : 4),
+      ),
       decoration: BoxDecoration(
         color: theme.colorFgDefaultWhite,
         borderRadius: BorderRadius.circular(5.0),
@@ -65,8 +57,8 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
         ),
       ),
       child: DataTable2(
-        sortColumnIndex: sortedColumnIdx,
-        sortAscending: sortAscending,
+        sortColumnIndex: 0,
+        sortAscending: true,
         headingRowHeight: _kHeaderHeight,
         columnSpacing: 10.0,
         horizontalMargin: 10.0,
@@ -81,8 +73,8 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
                 style: theme.textStyleBody,
               ),
             ),
-            onSort: (columnIndex, ascending) =>
-                sortList(columnIdx: columnIndex, isAsc: ascending),
+            onSort: (columnIndex, ascending) => labelTableNotifier.sortList(
+                columnIdx: columnIndex, isAsc: ascending),
           ),
           DataColumn(
             label: Align(
@@ -92,13 +84,13 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
                 style: theme.textStyleBody,
               ),
             ),
-            onSort: (columnIndex, ascending) =>
-                sortList(columnIdx: columnIndex, isAsc: ascending),
+            onSort: (columnIndex, ascending) => labelTableNotifier.sortList(
+                columnIdx: columnIndex, isAsc: ascending),
           ),
         ],
         rows: [
-          if (list.isNotEmpty) ...[
-            for (final item in list) ...[
+          if (labelTableState.list.isNotEmpty) ...[
+            for (final item in labelTableState.list) ...[
               DataRow(
                 cells: [
                   DataCell(
@@ -114,7 +106,7 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
                       percentIndicatorWidth:
                           MediaQuery.of(context).size.width * 0.28,
                       count: item.taskIdList.length,
-                      totalCount: widget.totalLabelTaskCount,
+                      totalCount: totalLabelTaskCount,
                     ),
                   ),
                 ],
@@ -124,39 +116,6 @@ class _StatusLabelTableState extends State<StatusLabelTable> {
         ],
       ),
     );
-  }
-
-  void sortList({required int columnIdx, required bool isAsc}) {
-    list.sort(
-      (a, b) {
-        switch (columnIdx) {
-          // ラベル名
-          case 0:
-            return isAsc
-                ? a.labelId.compareTo(b.labelId)
-                : b.labelId.compareTo(a.labelId);
-          case 1:
-            // 総数
-            return isAsc
-                ? a.taskIdList.length.compareTo(b.taskIdList.length)
-                : b.taskIdList.length.compareTo(a.taskIdList.length);
-          case 2:
-            // 比率
-            return isAsc
-                ? a.taskIdList.length.compareTo(b.taskIdList.length)
-                : b.taskIdList.length.compareTo(a.taskIdList.length);
-          default:
-            return isAsc
-                ? a.labelId.compareTo(b.labelId)
-                : b.labelId.compareTo(a.labelId);
-        }
-      },
-    );
-
-    setState(() {
-      sortAscending = isAsc;
-      sortedColumnIdx = columnIdx;
-    });
   }
 }
 

@@ -1,6 +1,5 @@
 import 'package:stairs/feature/status/provider/status_provider.dart';
-import 'package:stairs/feature/status/view/component/development_language/dev_lang_area.dart';
-import 'package:stairs/feature/status/view/component/status_label_area.dart';
+import 'package:stairs/feature/status/view/component/label_status/label_status_area.dart';
 import 'package:stairs/feature/status/view/component/task_card.dart';
 import 'package:stairs/feature/status/view/component/task_status_chart.dart';
 import 'package:stairs/feature/status/view/component/workload/task_workload_area.dart';
@@ -128,13 +127,7 @@ class _StatusScreenState extends ConsumerState<StatusScreen>
                         taskStatusModelList: item.taskStatusList,
                       ),
                       // ラベル内訳テーブル
-                      StatusLabelArea(
-                        totalLabelTaskCount: item.totalLabelTaskCount,
-                        labelStatusList: item.labelStatusList,
-                      ),
-                      // 開発言語内訳
-                      if (item.devLangMap.isNotEmpty)
-                        DevLangArea(projectStatusModel: item),
+                      LabelStatusArea(projectStatusModel: item),
                       // 工数短縮率
                       TaskWorkloadArea(
                           taskStatusModelList: item.taskStatusList),

@@ -81,7 +81,12 @@ class TaskEditModal extends ConsumerWidget {
             iconData: theme.icons.developers,
             iconColor: themeColor,
             selectedItemId: taskItemState.devLangId,
-            itemList: devLangList,
+            // LabelWithContentのままだとdevLangRelId: id, labelId: devLangIdとなるため、
+            // 正しい値にセットする,
+            itemList: devLangList
+                .map((item) =>
+                    LabelModel(id: item.labelId, labelName: item.labelName))
+                .toList(),
             onChange: (value) =>
                 taskItemNotifier.updateDevLang(devLangId: value),
           ),

@@ -23,6 +23,7 @@ class CountIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
+    final percent = totalCount == 0 ? 0.0 : count / totalCount;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -40,10 +41,10 @@ class CountIndicator extends StatelessWidget {
           animation: true,
           lineHeight: lineHeight ?? _kPercentIndicatorHeight,
           animationDuration: _kPercentIndicatorAnimation,
-          percent: count / totalCount,
+          percent: percent,
           center: Text(
             getFormattedPercent(
-              percent: (count / totalCount * 100).toInt(),
+              percent: (percent * 100).toInt(),
             ),
             style: theme.textStyleBody,
           ),

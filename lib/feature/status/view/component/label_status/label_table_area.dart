@@ -1,6 +1,5 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stairs/feature/status/model/label_status_model.dart';
-import 'package:stairs/feature/status/view/component/status_label_table.dart';
+import 'package:stairs/feature/status/view/component/label_status/label_table.dart';
 
 import 'package:stairs/loom/loom_package.dart';
 
@@ -10,36 +9,43 @@ const _kSpaceInHeader = 8.0;
 
 const _kContentPadding = EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0);
 
-/// 開発言語テーブル
-class DevLangTable extends ConsumerWidget {
-  const DevLangTable({
+/// ラベル一覧領域（ヘッダー+ラベル一覧表）
+class LabelTableArea extends StatelessWidget {
+  const LabelTableArea({
     super.key,
-    required this.devLangName,
-    required this.totalTaskCount,
-    required this.taskCount,
+    required this.title,
+    required this.totalLabelTaskCount,
+    this.totalTaskCount,
+    this.taskCount,
     required this.labelStatusList,
   });
 
-  final String devLangName;
-  final int totalTaskCount;
-  final int taskCount;
+  final String title;
+
+  /// ラベルが紐づいているタスクの総数
+  final int totalLabelTaskCount;
+
+  /// タスクの総数
+  final int? totalTaskCount;
+
+  /// タスク数
+  final int? taskCount;
   final List<LabelStatusModel> labelStatusList;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Container(
       padding: _kContentPadding,
       child: Column(
         children: [
           _Header(
-            title: devLangName,
+            title: title,
             totalTaskCount: totalTaskCount,
             taskCount: taskCount,
           ),
           const SizedBox(height: _kHeaderAndTableSpace),
-          StatusLabelTable(
-            totalLabelTaskCount:
-                labelStatusList.map((item) => item.taskIdList).toList().length,
+          LabelTable(
+            totalLabelTaskCount: totalLabelTaskCount,
             labelStatusList: labelStatusList,
           )
         ],
@@ -51,19 +57,21 @@ class DevLangTable extends ConsumerWidget {
 class _Header extends StatelessWidget {
   const _Header({
     required this.title,
-    required this.totalTaskCount,
-    required this.taskCount,
+    this.totalTaskCount,
+    this.taskCount,
   });
 
   final String title;
-  final int totalTaskCount;
-  final int taskCount;
+  final int? totalTaskCount;
+  final int? taskCount;
   @override
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
-    final percent = taskCount == 0
-        ? 0.0
-        : double.parse((taskCount / totalTaskCount).toStringAsFixed(2));
+    final percent = totalTaskCount == null || taskCount == null
+        ? null
+        : taskCount == 0
+            ? 0.0
+            : double.parse((taskCount! / totalTaskCount!).toStringAsFixed(2));
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -72,26 +80,28 @@ class _Header extends StatelessWidget {
           style: theme.textStyleBody,
         ),
         const SizedBox(width: _kSpaceInHeader),
-        Row(
-          children: [
-            _DevLangCircularPercent(
-              percent: percent,
-            ),
-            const SizedBox(width: _kSpaceInHeader),
-            Text(
-              '${percent * 100}%'.toString(),
-              style: theme.textStyleBody,
-            ),
-          ],
-        ),
+        if (percent != null) ...[
+          Row(
+            children: [
+              _CircularPercent(
+                percent: percent,
+              ),
+              const SizedBox(width: _kSpaceInHeader),
+              Text(
+                '${percent * 100}%'.toString(),
+                style: theme.textStyleBody,
+              ),
+            ],
+          ),
+        ],
       ],
     );
   }
 }
 
-// 開発言語使用率の円グラフ
-class _DevLangCircularPercent extends StatelessWidget {
-  const _DevLangCircularPercent({
+// 使用率の円グラフ
+class _CircularPercent extends StatelessWidget {
+  const _CircularPercent({
     required this.percent,
   });
 

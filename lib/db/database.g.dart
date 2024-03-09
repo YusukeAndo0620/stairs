@@ -1822,7 +1822,8 @@ class $TDevLanguageRelTable extends TDevLanguageRel
       additionalChecks:
           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 50),
       type: DriftSqlType.string,
-      requiredDuringInsert: true);
+      requiredDuringInsert: false,
+      clientDefault: () => '');
   static const VerificationMeta _projectIdMeta =
       const VerificationMeta('projectId');
   @override
@@ -1881,8 +1882,6 @@ class $TDevLanguageRelTable extends TDevLanguageRel
     if (data.containsKey('content')) {
       context.handle(_contentMeta,
           content.isAcceptableOrUnknown(data['content']!, _contentMeta));
-    } else if (isInserting) {
-      context.missing(_contentMeta);
     }
     if (data.containsKey('project_id')) {
       context.handle(_projectIdMeta,
@@ -2059,13 +2058,12 @@ class TDevLanguageRelCompanion extends UpdateCompanion<TDevLanguageRelData> {
   });
   TDevLanguageRelCompanion.insert({
     this.id = const Value.absent(),
-    required String content,
+    this.content = const Value.absent(),
     required String projectId,
     required String devLangId,
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
-  })  : content = Value(content),
-        projectId = Value(projectId),
+  })  : projectId = Value(projectId),
         devLangId = Value(devLangId);
   static Insertable<TDevLanguageRelData> custom({
     Expression<int>? id,
