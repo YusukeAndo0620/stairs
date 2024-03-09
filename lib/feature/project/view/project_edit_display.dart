@@ -56,6 +56,7 @@ const _kLabelHintTxt = 'ラベルを設定';
 
 const _kProjectAndBoardSpace = 30.0;
 const _kContentPadding = EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0);
+final _logger = stairsLogger(name: 'project_edit_display');
 
 class ProjectEditDisplay extends ConsumerStatefulWidget {
   const ProjectEditDisplay({
@@ -87,6 +88,8 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
 
   @override
   Widget build(BuildContext context) {
+    _logger.d('===================================');
+    _logger.d('プロジェクト編集表示 {projectId:${widget.projectId}');
     final theme = LoomTheme.of(context);
     //プロジェクト詳細
     final projectDetailState =
@@ -143,7 +146,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
       ),
       body: projectDetailState.when(
         data: (detail) {
-          final secondaryItemWidth = MediaQuery.of(context).size.width * 0.55;
+          final secondaryItemWidth = MediaQuery.of(context).size.width * 0.52;
           return detail == null
               ? const SizedBox.shrink()
               : Padding(
@@ -160,6 +163,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         ),
                         // プロジェクト名
                         CardLstItem.input(
+                            width: secondaryItemWidth,
                             label: _kProjectNameTitleTxt,
                             iconColor: theme.colorPrimary,
                             iconData: theme.icons.project,
@@ -209,6 +213,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         ),
                         // 業種
                         CardLstItem.input(
+                          width: secondaryItemWidth,
                           label: _kIndustryTxt,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.industry,
@@ -224,6 +229,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         ),
                         // 開発人数
                         CardLstItem.input(
+                          width: secondaryItemWidth,
                           label: _kDevSizeTxt,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.group,
@@ -293,6 +299,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         ),
                         // 業務内容
                         CardLstItem.input(
+                          width: secondaryItemWidth,
                           label: _kContentTxt,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.description,
@@ -538,8 +545,10 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                   ),
                 );
         },
-        loading: () => const Align(
-          child: CircularProgressIndicator(),
+        loading: () => Align(
+          child: CircularProgressIndicator(
+            color: theme.colorPrimary,
+          ),
         ),
         error: (error, _) => Align(child: Text(error.toString())),
       ),

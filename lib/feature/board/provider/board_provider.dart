@@ -465,10 +465,17 @@ class Board extends _$Board {
           : null;
       // ドラッグしたタスクを差し替え
       targetList[currentShrinkItemBoardIndex]
-          .taskItemList[currentShrinkItemTaskItemIndex] = draggingItem.copyWith(
+          .taskItemList[currentShrinkItemTaskItemIndex] = TaskItemModel(
         boardId: targetList[currentShrinkItemBoardIndex].boardId,
-        orderNo: orderNo,
+        taskItemId: draggingItem.taskItemId,
+        title: draggingItem.title,
+        description: draggingItem.description,
+        devLangId: draggingItem.devLangId,
+        startDate: draggingItem.startDate,
+        dueDate: draggingItem.dueDate,
         doneDate: doneDate,
+        orderNo: orderNo,
+        labelList: draggingItem.labelList,
       );
       // DB更新
       // DBプロバイダー
@@ -479,10 +486,21 @@ class Board extends _$Board {
       //API通信用 Repository
       final repository = ref.read(taskRepositoryProvider);
       // ドラッグ前とドラッグ後のボードのタスクリスト
-      final updateTaskList = [
-        ...targetList[getBoardIndex(boardId: beforeBoardId)].taskItemList,
-        ...targetList[currentShrinkItemBoardIndex].taskItemList
-      ];
+      final List<TaskItemModel> updateTaskList = [];
+      // 同じボード内で移動されていた場合
+      if (getBoardIndex(boardId: beforeBoardId) ==
+          currentShrinkItemBoardIndex) {
+        updateTaskList.addAll(
+          targetList[currentShrinkItemBoardIndex].taskItemList,
+        );
+      } else {
+        updateTaskList.addAll(
+          targetList[getBoardIndex(boardId: beforeBoardId)].taskItemList,
+        );
+        updateTaskList.addAll(
+          targetList[currentShrinkItemBoardIndex].taskItemList,
+        );
+      }
       // タスクの番号順更新
       await repository.updateTaskOrderNo(taskItemModelList: updateTaskList);
     } catch (e) {

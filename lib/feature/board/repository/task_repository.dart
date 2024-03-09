@@ -153,7 +153,10 @@ class TaskRepository {
       dueDate: Value(dueDate.toIso8601String()),
       endDate: endDate != null
           ? Value(endDate.toIso8601String())
-          : const Value.absent(),
+          : const Value(null),
+      updateAt: Value(
+        DateTime.now().toIso8601String(),
+      ),
     );
   }
 

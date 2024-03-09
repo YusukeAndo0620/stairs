@@ -22,14 +22,14 @@ class TaskEditModal extends ConsumerWidget {
   const TaskEditModal({
     super.key,
     required this.themeColor,
-    required this.taskItem,
+    required this.taskItemId,
     required this.devLangList,
     required this.labelList,
     required this.onChangeTaskItem,
   });
 
   final Color themeColor;
-  final TaskItemModel taskItem;
+  final String taskItemId;
   final List<LabelWithContent> devLangList;
   final List<ColorLabelModel> labelList;
   final Function(TaskItemModel) onChangeTaskItem;
@@ -37,12 +37,12 @@ class TaskEditModal extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     _logger.d('===================================');
-    _logger.d('ビルド開始 {board_title:${taskItem.title}}');
-    final taskItemState =
-        ref.watch(taskItemProvider(taskItemId: taskItem.taskItemId));
+    _logger.d('タスク編集モーダル表示 {taskItemId:$taskItemId}');
+    // TaskListItemですでにインスタンス生成済みのため、その値を参照する
+    final taskItemState = ref.watch(taskItemProvider(taskItemId: taskItemId));
 
     final taskItemNotifier =
-        ref.watch(taskItemProvider(taskItemId: taskItem.taskItemId).notifier);
+        ref.watch(taskItemProvider(taskItemId: taskItemId).notifier);
 
     final theme = LoomTheme.of(context);
     final titleTxtController = TextEditingController(text: taskItemState.title);
@@ -77,6 +77,7 @@ class TaskEditModal extends ConsumerWidget {
                   taskItemNotifier.updateDescription(description: value)),
           // 開発言語
           CardLstItem.dropDown(
+            width: secondaryItemWidth * 0.8,
             label: _kTaskItemDevLangTxt,
             iconData: theme.icons.developers,
             iconColor: themeColor,

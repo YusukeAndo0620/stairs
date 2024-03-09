@@ -25,30 +25,42 @@ final _logger = stairsLogger(name: 'task_list_item');
 class TaskListItem extends ConsumerStatefulWidget {
   const TaskListItem({
     super.key,
+    required this.themeColor,
     required this.boardId,
     required this.taskItemId,
-    required this.themeColor,
     required this.title,
+    required this.description,
+    required this.devLangId,
+    required this.orderNo,
     required this.startDate,
     required this.dueDate,
+    this.doneDate,
     required this.labelList,
     required this.isReadOnly,
     required this.onTap,
+    required this.onOccurError,
     required this.onDragStarted,
     required this.onDragUpdate,
     required this.onDraggableCanceled,
     required this.onDragCompleted,
     required this.onDragEnd,
   });
+  final Color themeColor;
+  // タスク要素 Start
   final String boardId;
   final String taskItemId;
-  final Color themeColor;
   final String title;
+  final String description;
+  final String devLangId;
+  final int orderNo;
   final DateTime startDate;
   final DateTime dueDate;
+  final DateTime? doneDate;
   final List<ColorLabelModel> labelList;
+  // タスク要素 End
   final bool isReadOnly;
   final Function(TaskItemModel) onTap;
+  final VoidCallback onOccurError;
   final VoidCallback onDragStarted;
   final Function(DragUpdateDetails) onDragUpdate;
   final Function(Velocity, Offset) onDraggableCanceled;
@@ -74,9 +86,6 @@ class _TaskListItemState extends ConsumerState<TaskListItem> {
 
   @override
   Widget build(BuildContext context) {
-    _logger.d('===================================');
-    _logger.d('ビルド開始 {task_title:$widget.title}');
-
     final taskItemState = ref.watch(
       TaskItemProvider(
         taskItemId: widget.taskItemId,
@@ -84,23 +93,33 @@ class _TaskListItemState extends ConsumerState<TaskListItem> {
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // ポジション
-      final positionNotifier = ref.watch(boardPositionProvider.notifier);
-      positionNotifier.setTaskItemPosition(
-        taskItemId: widget.taskItemId,
-        key: itemKey,
-      );
-      if (taskItemState.title.isEmpty) {
-        final taskItemNotifier = ref.watch(TaskItemProvider(
+      try {
+        // ポジション
+        final positionNotifier = ref.watch(boardPositionProvider.notifier);
+        positionNotifier.setTaskItemPosition(
           taskItemId: widget.taskItemId,
-        ).notifier);
-        taskItemNotifier.setItem(
-          boardId: widget.boardId,
-          title: widget.title,
-          startDate: widget.startDate,
-          dueDate: widget.dueDate,
-          labelList: widget.labelList,
+          key: itemKey,
         );
+        if (taskItemState.title.isEmpty) {
+          final taskItemNotifier = ref.watch(TaskItemProvider(
+            taskItemId: widget.taskItemId,
+          ).notifier);
+          taskItemNotifier.setItem(
+            boardId: widget.boardId,
+            title: widget.title,
+            description: widget.description,
+            devLangId: widget.devLangId,
+            orderNo: widget.orderNo,
+            startDate: widget.startDate,
+            dueDate: widget.dueDate,
+            doneDate: widget.doneDate,
+            labelList: widget.labelList,
+          );
+        }
+      } on Exception catch (exception) {
+        _logger.e(exception);
+        // ボード一覧際取得
+        widget.onOccurError();
       }
     });
 
@@ -123,6 +142,7 @@ class _TaskListItemState extends ConsumerState<TaskListItem> {
           taskTitleWidth: taskTitleWidth,
           themeColor: widget.themeColor,
           dueDate: taskItemState.dueDate,
+          doneDate: taskItemState.doneDate,
           labelList: taskItemState.labelList,
           labelListController: labelListController,
         ).testSelector('task_list_item_drag_item'),
@@ -146,6 +166,7 @@ class _TaskListItemState extends ConsumerState<TaskListItem> {
                 title: taskItemState.title,
                 taskTitleWidth: taskTitleWidth,
                 dueDate: taskItemState.dueDate,
+                doneDate: taskItemState.doneDate,
               ),
               const SizedBox(
                 height: _kTitleAndLabelSpace,
@@ -172,6 +193,7 @@ class _DraggingListItem extends StatelessWidget {
     required this.taskTitleWidth,
     required this.themeColor,
     required this.dueDate,
+    this.doneDate,
     required this.labelList,
     required this.labelListController,
   });
@@ -179,6 +201,7 @@ class _DraggingListItem extends StatelessWidget {
   final String title;
   final double taskTitleWidth;
   final DateTime dueDate;
+  final DateTime? doneDate;
   final Color themeColor;
   final List<ColorLabelModel> labelList;
   final ScrollController labelListController;
@@ -214,6 +237,7 @@ class _DraggingListItem extends StatelessWidget {
                   title: title,
                   taskTitleWidth: taskTitleWidth,
                   dueDate: dueDate,
+                  doneDate: doneDate,
                 ),
               ],
             ),
@@ -240,11 +264,13 @@ class _TaskItemHeader extends StatelessWidget {
     required this.title,
     required this.taskTitleWidth,
     required this.dueDate,
+    this.doneDate,
   });
 
   final String title;
   final double taskTitleWidth;
   final DateTime dueDate;
+  final DateTime? doneDate;
 
   @override
   Widget build(BuildContext context) {
@@ -265,6 +291,7 @@ class _TaskItemHeader extends StatelessWidget {
         ),
         _DueDateLabel(
           dueDate: dueDate,
+          doneDate: doneDate,
         ),
       ],
     );
@@ -323,16 +350,19 @@ class _LabelArea extends StatelessWidget {
 class _DueDateLabel extends StatelessWidget {
   const _DueDateLabel({
     required this.dueDate,
+    this.doneDate,
   });
 
   final DateTime dueDate;
+  final DateTime? doneDate;
 
   @override
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
-    final color = dueDate.difference(DateTime.now()).inDays <= 0
-        ? theme.colorDangerBgDefault
-        : theme.colorFgDefault;
+    final color =
+        doneDate == null && dueDate.difference(DateTime.now()).inDays <= 0
+            ? theme.colorDangerBgDefault
+            : theme.colorFgDefault;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [

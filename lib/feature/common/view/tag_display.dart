@@ -8,7 +8,7 @@ const _kTagListEmptyTxt = 'ラベルが登録されていません。\nラベル
 const _kColorTxt = '色';
 
 const _kSpaceHeight = 120.0;
-const _kColorSelectWidth = 70.0;
+const _kColorSelectWidth = 100.0;
 const _kContentPadding = EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0);
 
 ///タグ（ラベル）入力・追加画面

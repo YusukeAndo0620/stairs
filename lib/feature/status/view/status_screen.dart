@@ -143,8 +143,10 @@ class _StatusScreenState extends ConsumerState<StatusScreen>
       loading: () => ScreenWidget(
         screenId: ScreenId.status,
         appBar: AppBar(),
-        buildMainContents: const Align(
-          child: CircularProgressIndicator(),
+        buildMainContents: Align(
+          child: CircularProgressIndicator(
+            color: theme.colorPrimary,
+          ),
         ),
         onTapFooterIcon: (index) => widget.onTapFooterIcon(index),
       ),

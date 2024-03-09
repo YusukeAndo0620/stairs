@@ -227,6 +227,9 @@ class BoardRepository {
       name: Value(boardModel.title),
       orderNo: Value(boardModel.orderNo),
       isCompleted: Value(boardModel.isCompleted),
+      updateAt: Value(
+        DateTime.now().toIso8601String(),
+      ),
     );
   }
 }

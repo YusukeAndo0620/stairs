@@ -11,6 +11,7 @@ class ProjectScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final projectListState = ref.watch(projectListProvider);
+    final theme = LoomTheme.of(context);
 
     return ScreenWidget(
       screenId: ScreenId.board,
@@ -23,8 +24,10 @@ class ProjectScreen extends ConsumerWidget {
                     projectList: list,
                   );
           },
-          loading: () => const Align(
-            child: CircularProgressIndicator(),
+          loading: () => Align(
+            child: CircularProgressIndicator(
+              color: theme.colorPrimary,
+            ),
           ),
           error: (error, _) => Align(child: Text(error.toString())),
         ),

@@ -70,19 +70,19 @@ class _EventAreaState extends State<EventArea> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              widget.itemList.isEmpty
-                  ? SizedBox(
-                      width: widget.width - _kIconWidth * 2.5,
-                      child: Text(
+              SizedBox(
+                width: widget.width - _kIconWidth * 2.5,
+                child: widget.itemList.isEmpty
+                    ? Text(
                         widget.hintText,
                         style: theme.textStyleFootnote,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
+                      )
+                    : _Content(
+                        itemList: widget.itemList,
                       ),
-                    )
-                  : _Content(
-                      itemList: widget.itemList,
-                    ),
+              ),
               Icon(
                 widget.trailingIconData ?? theme.icons.next,
                 size: _kIconWidth,
@@ -105,16 +105,14 @@ class _Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Wrap(
-        children: [
-          for (final item in itemList)
-            Padding(
-              padding: _kItemPadding,
-              child: item,
-            ),
-        ],
-      ),
+    return Wrap(
+      children: [
+        for (final item in itemList)
+          Padding(
+            padding: _kItemPadding,
+            child: item,
+          ),
+      ],
     );
   }
 }

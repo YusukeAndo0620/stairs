@@ -44,6 +44,7 @@ class BoardCard extends ConsumerStatefulWidget {
     required this.labelList,
     required this.taskItemList,
     required this.onPageChanged,
+    required this.onOccurError,
   });
   final String projectId;
   final String boardId;
@@ -53,7 +54,7 @@ class BoardCard extends ConsumerStatefulWidget {
   final List<ColorLabelModel> labelList;
   final List<TaskItemModel> taskItemList;
   final Function(PageAction) onPageChanged;
-
+  final VoidCallback onOccurError;
   @override
   ConsumerState<BoardCard> createState() => _BoardCardState();
 }
@@ -83,9 +84,6 @@ class _BoardCardState extends ConsumerState<BoardCard> {
 
   @override
   Widget build(BuildContext context) {
-    _logger.d('===================================');
-    _logger.d('ビルド開始 {board_title:${widget.title}}');
-
     final theme = LoomTheme.of(context);
     // 新規タスク
     final taskItemState = ref.watch(taskItemProvider(taskItemId: ''));
@@ -99,7 +97,7 @@ class _BoardCardState extends ConsumerState<BoardCard> {
         positionNotifier.setBoardPosition(
             boardId: widget.boardId, key: boardCardKey);
 
-        // taskItemStateを初期化
+        // 新規タスクのtaskItemStateを初期化
         if (taskItemState.boardId.isEmpty) {
           final taskItemNotifier =
               ref.read(taskItemProvider(taskItemId: '').notifier);
@@ -252,8 +250,12 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                             taskItemId: item.taskItemId,
                             themeColor: widget.themeColor,
                             title: item.title,
+                            description: item.description,
+                            devLangId: item.devLangId,
+                            orderNo: item.orderNo,
                             startDate: item.startDate,
                             dueDate: item.dueDate,
+                            doneDate: item.doneDate,
                             labelList: item.labelList,
                             isReadOnly: _isNewTaskShown,
                             onTap: (taskItem) async {
@@ -264,7 +266,7 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                                 builder: (context) {
                                   return TaskEditModal(
                                     themeColor: widget.themeColor,
-                                    taskItem: item,
+                                    taskItemId: item.taskItemId,
                                     devLangList: widget.devLangList,
                                     labelList: widget.labelList,
                                     onChangeTaskItem: (taskItemVal) {},
@@ -291,6 +293,17 @@ class _BoardCardState extends ConsumerState<BoardCard> {
                                   labelList: taskItemState.labelList,
                                 );
                               }
+                            },
+                            // エラーが発生した場合
+                            onOccurError: () async {
+                              // トーストプロバイダー
+                              final toastMsgNotifier =
+                                  ref.watch(toastMsgProvider.notifier);
+                              await toastMsgNotifier.showToast(
+                                  type: MessageType.error,
+                                  msg: msgList['err001']);
+                              // 再度ボード一覧取得
+                              widget.onOccurError();
                             },
                             onDragStarted: () {
                               _logger.d(

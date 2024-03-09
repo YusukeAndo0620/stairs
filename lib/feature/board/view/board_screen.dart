@@ -126,6 +126,14 @@ class _BoardScreenState extends ConsumerState<BoardScreen> {
                           _movePrevious();
                       }
                     },
+                    onOccurError: () async {
+                      // ボード一覧取得し、stateに設定
+                      // ボード Notifier
+                      final boardNotifier = ref.watch(
+                          boardProvider(projectId: widget.projectId).notifier);
+                      await boardNotifier.setBoardList(
+                          projectId: widget.projectId);
+                    },
                   ),
                 BoardAddingCard(
                   themeColor: widget.themeColor,
@@ -140,8 +148,10 @@ class _BoardScreenState extends ConsumerState<BoardScreen> {
               ],
             );
           },
-          loading: () => const Align(
-            child: CircularProgressIndicator(),
+          loading: () => Align(
+            child: CircularProgressIndicator(
+              color: theme.colorPrimary,
+            ),
           ),
           error: (error, _) => Align(child: Text(error.toString())),
         ),

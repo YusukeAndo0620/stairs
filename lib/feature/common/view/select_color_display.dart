@@ -66,8 +66,10 @@ class SelectColorDisplay extends ConsumerWidget {
       body: Padding(
         padding: _kContentPadding,
         child: selectColorState == null || selectColorNotifier == null
-            ? const Align(
-                child: CircularProgressIndicator(),
+            ? Align(
+                child: CircularProgressIndicator(
+                  color: theme.colorPrimary,
+                ),
               )
             : Column(
                 children: [

@@ -1,7 +1,6 @@
 import 'package:stairs/loom/loom_package.dart';
 
 const _kListItemContentPadding = EdgeInsets.all(8.0);
-const _kLabelWidth = 150.0;
 const _kIconWidth = 20.0;
 const _kLabelIconSpaceWidth = 8.0;
 const _kItemSpace = 16.0;
@@ -105,6 +104,7 @@ class CardLstItem extends StatelessWidget {
 
   CardLstItem.dropDown({
     Key? key,
+    double? width,
     required String label,
     required Color iconColor,
     required IconData iconData,
@@ -120,6 +120,7 @@ class CardLstItem extends StatelessWidget {
           ),
           secondaryItem: _SecondaryItem(
             widget: _DropDown(
+              width: width,
               selectedItemId: selectedItemId,
               itemList: itemList,
               onChange: (id) => onChange(id),
@@ -142,13 +143,11 @@ class CardLstItem extends StatelessWidget {
             iconColor: iconColor,
             iconData: iconData,
           ),
-          secondaryItem: _SecondaryItem(
-            widget: EventArea(
-              width: width,
-              itemList: itemList,
-              hintText: hintText,
-              onTap: onTap,
-            ),
+          secondaryItem: EventArea(
+            width: width,
+            itemList: itemList,
+            hintText: hintText,
+            onTap: onTap,
           ),
         );
 
@@ -225,32 +224,15 @@ class _Header extends StatelessWidget {
   }
 }
 
-// ラベル
-class _Label extends StatelessWidget {
-  const _Label({required this.label});
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = LoomTheme.of(context);
-    return SizedBox(
-      width: _kLabelWidth,
-      child: Text(
-        label,
-        style: theme.textStyleBody,
-        overflow: TextOverflow.ellipsis,
-      ),
-    );
-  }
-}
-
 // ドロップダウン
 class _DropDown extends StatelessWidget {
   const _DropDown({
+    this.width,
     required this.selectedItemId,
     required this.itemList,
     required this.onChange,
   });
+  final double? width;
   final String selectedItemId;
   final List<LabelModel> itemList;
   final Function(String) onChange;
@@ -264,7 +246,7 @@ class _DropDown extends StatelessWidget {
         DropdownMenuItem(
           value: '',
           child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.4,
+            width: width ?? MediaQuery.of(context).size.width * 0.4,
             child: Text(
               _kNoSelectedName,
               style: theme.textStyleBody,
@@ -276,7 +258,7 @@ class _DropDown extends StatelessWidget {
               (item) => DropdownMenuItem(
                 value: item.id,
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.4,
+                  width: width ?? MediaQuery.of(context).size.width * 0.4,
                   child: Text(
                     item.labelName,
                     style: theme.textStyleBody,
@@ -343,9 +325,8 @@ class _SecondaryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-          maxWidth: width ?? MediaQuery.of(context).size.width * 0.5),
+    return SizedBox(
+      width: width ?? MediaQuery.of(context).size.width * 0.5,
       child: widget,
     );
   }
