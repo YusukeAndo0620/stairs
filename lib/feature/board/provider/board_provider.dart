@@ -126,7 +126,6 @@ class Board extends _$Board {
     List<BoardModel> list = [];
     try {
       list = await repository.getBoardList(projectId: projectId);
-      _logger.d('取得データ: $list');
     } catch (e) {
       _logger.e(e);
       // トーストプロバイダー
@@ -436,7 +435,7 @@ class Board extends _$Board {
     _logger.d("DragItem置き換え 開始 {task item title: ${draggingItem.title}}");
 
     try {
-      var targetList = _getCopiedList();
+      List<BoardModel> targetList = _getCopiedList();
       final currentShrinkItemBoardIndex =
           getBoardIndexByTaskId(taskItemId: kShrinkId);
       if (currentShrinkItemBoardIndex == -1) {
@@ -444,6 +443,7 @@ class Board extends _$Board {
         throw Exception();
       }
 
+      // ShrinkItemのタスクリストindexを取得
       final currentShrinkItemTaskItemIndex = getTaskItemIndex(
         boardId: targetList[currentShrinkItemBoardIndex].boardId,
         taskItemId: kShrinkId,
@@ -452,20 +452,28 @@ class Board extends _$Board {
         _logger.e("ShrinkItemのindexが取得できません。");
         throw Exception();
       }
+      // 移動したボード > タスクリストの表示番号を修正し、セット
+      final currentTaskList = _getSortedTaskList(
+          taskList: targetList[currentShrinkItemBoardIndex].taskItemList);
+      // 移動前のボード > タスクリストをセット
+      // ボード内で移動した場合、空のリストをセット
+      final beforeTaskList =
+          getBoardIndex(boardId: beforeBoardId) == currentShrinkItemBoardIndex
+              ? []
+              : _getSortedTaskList(
+                  taskList: targetList[getBoardIndex(boardId: beforeBoardId)]
+                      .taskItemList);
 
       // drag完了時に別ボードカード内にShrinkItemを差しかえる
       // 表示順番号はShrinkItemのOrderNoを設定
-      final orderNo = targetList[currentShrinkItemBoardIndex]
-          .taskItemList[currentShrinkItemTaskItemIndex]
-          .orderNo;
+      final orderNo = currentTaskList[currentShrinkItemTaskItemIndex].orderNo;
       // 完了ボードの場合、終了日を現在時刻で登録。
       // 別ボードの場合、終了日をnullに変更
       final doneDate = targetList[currentShrinkItemBoardIndex].isCompleted
           ? DateTime.now()
           : null;
       // ドラッグしたタスクを差し替え
-      targetList[currentShrinkItemBoardIndex]
-          .taskItemList[currentShrinkItemTaskItemIndex] = TaskItemModel(
+      currentTaskList[currentShrinkItemTaskItemIndex] = TaskItemModel(
         boardId: targetList[currentShrinkItemBoardIndex].boardId,
         taskItemId: draggingItem.taskItemId,
         title: draggingItem.title,
@@ -486,21 +494,11 @@ class Board extends _$Board {
       //API通信用 Repository
       final repository = ref.read(taskRepositoryProvider);
       // ドラッグ前とドラッグ後のボードのタスクリスト
-      final List<TaskItemModel> updateTaskList = [];
-      // 同じボード内で移動されていた場合
-      if (getBoardIndex(boardId: beforeBoardId) ==
-          currentShrinkItemBoardIndex) {
-        updateTaskList.addAll(
-          targetList[currentShrinkItemBoardIndex].taskItemList,
-        );
-      } else {
-        updateTaskList.addAll(
-          targetList[getBoardIndex(boardId: beforeBoardId)].taskItemList,
-        );
-        updateTaskList.addAll(
-          targetList[currentShrinkItemBoardIndex].taskItemList,
-        );
-      }
+      final List<TaskItemModel> updateTaskList = [
+        ...currentTaskList,
+        ...beforeTaskList
+      ];
+
       // タスクの番号順更新
       await repository.updateTaskOrderNo(taskItemModelList: updateTaskList);
     } catch (e) {
@@ -527,7 +525,7 @@ class Board extends _$Board {
   }
 
   // 表示順を修正並び替えしたリストを取得。
-  List<TaskItemModel> getSortedTaskList(
+  List<TaskItemModel> _getSortedTaskList(
       {required List<TaskItemModel> taskList}) {
     final List<TaskItemModel> targetList = [];
     final list = [...taskList];
