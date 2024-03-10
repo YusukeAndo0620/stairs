@@ -10,6 +10,7 @@ class TProject extends Table {
   IntColumn get colorId => integer().references(MColor, #id)();
   TextColumn get industry => text().withLength(min: 0, max: 100)();
   IntColumn get displayCount => integer()();
+  IntColumn get tableCount => integer()();
   TextColumn get startDate =>
       text().clientDefault(() => DateTime.now().toIso8601String())();
   TextColumn get endDate =>

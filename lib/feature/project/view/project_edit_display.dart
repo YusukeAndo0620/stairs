@@ -24,6 +24,15 @@ const _kContentHintTxt = '業務内容';
 const _kContentMaxLength = 500;
 const _kContentMaxLines = 8;
 
+const _kDevSizeTxt = '開発人数';
+const _kDevSizeHintTxt = '開発人数を設定';
+
+const _kDisplayCountTxt = '画面数';
+const _kDisplayCountHintTxt = '画面数を設定';
+
+const _kTableCountTxt = 'テーブル数';
+const _kTableCountHintTxt = 'テーブル数を設定';
+
 const _kOsTxt = 'OS';
 const _kOsHintTxt = '使用OS・機種';
 const _kOsInputHintTxt = 'OSを入力';
@@ -46,9 +55,6 @@ const _kToolListEmptyTxt = '開発ツールが登録されていません。\n�
 
 const _kProgressTxt = '作業工程';
 const _kProgressHintTxt = '携わった作業工程を設定';
-
-const _kDevSizeTxt = '開発人数';
-const _kDevSizeHintTxt = '開発人数を設定';
 
 const _kBoardTitleTxt = 'ボード';
 const _kLabelTxt = 'ラベル';
@@ -89,7 +95,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
   @override
   Widget build(BuildContext context) {
     _logger.d('===================================');
-    _logger.d('プロジェクト編集表示 {projectId:${widget.projectId}');
+    _logger.d('プロジェクト編集モーダル 表示 {projectId:${widget.projectId}');
     final theme = LoomTheme.of(context);
     //プロジェクト詳細
     final projectDetailState =
@@ -241,6 +247,47 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                               addUpdateParam(param: ProjectUpdateParam.project);
                               projectDetailNotifier.changeDevSize(
                                 devSize: int.parse(devSize),
+                              );
+                            }
+                          },
+                        ),
+                        // 画面数
+                        CardLstItem.input(
+                          width: secondaryItemWidth,
+                          label: _kDisplayCountTxt,
+                          iconColor: theme.colorPrimary,
+                          iconData: Icons.desktop_mac_outlined,
+                          inputType: TextInputType.number,
+                          inputValue: detail.displayCount == 0
+                              ? ''
+                              : detail.displayCount.toString(),
+                          hintText: _kDisplayCountHintTxt,
+                          onSubmitted: (displayCount) {
+                            if (detail.displayCount.toString() !=
+                                displayCount) {
+                              addUpdateParam(param: ProjectUpdateParam.project);
+                              projectDetailNotifier.changeDisplayCount(
+                                displayCount: int.tryParse(displayCount) ?? 0,
+                              );
+                            }
+                          },
+                        ),
+                        // テーブル数
+                        CardLstItem.input(
+                          width: secondaryItemWidth,
+                          label: _kTableCountTxt,
+                          iconColor: theme.colorPrimary,
+                          iconData: Icons.table_rows_outlined,
+                          inputType: TextInputType.number,
+                          inputValue: detail.tableCount == 0
+                              ? ''
+                              : detail.tableCount.toString(),
+                          hintText: _kTableCountHintTxt,
+                          onSubmitted: (tableCount) {
+                            if (detail.tableCount.toString() != tableCount) {
+                              addUpdateParam(param: ProjectUpdateParam.project);
+                              projectDetailNotifier.changeTableCount(
+                                tableCount: int.tryParse(tableCount) ?? 0,
                               );
                             }
                           },

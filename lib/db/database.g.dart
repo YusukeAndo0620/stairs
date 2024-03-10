@@ -1250,6 +1250,12 @@ class $TProjectTable extends TProject
   late final GeneratedColumn<int> displayCount = GeneratedColumn<int>(
       'display_count', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _tableCountMeta =
+      const VerificationMeta('tableCount');
+  @override
+  late final GeneratedColumn<int> tableCount = GeneratedColumn<int>(
+      'table_count', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _startDateMeta =
       const VerificationMeta('startDate');
   @override
@@ -1315,6 +1321,7 @@ class $TProjectTable extends TProject
         colorId,
         industry,
         displayCount,
+        tableCount,
         startDate,
         endDate,
         description,
@@ -1364,6 +1371,14 @@ class $TProjectTable extends TProject
               data['display_count']!, _displayCountMeta));
     } else if (isInserting) {
       context.missing(_displayCountMeta);
+    }
+    if (data.containsKey('table_count')) {
+      context.handle(
+          _tableCountMeta,
+          tableCount.isAcceptableOrUnknown(
+              data['table_count']!, _tableCountMeta));
+    } else if (isInserting) {
+      context.missing(_tableCountMeta);
     }
     if (data.containsKey('start_date')) {
       context.handle(_startDateMeta,
@@ -1420,6 +1435,8 @@ class $TProjectTable extends TProject
           .read(DriftSqlType.string, data['${effectivePrefix}industry'])!,
       displayCount: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}display_count'])!,
+      tableCount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}table_count'])!,
       startDate: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}start_date'])!,
       endDate: attachedDatabase.typeMapping
@@ -1449,6 +1466,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
   final int colorId;
   final String industry;
   final int displayCount;
+  final int tableCount;
   final String startDate;
   final String endDate;
   final String description;
@@ -1462,6 +1480,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       required this.colorId,
       required this.industry,
       required this.displayCount,
+      required this.tableCount,
       required this.startDate,
       required this.endDate,
       required this.description,
@@ -1477,6 +1496,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
     map['color_id'] = Variable<int>(colorId);
     map['industry'] = Variable<String>(industry);
     map['display_count'] = Variable<int>(displayCount);
+    map['table_count'] = Variable<int>(tableCount);
     map['start_date'] = Variable<String>(startDate);
     map['end_date'] = Variable<String>(endDate);
     map['description'] = Variable<String>(description);
@@ -1494,6 +1514,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       colorId: Value(colorId),
       industry: Value(industry),
       displayCount: Value(displayCount),
+      tableCount: Value(tableCount),
       startDate: Value(startDate),
       endDate: Value(endDate),
       description: Value(description),
@@ -1513,6 +1534,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       colorId: serializer.fromJson<int>(json['colorId']),
       industry: serializer.fromJson<String>(json['industry']),
       displayCount: serializer.fromJson<int>(json['displayCount']),
+      tableCount: serializer.fromJson<int>(json['tableCount']),
       startDate: serializer.fromJson<String>(json['startDate']),
       endDate: serializer.fromJson<String>(json['endDate']),
       description: serializer.fromJson<String>(json['description']),
@@ -1531,6 +1553,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       'colorId': serializer.toJson<int>(colorId),
       'industry': serializer.toJson<String>(industry),
       'displayCount': serializer.toJson<int>(displayCount),
+      'tableCount': serializer.toJson<int>(tableCount),
       'startDate': serializer.toJson<String>(startDate),
       'endDate': serializer.toJson<String>(endDate),
       'description': serializer.toJson<String>(description),
@@ -1547,6 +1570,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
           int? colorId,
           String? industry,
           int? displayCount,
+          int? tableCount,
           String? startDate,
           String? endDate,
           String? description,
@@ -1560,6 +1584,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
         colorId: colorId ?? this.colorId,
         industry: industry ?? this.industry,
         displayCount: displayCount ?? this.displayCount,
+        tableCount: tableCount ?? this.tableCount,
         startDate: startDate ?? this.startDate,
         endDate: endDate ?? this.endDate,
         description: description ?? this.description,
@@ -1576,6 +1601,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
           ..write('colorId: $colorId, ')
           ..write('industry: $industry, ')
           ..write('displayCount: $displayCount, ')
+          ..write('tableCount: $tableCount, ')
           ..write('startDate: $startDate, ')
           ..write('endDate: $endDate, ')
           ..write('description: $description, ')
@@ -1594,6 +1620,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       colorId,
       industry,
       displayCount,
+      tableCount,
       startDate,
       endDate,
       description,
@@ -1610,6 +1637,7 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
           other.colorId == this.colorId &&
           other.industry == this.industry &&
           other.displayCount == this.displayCount &&
+          other.tableCount == this.tableCount &&
           other.startDate == this.startDate &&
           other.endDate == this.endDate &&
           other.description == this.description &&
@@ -1625,6 +1653,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
   final Value<int> colorId;
   final Value<String> industry;
   final Value<int> displayCount;
+  final Value<int> tableCount;
   final Value<String> startDate;
   final Value<String> endDate;
   final Value<String> description;
@@ -1639,6 +1668,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
     this.colorId = const Value.absent(),
     this.industry = const Value.absent(),
     this.displayCount = const Value.absent(),
+    this.tableCount = const Value.absent(),
     this.startDate = const Value.absent(),
     this.endDate = const Value.absent(),
     this.description = const Value.absent(),
@@ -1654,6 +1684,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
     required int colorId,
     required String industry,
     required int displayCount,
+    required int tableCount,
     this.startDate = const Value.absent(),
     this.endDate = const Value.absent(),
     required String description,
@@ -1667,6 +1698,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
         colorId = Value(colorId),
         industry = Value(industry),
         displayCount = Value(displayCount),
+        tableCount = Value(tableCount),
         description = Value(description),
         devSize = Value(devSize),
         accountId = Value(accountId);
@@ -1676,6 +1708,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
     Expression<int>? colorId,
     Expression<String>? industry,
     Expression<int>? displayCount,
+    Expression<int>? tableCount,
     Expression<String>? startDate,
     Expression<String>? endDate,
     Expression<String>? description,
@@ -1691,6 +1724,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
       if (colorId != null) 'color_id': colorId,
       if (industry != null) 'industry': industry,
       if (displayCount != null) 'display_count': displayCount,
+      if (tableCount != null) 'table_count': tableCount,
       if (startDate != null) 'start_date': startDate,
       if (endDate != null) 'end_date': endDate,
       if (description != null) 'description': description,
@@ -1708,6 +1742,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
       Value<int>? colorId,
       Value<String>? industry,
       Value<int>? displayCount,
+      Value<int>? tableCount,
       Value<String>? startDate,
       Value<String>? endDate,
       Value<String>? description,
@@ -1722,6 +1757,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
       colorId: colorId ?? this.colorId,
       industry: industry ?? this.industry,
       displayCount: displayCount ?? this.displayCount,
+      tableCount: tableCount ?? this.tableCount,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       description: description ?? this.description,
@@ -1750,6 +1786,9 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
     }
     if (displayCount.present) {
       map['display_count'] = Variable<int>(displayCount.value);
+    }
+    if (tableCount.present) {
+      map['table_count'] = Variable<int>(tableCount.value);
     }
     if (startDate.present) {
       map['start_date'] = Variable<String>(startDate.value);
@@ -1786,6 +1825,7 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
           ..write('colorId: $colorId, ')
           ..write('industry: $industry, ')
           ..write('displayCount: $displayCount, ')
+          ..write('tableCount: $tableCount, ')
           ..write('startDate: $startDate, ')
           ..write('endDate: $endDate, ')
           ..write('description: $description, ')

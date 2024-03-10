@@ -7,6 +7,7 @@ class ProjectDetailModel {
     required this.themeColorModel,
     required this.industry,
     this.displayCount = 0,
+    this.tableCount = 0,
     required this.startDate,
     required this.endDate,
     this.description = '',
@@ -33,6 +34,9 @@ class ProjectDetailModel {
 
   /// 画面数
   final int displayCount;
+
+  /// 画面数
+  final int tableCount;
 
   /// 開始日
   final DateTime startDate;
@@ -70,6 +74,7 @@ class ProjectDetailModel {
     ColorModel? themeColorModel,
     String? industry,
     int? displayCount,
+    int? tableCount,
     DateTime? startDate,
     DateTime? endDate,
     String? description,
@@ -87,6 +92,7 @@ class ProjectDetailModel {
         themeColorModel: themeColorModel ?? this.themeColorModel,
         industry: industry ?? this.industry,
         displayCount: displayCount ?? this.displayCount,
+        tableCount: tableCount ?? this.tableCount,
         startDate: startDate ?? this.startDate,
         endDate: endDate ?? this.endDate,
         description: description ?? this.description,

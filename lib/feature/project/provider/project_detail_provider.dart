@@ -1,3 +1,4 @@
+import 'package:stairs/db/constant/color_list.dart';
 import 'package:stairs/db/provider/database_provider.dart';
 import 'package:stairs/feature/common/provider/account_provider.dart';
 import 'package:stairs/feature/common/provider/view/toast_msg_provider.dart';
@@ -46,17 +47,18 @@ class ProjectDetail extends _$ProjectDetail {
     _initialProjectDetailModel = ProjectDetailModel(
       projectId: uuid.v4(),
       projectName: '',
-      themeColorModel:
-          ColorModel(id: 1, color: const Color.fromARGB(255, 255, 31, 31)),
+      themeColorModel: ColorModel(
+          id: 1, color: getColorFromCode(code: colorList[0].colorCodeId.value)),
       industry: '',
-      displayCount: 50,
+      displayCount: 0,
+      tableCount: 0,
       startDate: DateTime(now.year, now.month, 1),
       endDate:
           DateTime(now.year, now.month + 7, 1).add(const Duration(days: -1)),
       devLanguageList: const [],
       toolList: [],
       devProgressList: [],
-      devSize: 100,
+      devSize: 50,
       tagList: tagList!,
     );
   }
@@ -192,6 +194,19 @@ class ProjectDetail extends _$ProjectDetail {
       (data) {
         state = const AsyncLoading();
         return data = data!.copyWith(displayCount: displayCount);
+      },
+      onError: (error, stack) {
+        state = AsyncError(error, stack);
+        throw Exception(error);
+      },
+    );
+  }
+
+  void changeTableCount({required int tableCount}) {
+    update(
+      (data) {
+        state = const AsyncLoading();
+        return data = data!.copyWith(tableCount: tableCount);
       },
       onError: (error, stack) {
         state = AsyncError(error, stack);

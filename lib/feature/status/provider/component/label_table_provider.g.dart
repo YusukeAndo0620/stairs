@@ -6,7 +6,7 @@ part of 'label_table_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$labelTableHash() => r'b7dea7edb96dfcbafc9f73dba8f60d6ce9efcba9';
+String _$labelTableHash() => r'26d9e90ffdc9f79d1636f98320c27ffa42bf35cb';
 
 /// Copied from Dart SDK
 class _SystemHash {

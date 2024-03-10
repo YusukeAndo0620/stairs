@@ -432,7 +432,7 @@ class Board extends _$Board {
     required String beforeBoardId,
     required TaskItemModel draggingItem,
   }) async {
-    _logger.d("DragItem置き換え 開始 {task item title: ${draggingItem.title}}");
+    _logger.d("DragItem置き換え 開始 {task title: ${draggingItem.title}}");
 
     try {
       List<BoardModel> targetList = _getCopiedList();
