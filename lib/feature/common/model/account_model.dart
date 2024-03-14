@@ -1,14 +1,4 @@
-enum PlanType {
-  free("0"),
-  standard("1");
-
-  final String planValue;
-  const PlanType(this.planValue);
-}
-
-// 値からPlanTypeを取得
-PlanType getPlanType(String value) =>
-    PlanType.values.firstWhere((e) => e.planValue == value);
+import 'package:stairs/loom/loom_package.dart';
 
 class AccountModel {
   AccountModel({

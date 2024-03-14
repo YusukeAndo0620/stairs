@@ -48,6 +48,11 @@ export 'view/card_box.dart';
 export 'view/label_tip.dart';
 export 'view/event_area.dart';
 
+// enum
+export 'enum/plan_type.dart';
+export 'enum/sex_type.dart';
+export 'enum/work_type.dart';
+
 // common provider
 export 'provider/modal/select_item_provider.dart';
 export 'provider/view/tag_provider.dart';

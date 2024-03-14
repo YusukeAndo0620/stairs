@@ -3,6 +3,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:stairs/db/constant/country_code_list.dart';
 import 'package:stairs/db/dao/t_board_dao.dart';
 import 'package:stairs/db/dao/t_db_dao.dart';
 import 'package:stairs/db/dao/t_dev_lang_dao.dart';
@@ -35,6 +36,7 @@ final _logger = stairsLogger(name: 'database');
   tables: [
     MColor,
     MAccount,
+    MCountryCode,
     MDevProgressList,
     TDevLanguage,
     TDevLanguageRel,
@@ -49,6 +51,8 @@ final _logger = stairsLogger(name: 'database');
     TTask,
     TTaskTag,
     TTaskDev,
+    TResumeSkill,
+    TResumeProject,
   ],
   daos: [
     MAccountDao,
@@ -84,9 +88,22 @@ class StairsDatabase extends _$StairsDatabase {
               await into(mAccount).insert(
                 const MAccountCompanion(
                   accountId: Value('1'),
+                  firstName: Value('安藤'),
+                  lastName: Value('優介'),
+                  isMale: Value(true),
+                  birthDate: Value('1996-06-20 0:00:00'),
                   address: Value('ando08620@gmail.com'),
+                  countryCode: Value(83),
+                  academicBackground: Value('明治大学 理工学部'),
+                  strongTech: Value('Java, Vue.js'),
+                  strongPoint: Value(
+                      '私はxxxxに自信があり、基本設計~保守運用まで一貫した経験があるため、柔軟な対応を得意としております。'),
                 ),
               );
+              // 国コード
+              for (final item in defaultCountryCodeList) {
+                await into(mCountryCode).insert(item);
+              }
               // カラー
               for (final item in colorList) {
                 await into(mColor).insert(item);

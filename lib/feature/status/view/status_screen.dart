@@ -15,7 +15,7 @@ const _kCompletedTitle = "完了";
 
 final _logger = stairsLogger(name: 'status_screen');
 
-///ステータス
+/// ステータス
 class StatusScreen extends ConsumerStatefulWidget {
   const StatusScreen({
     super.key,

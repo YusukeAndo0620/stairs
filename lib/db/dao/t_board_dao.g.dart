@@ -5,6 +5,7 @@ part of 't_board_dao.dart';
 // ignore_for_file: type=lint
 mixin _$TBoardDaoMixin on DatabaseAccessor<StairsDatabase> {
   $MColorTable get mColor => attachedDatabase.mColor;
+  $MCountryCodeTable get mCountryCode => attachedDatabase.mCountryCode;
   $MAccountTable get mAccount => attachedDatabase.mAccount;
   $TProjectTable get tProject => attachedDatabase.tProject;
   $TBoardTable get tBoard => attachedDatabase.tBoard;

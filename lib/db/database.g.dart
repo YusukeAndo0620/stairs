@@ -254,40 +254,44 @@ class MColorCompanion extends UpdateCompanion<MColorData> {
   }
 }
 
-class $MAccountTable extends MAccount
-    with TableInfo<$MAccountTable, MAccountData> {
+class $MCountryCodeTable extends MCountryCode
+    with TableInfo<$MCountryCodeTable, MCountryCodeData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $MAccountTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _accountIdMeta =
-      const VerificationMeta('accountId');
+  $MCountryCodeTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _codeMeta = const VerificationMeta('code');
   @override
-  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
-      'account_id', aliasedName, false,
+  late final GeneratedColumn<int> code = GeneratedColumn<int>(
+      'code', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
       additionalChecks:
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
-  static const VerificationMeta _addressMeta =
-      const VerificationMeta('address');
+  static const VerificationMeta _japaneseNameMeta =
+      const VerificationMeta('japaneseName');
   @override
-  late final GeneratedColumn<String> address = GeneratedColumn<String>(
-      'address', aliasedName, false,
+  late final GeneratedColumn<String> japaneseName = GeneratedColumn<String>(
+      'japanese_name', aliasedName, false,
       additionalChecks:
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
-  static const VerificationMeta _planTypeMeta =
-      const VerificationMeta('planType');
+  static const VerificationMeta _isMajorMeta =
+      const VerificationMeta('isMajor');
   @override
-  late final GeneratedColumn<String> planType = GeneratedColumn<String>(
-      'plan_type', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 1),
-      type: DriftSqlType.string,
+  late final GeneratedColumn<bool> isMajor = GeneratedColumn<bool>(
+      'is_major', aliasedName, false,
+      type: DriftSqlType.bool,
       requiredDuringInsert: false,
-      defaultValue: const Constant('0'));
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_major" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _createAtMeta =
       const VerificationMeta('createAt');
   @override
@@ -306,7 +310,424 @@ class $MAccountTable extends MAccount
       clientDefault: () => DateTime.now().toIso8601String());
   @override
   List<GeneratedColumn> get $columns =>
-      [accountId, address, planType, createAt, updateAt];
+      [code, name, japaneseName, isMajor, createAt, updateAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'm_country_code';
+  @override
+  VerificationContext validateIntegrity(Insertable<MCountryCodeData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('code')) {
+      context.handle(
+          _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('japanese_name')) {
+      context.handle(
+          _japaneseNameMeta,
+          japaneseName.isAcceptableOrUnknown(
+              data['japanese_name']!, _japaneseNameMeta));
+    } else if (isInserting) {
+      context.missing(_japaneseNameMeta);
+    }
+    if (data.containsKey('is_major')) {
+      context.handle(_isMajorMeta,
+          isMajor.isAcceptableOrUnknown(data['is_major']!, _isMajorMeta));
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {code};
+  @override
+  MCountryCodeData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MCountryCodeData(
+      code: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}code'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      japaneseName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}japanese_name'])!,
+      isMajor: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_major'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $MCountryCodeTable createAlias(String alias) {
+    return $MCountryCodeTable(attachedDatabase, alias);
+  }
+}
+
+class MCountryCodeData extends DataClass
+    implements Insertable<MCountryCodeData> {
+  /// 国コード
+  final int code;
+
+  /// 国名
+  final String name;
+
+  /// 国名（日本語）
+  final String japaneseName;
+
+  /// 主要国かどうか
+  final bool isMajor;
+  final String createAt;
+  final String updateAt;
+  const MCountryCodeData(
+      {required this.code,
+      required this.name,
+      required this.japaneseName,
+      required this.isMajor,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['code'] = Variable<int>(code);
+    map['name'] = Variable<String>(name);
+    map['japanese_name'] = Variable<String>(japaneseName);
+    map['is_major'] = Variable<bool>(isMajor);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  MCountryCodeCompanion toCompanion(bool nullToAbsent) {
+    return MCountryCodeCompanion(
+      code: Value(code),
+      name: Value(name),
+      japaneseName: Value(japaneseName),
+      isMajor: Value(isMajor),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory MCountryCodeData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MCountryCodeData(
+      code: serializer.fromJson<int>(json['code']),
+      name: serializer.fromJson<String>(json['name']),
+      japaneseName: serializer.fromJson<String>(json['japaneseName']),
+      isMajor: serializer.fromJson<bool>(json['isMajor']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'code': serializer.toJson<int>(code),
+      'name': serializer.toJson<String>(name),
+      'japaneseName': serializer.toJson<String>(japaneseName),
+      'isMajor': serializer.toJson<bool>(isMajor),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  MCountryCodeData copyWith(
+          {int? code,
+          String? name,
+          String? japaneseName,
+          bool? isMajor,
+          String? createAt,
+          String? updateAt}) =>
+      MCountryCodeData(
+        code: code ?? this.code,
+        name: name ?? this.name,
+        japaneseName: japaneseName ?? this.japaneseName,
+        isMajor: isMajor ?? this.isMajor,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('MCountryCodeData(')
+          ..write('code: $code, ')
+          ..write('name: $name, ')
+          ..write('japaneseName: $japaneseName, ')
+          ..write('isMajor: $isMajor, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(code, name, japaneseName, isMajor, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MCountryCodeData &&
+          other.code == this.code &&
+          other.name == this.name &&
+          other.japaneseName == this.japaneseName &&
+          other.isMajor == this.isMajor &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class MCountryCodeCompanion extends UpdateCompanion<MCountryCodeData> {
+  final Value<int> code;
+  final Value<String> name;
+  final Value<String> japaneseName;
+  final Value<bool> isMajor;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  const MCountryCodeCompanion({
+    this.code = const Value.absent(),
+    this.name = const Value.absent(),
+    this.japaneseName = const Value.absent(),
+    this.isMajor = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  });
+  MCountryCodeCompanion.insert({
+    this.code = const Value.absent(),
+    required String name,
+    required String japaneseName,
+    this.isMajor = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  })  : name = Value(name),
+        japaneseName = Value(japaneseName);
+  static Insertable<MCountryCodeData> custom({
+    Expression<int>? code,
+    Expression<String>? name,
+    Expression<String>? japaneseName,
+    Expression<bool>? isMajor,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+  }) {
+    return RawValuesInsertable({
+      if (code != null) 'code': code,
+      if (name != null) 'name': name,
+      if (japaneseName != null) 'japanese_name': japaneseName,
+      if (isMajor != null) 'is_major': isMajor,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+    });
+  }
+
+  MCountryCodeCompanion copyWith(
+      {Value<int>? code,
+      Value<String>? name,
+      Value<String>? japaneseName,
+      Value<bool>? isMajor,
+      Value<String>? createAt,
+      Value<String>? updateAt}) {
+    return MCountryCodeCompanion(
+      code: code ?? this.code,
+      name: name ?? this.name,
+      japaneseName: japaneseName ?? this.japaneseName,
+      isMajor: isMajor ?? this.isMajor,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (code.present) {
+      map['code'] = Variable<int>(code.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (japaneseName.present) {
+      map['japanese_name'] = Variable<String>(japaneseName.value);
+    }
+    if (isMajor.present) {
+      map['is_major'] = Variable<bool>(isMajor.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MCountryCodeCompanion(')
+          ..write('code: $code, ')
+          ..write('name: $name, ')
+          ..write('japaneseName: $japaneseName, ')
+          ..write('isMajor: $isMajor, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MAccountTable extends MAccount
+    with TableInfo<$MAccountTable, MAccountData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MAccountTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _accountIdMeta =
+      const VerificationMeta('accountId');
+  @override
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+      'account_id', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _firstNameMeta =
+      const VerificationMeta('firstName');
+  @override
+  late final GeneratedColumn<String> firstName = GeneratedColumn<String>(
+      'first_name', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _lastNameMeta =
+      const VerificationMeta('lastName');
+  @override
+  late final GeneratedColumn<String> lastName = GeneratedColumn<String>(
+      'last_name', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _isMaleMeta = const VerificationMeta('isMale');
+  @override
+  late final GeneratedColumn<bool> isMale = GeneratedColumn<bool>(
+      'is_male', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_male" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _birthDateMeta =
+      const VerificationMeta('birthDate');
+  @override
+  late final GeneratedColumn<String> birthDate = GeneratedColumn<String>(
+      'birth_date', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 8),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _addressMeta =
+      const VerificationMeta('address');
+  @override
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+      'address', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _countryCodeMeta =
+      const VerificationMeta('countryCode');
+  @override
+  late final GeneratedColumn<int> countryCode = GeneratedColumn<int>(
+      'country_code', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES m_country_code (code)'),
+      defaultValue: const Constant(83));
+  static const VerificationMeta _academicBackgroundMeta =
+      const VerificationMeta('academicBackground');
+  @override
+  late final GeneratedColumn<String> academicBackground =
+      GeneratedColumn<String>('academic_background', aliasedName, false,
+          additionalChecks: GeneratedColumn.checkTextLength(
+              minTextLength: 0, maxTextLength: 50),
+          type: DriftSqlType.string,
+          requiredDuringInsert: true);
+  static const VerificationMeta _strongTechMeta =
+      const VerificationMeta('strongTech');
+  @override
+  late final GeneratedColumn<String> strongTech = GeneratedColumn<String>(
+      'strong_tech', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _strongPointMeta =
+      const VerificationMeta('strongPoint');
+  @override
+  late final GeneratedColumn<String> strongPoint = GeneratedColumn<String>(
+      'strong_point', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 300),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _planTypeMeta =
+      const VerificationMeta('planType');
+  @override
+  late final GeneratedColumn<int> planType = GeneratedColumn<int>(
+      'plan_type', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns => [
+        accountId,
+        firstName,
+        lastName,
+        isMale,
+        birthDate,
+        address,
+        countryCode,
+        academicBackground,
+        strongTech,
+        strongPoint,
+        planType,
+        createAt,
+        updateAt
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -323,11 +744,63 @@ class $MAccountTable extends MAccount
     } else if (isInserting) {
       context.missing(_accountIdMeta);
     }
+    if (data.containsKey('first_name')) {
+      context.handle(_firstNameMeta,
+          firstName.isAcceptableOrUnknown(data['first_name']!, _firstNameMeta));
+    } else if (isInserting) {
+      context.missing(_firstNameMeta);
+    }
+    if (data.containsKey('last_name')) {
+      context.handle(_lastNameMeta,
+          lastName.isAcceptableOrUnknown(data['last_name']!, _lastNameMeta));
+    } else if (isInserting) {
+      context.missing(_lastNameMeta);
+    }
+    if (data.containsKey('is_male')) {
+      context.handle(_isMaleMeta,
+          isMale.isAcceptableOrUnknown(data['is_male']!, _isMaleMeta));
+    }
+    if (data.containsKey('birth_date')) {
+      context.handle(_birthDateMeta,
+          birthDate.isAcceptableOrUnknown(data['birth_date']!, _birthDateMeta));
+    } else if (isInserting) {
+      context.missing(_birthDateMeta);
+    }
     if (data.containsKey('address')) {
       context.handle(_addressMeta,
           address.isAcceptableOrUnknown(data['address']!, _addressMeta));
     } else if (isInserting) {
       context.missing(_addressMeta);
+    }
+    if (data.containsKey('country_code')) {
+      context.handle(
+          _countryCodeMeta,
+          countryCode.isAcceptableOrUnknown(
+              data['country_code']!, _countryCodeMeta));
+    }
+    if (data.containsKey('academic_background')) {
+      context.handle(
+          _academicBackgroundMeta,
+          academicBackground.isAcceptableOrUnknown(
+              data['academic_background']!, _academicBackgroundMeta));
+    } else if (isInserting) {
+      context.missing(_academicBackgroundMeta);
+    }
+    if (data.containsKey('strong_tech')) {
+      context.handle(
+          _strongTechMeta,
+          strongTech.isAcceptableOrUnknown(
+              data['strong_tech']!, _strongTechMeta));
+    } else if (isInserting) {
+      context.missing(_strongTechMeta);
+    }
+    if (data.containsKey('strong_point')) {
+      context.handle(
+          _strongPointMeta,
+          strongPoint.isAcceptableOrUnknown(
+              data['strong_point']!, _strongPointMeta));
+    } else if (isInserting) {
+      context.missing(_strongPointMeta);
     }
     if (data.containsKey('plan_type')) {
       context.handle(_planTypeMeta,
@@ -352,10 +825,26 @@ class $MAccountTable extends MAccount
     return MAccountData(
       accountId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}account_id'])!,
+      firstName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}first_name'])!,
+      lastName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}last_name'])!,
+      isMale: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_male'])!,
+      birthDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}birth_date'])!,
       address: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}address'])!,
+      countryCode: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}country_code'])!,
+      academicBackground: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}academic_background'])!,
+      strongTech: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}strong_tech'])!,
+      strongPoint: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}strong_point'])!,
       planType: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}plan_type'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}plan_type'])!,
       createAt: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
       updateAt: attachedDatabase.typeMapping
@@ -371,13 +860,49 @@ class $MAccountTable extends MAccount
 
 class MAccountData extends DataClass implements Insertable<MAccountData> {
   final String accountId;
+
+  /// 姓
+  final String firstName;
+
+  /// 名
+  final String lastName;
+
+  /// 男性かどうか
+  final bool isMale;
+
+  /// 生年月日
+  final String birthDate;
+
+  /// メールアドレス
   final String address;
-  final String planType;
+
+  /// 国コード
+  final int countryCode;
+
+  /// 学歴
+  final String academicBackground;
+
+  /// 得意技術
+  final String strongTech;
+
+  /// 自己PR
+  final String strongPoint;
+
+  /// プラン種別
+  final int planType;
   final String createAt;
   final String updateAt;
   const MAccountData(
       {required this.accountId,
+      required this.firstName,
+      required this.lastName,
+      required this.isMale,
+      required this.birthDate,
       required this.address,
+      required this.countryCode,
+      required this.academicBackground,
+      required this.strongTech,
+      required this.strongPoint,
       required this.planType,
       required this.createAt,
       required this.updateAt});
@@ -385,8 +910,16 @@ class MAccountData extends DataClass implements Insertable<MAccountData> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['account_id'] = Variable<String>(accountId);
+    map['first_name'] = Variable<String>(firstName);
+    map['last_name'] = Variable<String>(lastName);
+    map['is_male'] = Variable<bool>(isMale);
+    map['birth_date'] = Variable<String>(birthDate);
     map['address'] = Variable<String>(address);
-    map['plan_type'] = Variable<String>(planType);
+    map['country_code'] = Variable<int>(countryCode);
+    map['academic_background'] = Variable<String>(academicBackground);
+    map['strong_tech'] = Variable<String>(strongTech);
+    map['strong_point'] = Variable<String>(strongPoint);
+    map['plan_type'] = Variable<int>(planType);
     map['create_at'] = Variable<String>(createAt);
     map['update_at'] = Variable<String>(updateAt);
     return map;
@@ -395,7 +928,15 @@ class MAccountData extends DataClass implements Insertable<MAccountData> {
   MAccountCompanion toCompanion(bool nullToAbsent) {
     return MAccountCompanion(
       accountId: Value(accountId),
+      firstName: Value(firstName),
+      lastName: Value(lastName),
+      isMale: Value(isMale),
+      birthDate: Value(birthDate),
       address: Value(address),
+      countryCode: Value(countryCode),
+      academicBackground: Value(academicBackground),
+      strongTech: Value(strongTech),
+      strongPoint: Value(strongPoint),
       planType: Value(planType),
       createAt: Value(createAt),
       updateAt: Value(updateAt),
@@ -407,8 +948,17 @@ class MAccountData extends DataClass implements Insertable<MAccountData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return MAccountData(
       accountId: serializer.fromJson<String>(json['accountId']),
+      firstName: serializer.fromJson<String>(json['firstName']),
+      lastName: serializer.fromJson<String>(json['lastName']),
+      isMale: serializer.fromJson<bool>(json['isMale']),
+      birthDate: serializer.fromJson<String>(json['birthDate']),
       address: serializer.fromJson<String>(json['address']),
-      planType: serializer.fromJson<String>(json['planType']),
+      countryCode: serializer.fromJson<int>(json['countryCode']),
+      academicBackground:
+          serializer.fromJson<String>(json['academicBackground']),
+      strongTech: serializer.fromJson<String>(json['strongTech']),
+      strongPoint: serializer.fromJson<String>(json['strongPoint']),
+      planType: serializer.fromJson<int>(json['planType']),
       createAt: serializer.fromJson<String>(json['createAt']),
       updateAt: serializer.fromJson<String>(json['updateAt']),
     );
@@ -418,8 +968,16 @@ class MAccountData extends DataClass implements Insertable<MAccountData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'accountId': serializer.toJson<String>(accountId),
+      'firstName': serializer.toJson<String>(firstName),
+      'lastName': serializer.toJson<String>(lastName),
+      'isMale': serializer.toJson<bool>(isMale),
+      'birthDate': serializer.toJson<String>(birthDate),
       'address': serializer.toJson<String>(address),
-      'planType': serializer.toJson<String>(planType),
+      'countryCode': serializer.toJson<int>(countryCode),
+      'academicBackground': serializer.toJson<String>(academicBackground),
+      'strongTech': serializer.toJson<String>(strongTech),
+      'strongPoint': serializer.toJson<String>(strongPoint),
+      'planType': serializer.toJson<int>(planType),
       'createAt': serializer.toJson<String>(createAt),
       'updateAt': serializer.toJson<String>(updateAt),
     };
@@ -427,13 +985,29 @@ class MAccountData extends DataClass implements Insertable<MAccountData> {
 
   MAccountData copyWith(
           {String? accountId,
+          String? firstName,
+          String? lastName,
+          bool? isMale,
+          String? birthDate,
           String? address,
-          String? planType,
+          int? countryCode,
+          String? academicBackground,
+          String? strongTech,
+          String? strongPoint,
+          int? planType,
           String? createAt,
           String? updateAt}) =>
       MAccountData(
         accountId: accountId ?? this.accountId,
+        firstName: firstName ?? this.firstName,
+        lastName: lastName ?? this.lastName,
+        isMale: isMale ?? this.isMale,
+        birthDate: birthDate ?? this.birthDate,
         address: address ?? this.address,
+        countryCode: countryCode ?? this.countryCode,
+        academicBackground: academicBackground ?? this.academicBackground,
+        strongTech: strongTech ?? this.strongTech,
+        strongPoint: strongPoint ?? this.strongPoint,
         planType: planType ?? this.planType,
         createAt: createAt ?? this.createAt,
         updateAt: updateAt ?? this.updateAt,
@@ -442,7 +1016,15 @@ class MAccountData extends DataClass implements Insertable<MAccountData> {
   String toString() {
     return (StringBuffer('MAccountData(')
           ..write('accountId: $accountId, ')
+          ..write('firstName: $firstName, ')
+          ..write('lastName: $lastName, ')
+          ..write('isMale: $isMale, ')
+          ..write('birthDate: $birthDate, ')
           ..write('address: $address, ')
+          ..write('countryCode: $countryCode, ')
+          ..write('academicBackground: $academicBackground, ')
+          ..write('strongTech: $strongTech, ')
+          ..write('strongPoint: $strongPoint, ')
           ..write('planType: $planType, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
@@ -451,14 +1033,34 @@ class MAccountData extends DataClass implements Insertable<MAccountData> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(accountId, address, planType, createAt, updateAt);
+  int get hashCode => Object.hash(
+      accountId,
+      firstName,
+      lastName,
+      isMale,
+      birthDate,
+      address,
+      countryCode,
+      academicBackground,
+      strongTech,
+      strongPoint,
+      planType,
+      createAt,
+      updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is MAccountData &&
           other.accountId == this.accountId &&
+          other.firstName == this.firstName &&
+          other.lastName == this.lastName &&
+          other.isMale == this.isMale &&
+          other.birthDate == this.birthDate &&
           other.address == this.address &&
+          other.countryCode == this.countryCode &&
+          other.academicBackground == this.academicBackground &&
+          other.strongTech == this.strongTech &&
+          other.strongPoint == this.strongPoint &&
           other.planType == this.planType &&
           other.createAt == this.createAt &&
           other.updateAt == this.updateAt);
@@ -466,14 +1068,30 @@ class MAccountData extends DataClass implements Insertable<MAccountData> {
 
 class MAccountCompanion extends UpdateCompanion<MAccountData> {
   final Value<String> accountId;
+  final Value<String> firstName;
+  final Value<String> lastName;
+  final Value<bool> isMale;
+  final Value<String> birthDate;
   final Value<String> address;
-  final Value<String> planType;
+  final Value<int> countryCode;
+  final Value<String> academicBackground;
+  final Value<String> strongTech;
+  final Value<String> strongPoint;
+  final Value<int> planType;
   final Value<String> createAt;
   final Value<String> updateAt;
   final Value<int> rowid;
   const MAccountCompanion({
     this.accountId = const Value.absent(),
+    this.firstName = const Value.absent(),
+    this.lastName = const Value.absent(),
+    this.isMale = const Value.absent(),
+    this.birthDate = const Value.absent(),
     this.address = const Value.absent(),
+    this.countryCode = const Value.absent(),
+    this.academicBackground = const Value.absent(),
+    this.strongTech = const Value.absent(),
+    this.strongPoint = const Value.absent(),
     this.planType = const Value.absent(),
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
@@ -481,24 +1099,54 @@ class MAccountCompanion extends UpdateCompanion<MAccountData> {
   });
   MAccountCompanion.insert({
     required String accountId,
+    required String firstName,
+    required String lastName,
+    this.isMale = const Value.absent(),
+    required String birthDate,
     required String address,
+    this.countryCode = const Value.absent(),
+    required String academicBackground,
+    required String strongTech,
+    required String strongPoint,
     this.planType = const Value.absent(),
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : accountId = Value(accountId),
-        address = Value(address);
+        firstName = Value(firstName),
+        lastName = Value(lastName),
+        birthDate = Value(birthDate),
+        address = Value(address),
+        academicBackground = Value(academicBackground),
+        strongTech = Value(strongTech),
+        strongPoint = Value(strongPoint);
   static Insertable<MAccountData> custom({
     Expression<String>? accountId,
+    Expression<String>? firstName,
+    Expression<String>? lastName,
+    Expression<bool>? isMale,
+    Expression<String>? birthDate,
     Expression<String>? address,
-    Expression<String>? planType,
+    Expression<int>? countryCode,
+    Expression<String>? academicBackground,
+    Expression<String>? strongTech,
+    Expression<String>? strongPoint,
+    Expression<int>? planType,
     Expression<String>? createAt,
     Expression<String>? updateAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (accountId != null) 'account_id': accountId,
+      if (firstName != null) 'first_name': firstName,
+      if (lastName != null) 'last_name': lastName,
+      if (isMale != null) 'is_male': isMale,
+      if (birthDate != null) 'birth_date': birthDate,
       if (address != null) 'address': address,
+      if (countryCode != null) 'country_code': countryCode,
+      if (academicBackground != null) 'academic_background': academicBackground,
+      if (strongTech != null) 'strong_tech': strongTech,
+      if (strongPoint != null) 'strong_point': strongPoint,
       if (planType != null) 'plan_type': planType,
       if (createAt != null) 'create_at': createAt,
       if (updateAt != null) 'update_at': updateAt,
@@ -508,14 +1156,30 @@ class MAccountCompanion extends UpdateCompanion<MAccountData> {
 
   MAccountCompanion copyWith(
       {Value<String>? accountId,
+      Value<String>? firstName,
+      Value<String>? lastName,
+      Value<bool>? isMale,
+      Value<String>? birthDate,
       Value<String>? address,
-      Value<String>? planType,
+      Value<int>? countryCode,
+      Value<String>? academicBackground,
+      Value<String>? strongTech,
+      Value<String>? strongPoint,
+      Value<int>? planType,
       Value<String>? createAt,
       Value<String>? updateAt,
       Value<int>? rowid}) {
     return MAccountCompanion(
       accountId: accountId ?? this.accountId,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      isMale: isMale ?? this.isMale,
+      birthDate: birthDate ?? this.birthDate,
       address: address ?? this.address,
+      countryCode: countryCode ?? this.countryCode,
+      academicBackground: academicBackground ?? this.academicBackground,
+      strongTech: strongTech ?? this.strongTech,
+      strongPoint: strongPoint ?? this.strongPoint,
       planType: planType ?? this.planType,
       createAt: createAt ?? this.createAt,
       updateAt: updateAt ?? this.updateAt,
@@ -529,11 +1193,35 @@ class MAccountCompanion extends UpdateCompanion<MAccountData> {
     if (accountId.present) {
       map['account_id'] = Variable<String>(accountId.value);
     }
+    if (firstName.present) {
+      map['first_name'] = Variable<String>(firstName.value);
+    }
+    if (lastName.present) {
+      map['last_name'] = Variable<String>(lastName.value);
+    }
+    if (isMale.present) {
+      map['is_male'] = Variable<bool>(isMale.value);
+    }
+    if (birthDate.present) {
+      map['birth_date'] = Variable<String>(birthDate.value);
+    }
     if (address.present) {
       map['address'] = Variable<String>(address.value);
     }
+    if (countryCode.present) {
+      map['country_code'] = Variable<int>(countryCode.value);
+    }
+    if (academicBackground.present) {
+      map['academic_background'] = Variable<String>(academicBackground.value);
+    }
+    if (strongTech.present) {
+      map['strong_tech'] = Variable<String>(strongTech.value);
+    }
+    if (strongPoint.present) {
+      map['strong_point'] = Variable<String>(strongPoint.value);
+    }
     if (planType.present) {
-      map['plan_type'] = Variable<String>(planType.value);
+      map['plan_type'] = Variable<int>(planType.value);
     }
     if (createAt.present) {
       map['create_at'] = Variable<String>(createAt.value);
@@ -551,7 +1239,15 @@ class MAccountCompanion extends UpdateCompanion<MAccountData> {
   String toString() {
     return (StringBuffer('MAccountCompanion(')
           ..write('accountId: $accountId, ')
+          ..write('firstName: $firstName, ')
+          ..write('lastName: $lastName, ')
+          ..write('isMale: $isMale, ')
+          ..write('birthDate: $birthDate, ')
           ..write('address: $address, ')
+          ..write('countryCode: $countryCode, ')
+          ..write('academicBackground: $academicBackground, ')
+          ..write('strongTech: $strongTech, ')
+          ..write('strongPoint: $strongPoint, ')
           ..write('planType: $planType, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt, ')
@@ -5558,9 +6254,992 @@ class TTaskDevCompanion extends UpdateCompanion<TTaskDevData> {
   }
 }
 
+class $TResumeSkillTable extends TResumeSkill
+    with TableInfo<$TResumeSkillTable, TResumeSkillData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TResumeSkillTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _columnCodeMeta =
+      const VerificationMeta('columnCode');
+  @override
+  late final GeneratedColumn<int> columnCode = GeneratedColumn<int>(
+      'column_code', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _orderNoMeta =
+      const VerificationMeta('orderNo');
+  @override
+  late final GeneratedColumn<int> orderNo = GeneratedColumn<int>(
+      'order_no', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _contentMeta =
+      const VerificationMeta('content');
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+      'content', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _editContentMeta =
+      const VerificationMeta('editContent');
+  @override
+  late final GeneratedColumn<String> editContent = GeneratedColumn<String>(
+      'edit_content', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
+  static const VerificationMeta _subContentMeta =
+      const VerificationMeta('subContent');
+  @override
+  late final GeneratedColumn<String> subContent = GeneratedColumn<String>(
+      'sub_content', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 30),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _editSubContentMeta =
+      const VerificationMeta('editSubContent');
+  @override
+  late final GeneratedColumn<String> editSubContent = GeneratedColumn<String>(
+      'edit_sub_content', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 30),
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
+  static const VerificationMeta _accountIdMeta =
+      const VerificationMeta('accountId');
+  @override
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+      'account_id', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES m_account (account_id)'));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        columnCode,
+        orderNo,
+        content,
+        editContent,
+        subContent,
+        editSubContent,
+        accountId,
+        createAt,
+        updateAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 't_resume_skill';
+  @override
+  VerificationContext validateIntegrity(Insertable<TResumeSkillData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('column_code')) {
+      context.handle(
+          _columnCodeMeta,
+          columnCode.isAcceptableOrUnknown(
+              data['column_code']!, _columnCodeMeta));
+    } else if (isInserting) {
+      context.missing(_columnCodeMeta);
+    }
+    if (data.containsKey('order_no')) {
+      context.handle(_orderNoMeta,
+          orderNo.isAcceptableOrUnknown(data['order_no']!, _orderNoMeta));
+    } else if (isInserting) {
+      context.missing(_orderNoMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(_contentMeta,
+          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('edit_content')) {
+      context.handle(
+          _editContentMeta,
+          editContent.isAcceptableOrUnknown(
+              data['edit_content']!, _editContentMeta));
+    }
+    if (data.containsKey('sub_content')) {
+      context.handle(
+          _subContentMeta,
+          subContent.isAcceptableOrUnknown(
+              data['sub_content']!, _subContentMeta));
+    } else if (isInserting) {
+      context.missing(_subContentMeta);
+    }
+    if (data.containsKey('edit_sub_content')) {
+      context.handle(
+          _editSubContentMeta,
+          editSubContent.isAcceptableOrUnknown(
+              data['edit_sub_content']!, _editSubContentMeta));
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(_accountIdMeta,
+          accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TResumeSkillData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TResumeSkillData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      columnCode: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}column_code'])!,
+      orderNo: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}order_no'])!,
+      content: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
+      editContent: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}edit_content'])!,
+      subContent: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}sub_content'])!,
+      editSubContent: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}edit_sub_content'])!,
+      accountId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}account_id'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $TResumeSkillTable createAlias(String alias) {
+    return $TResumeSkillTable(attachedDatabase, alias);
+  }
+}
+
+class TResumeSkillData extends DataClass
+    implements Insertable<TResumeSkillData> {
+  /// id
+  final int id;
+
+  /// カラムのコード番号
+  final int columnCode;
+
+  /// 表示順
+  final int orderNo;
+
+  /// 内容
+  final String content;
+
+  /// 編集内容
+  final String editContent;
+
+  /// サブ内容 年数や取得年次など
+  final String subContent;
+
+  /// 編集サブ内容
+  final String editSubContent;
+  final String accountId;
+  final String createAt;
+  final String updateAt;
+  const TResumeSkillData(
+      {required this.id,
+      required this.columnCode,
+      required this.orderNo,
+      required this.content,
+      required this.editContent,
+      required this.subContent,
+      required this.editSubContent,
+      required this.accountId,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['column_code'] = Variable<int>(columnCode);
+    map['order_no'] = Variable<int>(orderNo);
+    map['content'] = Variable<String>(content);
+    map['edit_content'] = Variable<String>(editContent);
+    map['sub_content'] = Variable<String>(subContent);
+    map['edit_sub_content'] = Variable<String>(editSubContent);
+    map['account_id'] = Variable<String>(accountId);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  TResumeSkillCompanion toCompanion(bool nullToAbsent) {
+    return TResumeSkillCompanion(
+      id: Value(id),
+      columnCode: Value(columnCode),
+      orderNo: Value(orderNo),
+      content: Value(content),
+      editContent: Value(editContent),
+      subContent: Value(subContent),
+      editSubContent: Value(editSubContent),
+      accountId: Value(accountId),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory TResumeSkillData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TResumeSkillData(
+      id: serializer.fromJson<int>(json['id']),
+      columnCode: serializer.fromJson<int>(json['columnCode']),
+      orderNo: serializer.fromJson<int>(json['orderNo']),
+      content: serializer.fromJson<String>(json['content']),
+      editContent: serializer.fromJson<String>(json['editContent']),
+      subContent: serializer.fromJson<String>(json['subContent']),
+      editSubContent: serializer.fromJson<String>(json['editSubContent']),
+      accountId: serializer.fromJson<String>(json['accountId']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'columnCode': serializer.toJson<int>(columnCode),
+      'orderNo': serializer.toJson<int>(orderNo),
+      'content': serializer.toJson<String>(content),
+      'editContent': serializer.toJson<String>(editContent),
+      'subContent': serializer.toJson<String>(subContent),
+      'editSubContent': serializer.toJson<String>(editSubContent),
+      'accountId': serializer.toJson<String>(accountId),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  TResumeSkillData copyWith(
+          {int? id,
+          int? columnCode,
+          int? orderNo,
+          String? content,
+          String? editContent,
+          String? subContent,
+          String? editSubContent,
+          String? accountId,
+          String? createAt,
+          String? updateAt}) =>
+      TResumeSkillData(
+        id: id ?? this.id,
+        columnCode: columnCode ?? this.columnCode,
+        orderNo: orderNo ?? this.orderNo,
+        content: content ?? this.content,
+        editContent: editContent ?? this.editContent,
+        subContent: subContent ?? this.subContent,
+        editSubContent: editSubContent ?? this.editSubContent,
+        accountId: accountId ?? this.accountId,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TResumeSkillData(')
+          ..write('id: $id, ')
+          ..write('columnCode: $columnCode, ')
+          ..write('orderNo: $orderNo, ')
+          ..write('content: $content, ')
+          ..write('editContent: $editContent, ')
+          ..write('subContent: $subContent, ')
+          ..write('editSubContent: $editSubContent, ')
+          ..write('accountId: $accountId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, columnCode, orderNo, content, editContent,
+      subContent, editSubContent, accountId, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TResumeSkillData &&
+          other.id == this.id &&
+          other.columnCode == this.columnCode &&
+          other.orderNo == this.orderNo &&
+          other.content == this.content &&
+          other.editContent == this.editContent &&
+          other.subContent == this.subContent &&
+          other.editSubContent == this.editSubContent &&
+          other.accountId == this.accountId &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class TResumeSkillCompanion extends UpdateCompanion<TResumeSkillData> {
+  final Value<int> id;
+  final Value<int> columnCode;
+  final Value<int> orderNo;
+  final Value<String> content;
+  final Value<String> editContent;
+  final Value<String> subContent;
+  final Value<String> editSubContent;
+  final Value<String> accountId;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  const TResumeSkillCompanion({
+    this.id = const Value.absent(),
+    this.columnCode = const Value.absent(),
+    this.orderNo = const Value.absent(),
+    this.content = const Value.absent(),
+    this.editContent = const Value.absent(),
+    this.subContent = const Value.absent(),
+    this.editSubContent = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  });
+  TResumeSkillCompanion.insert({
+    this.id = const Value.absent(),
+    required int columnCode,
+    required int orderNo,
+    required String content,
+    this.editContent = const Value.absent(),
+    required String subContent,
+    this.editSubContent = const Value.absent(),
+    required String accountId,
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  })  : columnCode = Value(columnCode),
+        orderNo = Value(orderNo),
+        content = Value(content),
+        subContent = Value(subContent),
+        accountId = Value(accountId);
+  static Insertable<TResumeSkillData> custom({
+    Expression<int>? id,
+    Expression<int>? columnCode,
+    Expression<int>? orderNo,
+    Expression<String>? content,
+    Expression<String>? editContent,
+    Expression<String>? subContent,
+    Expression<String>? editSubContent,
+    Expression<String>? accountId,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (columnCode != null) 'column_code': columnCode,
+      if (orderNo != null) 'order_no': orderNo,
+      if (content != null) 'content': content,
+      if (editContent != null) 'edit_content': editContent,
+      if (subContent != null) 'sub_content': subContent,
+      if (editSubContent != null) 'edit_sub_content': editSubContent,
+      if (accountId != null) 'account_id': accountId,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+    });
+  }
+
+  TResumeSkillCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? columnCode,
+      Value<int>? orderNo,
+      Value<String>? content,
+      Value<String>? editContent,
+      Value<String>? subContent,
+      Value<String>? editSubContent,
+      Value<String>? accountId,
+      Value<String>? createAt,
+      Value<String>? updateAt}) {
+    return TResumeSkillCompanion(
+      id: id ?? this.id,
+      columnCode: columnCode ?? this.columnCode,
+      orderNo: orderNo ?? this.orderNo,
+      content: content ?? this.content,
+      editContent: editContent ?? this.editContent,
+      subContent: subContent ?? this.subContent,
+      editSubContent: editSubContent ?? this.editSubContent,
+      accountId: accountId ?? this.accountId,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (columnCode.present) {
+      map['column_code'] = Variable<int>(columnCode.value);
+    }
+    if (orderNo.present) {
+      map['order_no'] = Variable<int>(orderNo.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (editContent.present) {
+      map['edit_content'] = Variable<String>(editContent.value);
+    }
+    if (subContent.present) {
+      map['sub_content'] = Variable<String>(subContent.value);
+    }
+    if (editSubContent.present) {
+      map['edit_sub_content'] = Variable<String>(editSubContent.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TResumeSkillCompanion(')
+          ..write('id: $id, ')
+          ..write('columnCode: $columnCode, ')
+          ..write('orderNo: $orderNo, ')
+          ..write('content: $content, ')
+          ..write('editContent: $editContent, ')
+          ..write('subContent: $subContent, ')
+          ..write('editSubContent: $editSubContent, ')
+          ..write('accountId: $accountId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TResumeProjectTable extends TResumeProject
+    with TableInfo<$TResumeProjectTable, TResumeProjectData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TResumeProjectTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _projectIdMeta =
+      const VerificationMeta('projectId');
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+      'project_id', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _columnCodeMeta =
+      const VerificationMeta('columnCode');
+  @override
+  late final GeneratedColumn<int> columnCode = GeneratedColumn<int>(
+      'column_code', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _orderNoMeta =
+      const VerificationMeta('orderNo');
+  @override
+  late final GeneratedColumn<int> orderNo = GeneratedColumn<int>(
+      'order_no', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _contentMeta =
+      const VerificationMeta('content');
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+      'content', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _accountIdMeta =
+      const VerificationMeta('accountId');
+  @override
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+      'account_id', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES m_account (account_id)'));
+  static const VerificationMeta _editContentMeta =
+      const VerificationMeta('editContent');
+  @override
+  late final GeneratedColumn<String> editContent = GeneratedColumn<String>(
+      'edit_content', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        projectId,
+        columnCode,
+        orderNo,
+        content,
+        accountId,
+        editContent,
+        createAt,
+        updateAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 't_resume_project';
+  @override
+  VerificationContext validateIntegrity(Insertable<TResumeProjectData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(_projectIdMeta,
+          projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta));
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('column_code')) {
+      context.handle(
+          _columnCodeMeta,
+          columnCode.isAcceptableOrUnknown(
+              data['column_code']!, _columnCodeMeta));
+    } else if (isInserting) {
+      context.missing(_columnCodeMeta);
+    }
+    if (data.containsKey('order_no')) {
+      context.handle(_orderNoMeta,
+          orderNo.isAcceptableOrUnknown(data['order_no']!, _orderNoMeta));
+    } else if (isInserting) {
+      context.missing(_orderNoMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(_contentMeta,
+          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(_accountIdMeta,
+          accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('edit_content')) {
+      context.handle(
+          _editContentMeta,
+          editContent.isAcceptableOrUnknown(
+              data['edit_content']!, _editContentMeta));
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TResumeProjectData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TResumeProjectData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      projectId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}project_id'])!,
+      columnCode: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}column_code'])!,
+      orderNo: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}order_no'])!,
+      content: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
+      accountId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}account_id'])!,
+      editContent: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}edit_content'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $TResumeProjectTable createAlias(String alias) {
+    return $TResumeProjectTable(attachedDatabase, alias);
+  }
+}
+
+class TResumeProjectData extends DataClass
+    implements Insertable<TResumeProjectData> {
+  /// id
+  final int id;
+
+  /// プロジェクトID
+  final String projectId;
+
+  /// カラムのコード番号
+  final int columnCode;
+
+  /// 表示順
+  final int orderNo;
+
+  /// 内容
+  final String content;
+  final String accountId;
+
+  /// 編集内容
+  final String editContent;
+  final String createAt;
+  final String updateAt;
+  const TResumeProjectData(
+      {required this.id,
+      required this.projectId,
+      required this.columnCode,
+      required this.orderNo,
+      required this.content,
+      required this.accountId,
+      required this.editContent,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['column_code'] = Variable<int>(columnCode);
+    map['order_no'] = Variable<int>(orderNo);
+    map['content'] = Variable<String>(content);
+    map['account_id'] = Variable<String>(accountId);
+    map['edit_content'] = Variable<String>(editContent);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  TResumeProjectCompanion toCompanion(bool nullToAbsent) {
+    return TResumeProjectCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      columnCode: Value(columnCode),
+      orderNo: Value(orderNo),
+      content: Value(content),
+      accountId: Value(accountId),
+      editContent: Value(editContent),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory TResumeProjectData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TResumeProjectData(
+      id: serializer.fromJson<int>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      columnCode: serializer.fromJson<int>(json['columnCode']),
+      orderNo: serializer.fromJson<int>(json['orderNo']),
+      content: serializer.fromJson<String>(json['content']),
+      accountId: serializer.fromJson<String>(json['accountId']),
+      editContent: serializer.fromJson<String>(json['editContent']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'columnCode': serializer.toJson<int>(columnCode),
+      'orderNo': serializer.toJson<int>(orderNo),
+      'content': serializer.toJson<String>(content),
+      'accountId': serializer.toJson<String>(accountId),
+      'editContent': serializer.toJson<String>(editContent),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  TResumeProjectData copyWith(
+          {int? id,
+          String? projectId,
+          int? columnCode,
+          int? orderNo,
+          String? content,
+          String? accountId,
+          String? editContent,
+          String? createAt,
+          String? updateAt}) =>
+      TResumeProjectData(
+        id: id ?? this.id,
+        projectId: projectId ?? this.projectId,
+        columnCode: columnCode ?? this.columnCode,
+        orderNo: orderNo ?? this.orderNo,
+        content: content ?? this.content,
+        accountId: accountId ?? this.accountId,
+        editContent: editContent ?? this.editContent,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TResumeProjectData(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('columnCode: $columnCode, ')
+          ..write('orderNo: $orderNo, ')
+          ..write('content: $content, ')
+          ..write('accountId: $accountId, ')
+          ..write('editContent: $editContent, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, projectId, columnCode, orderNo, content,
+      accountId, editContent, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TResumeProjectData &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.columnCode == this.columnCode &&
+          other.orderNo == this.orderNo &&
+          other.content == this.content &&
+          other.accountId == this.accountId &&
+          other.editContent == this.editContent &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
+  final Value<int> id;
+  final Value<String> projectId;
+  final Value<int> columnCode;
+  final Value<int> orderNo;
+  final Value<String> content;
+  final Value<String> accountId;
+  final Value<String> editContent;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  const TResumeProjectCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.columnCode = const Value.absent(),
+    this.orderNo = const Value.absent(),
+    this.content = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.editContent = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  });
+  TResumeProjectCompanion.insert({
+    this.id = const Value.absent(),
+    required String projectId,
+    required int columnCode,
+    required int orderNo,
+    required String content,
+    required String accountId,
+    this.editContent = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  })  : projectId = Value(projectId),
+        columnCode = Value(columnCode),
+        orderNo = Value(orderNo),
+        content = Value(content),
+        accountId = Value(accountId);
+  static Insertable<TResumeProjectData> custom({
+    Expression<int>? id,
+    Expression<String>? projectId,
+    Expression<int>? columnCode,
+    Expression<int>? orderNo,
+    Expression<String>? content,
+    Expression<String>? accountId,
+    Expression<String>? editContent,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (columnCode != null) 'column_code': columnCode,
+      if (orderNo != null) 'order_no': orderNo,
+      if (content != null) 'content': content,
+      if (accountId != null) 'account_id': accountId,
+      if (editContent != null) 'edit_content': editContent,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+    });
+  }
+
+  TResumeProjectCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? projectId,
+      Value<int>? columnCode,
+      Value<int>? orderNo,
+      Value<String>? content,
+      Value<String>? accountId,
+      Value<String>? editContent,
+      Value<String>? createAt,
+      Value<String>? updateAt}) {
+    return TResumeProjectCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      columnCode: columnCode ?? this.columnCode,
+      orderNo: orderNo ?? this.orderNo,
+      content: content ?? this.content,
+      accountId: accountId ?? this.accountId,
+      editContent: editContent ?? this.editContent,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (columnCode.present) {
+      map['column_code'] = Variable<int>(columnCode.value);
+    }
+    if (orderNo.present) {
+      map['order_no'] = Variable<int>(orderNo.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
+    }
+    if (editContent.present) {
+      map['edit_content'] = Variable<String>(editContent.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TResumeProjectCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('columnCode: $columnCode, ')
+          ..write('orderNo: $orderNo, ')
+          ..write('content: $content, ')
+          ..write('accountId: $accountId, ')
+          ..write('editContent: $editContent, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$StairsDatabase extends GeneratedDatabase {
   _$StairsDatabase(QueryExecutor e) : super(e);
   late final $MColorTable mColor = $MColorTable(this);
+  late final $MCountryCodeTable mCountryCode = $MCountryCodeTable(this);
   late final $MAccountTable mAccount = $MAccountTable(this);
   late final $MDevProgressListTable mDevProgressList =
       $MDevProgressListTable(this);
@@ -5579,10 +7258,14 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final $TTaskTable tTask = $TTaskTable(this);
   late final $TTaskTagTable tTaskTag = $TTaskTagTable(this);
   late final $TTaskDevTable tTaskDev = $TTaskDevTable(this);
+  late final $TResumeSkillTable tResumeSkill = $TResumeSkillTable(this);
+  late final $TResumeProjectTable tResumeProject = $TResumeProjectTable(this);
   late final Index colorId =
       Index('color_id', 'CREATE INDEX color_id ON m_color (id)');
   late final Index accountId =
       Index('account_id', 'CREATE INDEX account_id ON m_account (account_id)');
+  late final Index code =
+      Index('code', 'CREATE INDEX code ON m_country_code (code)');
   late final Index devProgressId = Index('dev_progress_id',
       'CREATE INDEX dev_progress_id ON m_dev_progress_list (id)');
   late final Index tDevLangId = Index('t_dev_lang_id',
@@ -5609,6 +7292,10 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
       Index('task_tag_id', 'CREATE INDEX task_tag_id ON t_task_tag (id)');
   late final Index taskDevId =
       Index('task_dev_id', 'CREATE INDEX task_dev_id ON t_task_dev (task_id)');
+  late final Index resumeSkillId = Index(
+      'resume_skill_id', 'CREATE INDEX resume_skill_id ON t_resume_skill (id)');
+  late final Index resumeProjectId = Index('resume_project_id',
+      'CREATE INDEX resume_project_id ON t_resume_project (id)');
   late final MAccountDao mAccountDao = MAccountDao(this as StairsDatabase);
   late final TProjectDao tProjectDao = TProjectDao(this as StairsDatabase);
   late final TOsInfoDao tOsInfoDao = TOsInfoDao(this as StairsDatabase);
@@ -5631,6 +7318,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
         mColor,
+        mCountryCode,
         mAccount,
         mDevProgressList,
         tDevLanguage,
@@ -5646,8 +7334,11 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         tTask,
         tTaskTag,
         tTaskDev,
+        tResumeSkill,
+        tResumeProject,
         colorId,
         accountId,
+        code,
         devProgressId,
         tDevLangId,
         devLangRelId,
@@ -5661,6 +7352,8 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         boardId,
         taskId,
         taskTagId,
-        taskDevId
+        taskDevId,
+        resumeSkillId,
+        resumeProjectId
       ];
 }
