@@ -19,7 +19,11 @@ class TResumeSkillDao extends DatabaseAccessor<StairsDatabase>
     try {
       _logger.d('getResumeSkill 通信開始');
       final query = db.select(db.tResumeSkill)
-        ..where((tbl) => tbl.accountId.equals(accountId));
+        ..where((tbl) => tbl.accountId.equals(accountId))
+        ..orderBy([
+          (u) => OrderingTerm(expression: u.columnCode),
+          (u) => OrderingTerm(expression: u.orderNo)
+        ]);
 
       final response = await query.get();
       _logger.d('取得データ length ${response.length}');

@@ -22,3 +22,23 @@ export 'model/t_resume_project.dart';
 
 // dao
 export 'dao/m_account_dao.dart';
+export 'dao/m_country_code_dao.dart';
+export 'dao/t_board_dao.dart';
+export 'dao/t_db_dao.dart';
+export 'dao/t_dev_lang_dao.dart';
+export 'dao/t_dev_lang_rel_dao.dart';
+export 'dao/t_dev_progress_rel_dao.dart';
+export 'dao/t_os_info_dao.dart';
+export 'dao/t_project_dao.dart';
+export 'dao/t_resume_project_dao.dart';
+export 'dao/t_resume_skill_dao.dart';
+export 'dao/t_tag_dao.dart';
+export 'dao/t_tag_rel_dao.dart';
+export 'dao/t_task_dao.dart';
+export 'dao/t_task_dev_dao.dart';
+export 'dao/t_task_tag_dao.dart';
+export 'dao/t_tool_dao.dart';
+export 'dummy/board_list.dart';
+export 'dummy/dummy_project_detail.dart';
+export 'constant/dev_language_list.dart';
+export 'dummy/task_list.dart';

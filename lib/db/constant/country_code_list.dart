@@ -817,11 +817,6 @@ final defaultCountryCodeList = [
   ),
   const MCountryCodeCompanion(
     code: Value(157),
-    name: Value('Somalia'),
-    japaneseName: Value('ソマリア'),
-  ),
-  const MCountryCodeCompanion(
-    code: Value(157),
     name: Value('Slovenia'),
     japaneseName: Value('スロベニア'),
   ),

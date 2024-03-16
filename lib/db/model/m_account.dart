@@ -16,7 +16,7 @@ class MAccount extends Table {
   BoolColumn get isMale => boolean().withDefault(const Constant(true))();
 
   /// 生年月日
-  TextColumn get birthDate => text().withLength(min: 1, max: 8)();
+  TextColumn get birthDate => text().withLength(min: 1, max: 30)();
 
   /// メールアドレス
   TextColumn get address => text().withLength(min: 1, max: 50)();

@@ -27,4 +27,22 @@ class MAccountDao extends DatabaseAccessor<StairsDatabase>
       _logger.d('getAccount 通信終了');
     }
   }
+
+  /// アカウント情報取得
+  Future<MAccountData> getAccountById({required String accountId}) async {
+    try {
+      _logger.d('getAccount 通信開始');
+      final query = db.select(db.mAccount)
+        ..where((tbl) => tbl.accountId.equals(accountId));
+      final response = await query.getSingle();
+
+      _logger.d('取得データ：$response');
+      return response;
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('getAccount 通信終了');
+    }
+  }
 }

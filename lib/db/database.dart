@@ -4,23 +4,6 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:stairs/db/constant/country_code_list.dart';
-import 'package:stairs/db/dao/t_board_dao.dart';
-import 'package:stairs/db/dao/t_db_dao.dart';
-import 'package:stairs/db/dao/t_dev_lang_dao.dart';
-import 'package:stairs/db/dao/t_dev_lang_rel_dao.dart';
-import 'package:stairs/db/dao/t_dev_progress_rel_dao.dart';
-import 'package:stairs/db/dao/t_os_info_dao.dart';
-import 'package:stairs/db/dao/t_project_dao.dart';
-import 'package:stairs/db/dao/t_tag_dao.dart';
-import 'package:stairs/db/dao/t_tag_rel_dao.dart';
-import 'package:stairs/db/dao/t_task_dao.dart';
-import 'package:stairs/db/dao/t_task_dev_dao.dart';
-import 'package:stairs/db/dao/t_task_tag_dao.dart';
-import 'package:stairs/db/dao/t_tool_dao.dart';
-import 'package:stairs/db/dummy/board_list.dart';
-import 'package:stairs/db/dummy/dummy_project_detail.dart';
-import 'package:stairs/db/constant/dev_language_list.dart';
-import 'package:stairs/db/dummy/task_list.dart';
 import 'package:stairs/loom/stairs_logger.dart';
 
 import 'db_package.dart';
@@ -56,6 +39,7 @@ final _logger = stairsLogger(name: 'database');
   ],
   daos: [
     MAccountDao,
+    MCountryCodeDao,
     TProjectDao,
     TOsInfoDao,
     TDbDao,
@@ -69,6 +53,8 @@ final _logger = stairsLogger(name: 'database');
     TTaskDao,
     TTaskTagDao,
     TTaskDevDao,
+    TResumeSkillDao,
+    TResumeProjectDao,
   ],
 )
 class StairsDatabase extends _$StairsDatabase {
@@ -91,7 +77,7 @@ class StairsDatabase extends _$StairsDatabase {
                   firstName: Value('安藤'),
                   lastName: Value('優介'),
                   isMale: Value(true),
-                  birthDate: Value('1996-06-20 0:00:00'),
+                  birthDate: Value('1996-06-20 00:00:00'),
                   address: Value('ando08620@gmail.com'),
                   countryCode: Value(83),
                   academicBackground: Value('明治大学 理工学部'),

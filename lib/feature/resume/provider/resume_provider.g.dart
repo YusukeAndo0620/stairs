@@ -6,12 +6,12 @@ part of 'resume_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$resumeHash() => r'66182e0dd37ee7328b09f7cfdbeb41df89789e8c';
+String _$resumeHash() => r'8f94db4b8c3d9ddbb7aaa122414e46ac996e691c';
 
 /// See also [Resume].
 @ProviderFor(Resume)
 final resumeProvider =
-    AutoDisposeAsyncNotifierProvider<Resume, List<ProjectStatusModel>>.internal(
+    AutoDisposeAsyncNotifierProvider<Resume, ResumeModel?>.internal(
   Resume.new,
   name: r'resumeProvider',
   debugGetCreateSourceHash:
@@ -20,6 +20,6 @@ final resumeProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$Resume = AutoDisposeAsyncNotifier<List<ProjectStatusModel>>;
+typedef _$Resume = AutoDisposeAsyncNotifier<ResumeModel?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

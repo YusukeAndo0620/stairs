@@ -639,7 +639,7 @@ class $MAccountTable extends MAccount
   late final GeneratedColumn<String> birthDate = GeneratedColumn<String>(
       'birth_date', aliasedName, false,
       additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 8),
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 30),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
   static const VerificationMeta _addressMeta =
@@ -6281,6 +6281,15 @@ class $TResumeSkillTable extends TResumeSkill
   late final GeneratedColumn<int> orderNo = GeneratedColumn<int>(
       'order_no', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _uniqueIdMeta =
+      const VerificationMeta('uniqueId');
+  @override
+  late final GeneratedColumn<String> uniqueId = GeneratedColumn<String>(
+      'unique_id', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
   static const VerificationMeta _contentMeta =
       const VerificationMeta('content');
   @override
@@ -6351,6 +6360,7 @@ class $TResumeSkillTable extends TResumeSkill
         id,
         columnCode,
         orderNo,
+        uniqueId,
         content,
         editContent,
         subContent,
@@ -6385,6 +6395,12 @@ class $TResumeSkillTable extends TResumeSkill
           orderNo.isAcceptableOrUnknown(data['order_no']!, _orderNoMeta));
     } else if (isInserting) {
       context.missing(_orderNoMeta);
+    }
+    if (data.containsKey('unique_id')) {
+      context.handle(_uniqueIdMeta,
+          uniqueId.isAcceptableOrUnknown(data['unique_id']!, _uniqueIdMeta));
+    } else if (isInserting) {
+      context.missing(_uniqueIdMeta);
     }
     if (data.containsKey('content')) {
       context.handle(_contentMeta,
@@ -6441,6 +6457,8 @@ class $TResumeSkillTable extends TResumeSkill
           .read(DriftSqlType.int, data['${effectivePrefix}column_code'])!,
       orderNo: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}order_no'])!,
+      uniqueId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}unique_id'])!,
       content: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
       editContent: attachedDatabase.typeMapping
@@ -6475,6 +6493,9 @@ class TResumeSkillData extends DataClass
   /// 表示順
   final int orderNo;
 
+  /// ユニークID（ラベルIDなど）
+  final String uniqueId;
+
   /// 内容
   final String content;
 
@@ -6493,6 +6514,7 @@ class TResumeSkillData extends DataClass
       {required this.id,
       required this.columnCode,
       required this.orderNo,
+      required this.uniqueId,
       required this.content,
       required this.editContent,
       required this.subContent,
@@ -6506,6 +6528,7 @@ class TResumeSkillData extends DataClass
     map['id'] = Variable<int>(id);
     map['column_code'] = Variable<int>(columnCode);
     map['order_no'] = Variable<int>(orderNo);
+    map['unique_id'] = Variable<String>(uniqueId);
     map['content'] = Variable<String>(content);
     map['edit_content'] = Variable<String>(editContent);
     map['sub_content'] = Variable<String>(subContent);
@@ -6521,6 +6544,7 @@ class TResumeSkillData extends DataClass
       id: Value(id),
       columnCode: Value(columnCode),
       orderNo: Value(orderNo),
+      uniqueId: Value(uniqueId),
       content: Value(content),
       editContent: Value(editContent),
       subContent: Value(subContent),
@@ -6538,6 +6562,7 @@ class TResumeSkillData extends DataClass
       id: serializer.fromJson<int>(json['id']),
       columnCode: serializer.fromJson<int>(json['columnCode']),
       orderNo: serializer.fromJson<int>(json['orderNo']),
+      uniqueId: serializer.fromJson<String>(json['uniqueId']),
       content: serializer.fromJson<String>(json['content']),
       editContent: serializer.fromJson<String>(json['editContent']),
       subContent: serializer.fromJson<String>(json['subContent']),
@@ -6554,6 +6579,7 @@ class TResumeSkillData extends DataClass
       'id': serializer.toJson<int>(id),
       'columnCode': serializer.toJson<int>(columnCode),
       'orderNo': serializer.toJson<int>(orderNo),
+      'uniqueId': serializer.toJson<String>(uniqueId),
       'content': serializer.toJson<String>(content),
       'editContent': serializer.toJson<String>(editContent),
       'subContent': serializer.toJson<String>(subContent),
@@ -6568,6 +6594,7 @@ class TResumeSkillData extends DataClass
           {int? id,
           int? columnCode,
           int? orderNo,
+          String? uniqueId,
           String? content,
           String? editContent,
           String? subContent,
@@ -6579,6 +6606,7 @@ class TResumeSkillData extends DataClass
         id: id ?? this.id,
         columnCode: columnCode ?? this.columnCode,
         orderNo: orderNo ?? this.orderNo,
+        uniqueId: uniqueId ?? this.uniqueId,
         content: content ?? this.content,
         editContent: editContent ?? this.editContent,
         subContent: subContent ?? this.subContent,
@@ -6593,6 +6621,7 @@ class TResumeSkillData extends DataClass
           ..write('id: $id, ')
           ..write('columnCode: $columnCode, ')
           ..write('orderNo: $orderNo, ')
+          ..write('uniqueId: $uniqueId, ')
           ..write('content: $content, ')
           ..write('editContent: $editContent, ')
           ..write('subContent: $subContent, ')
@@ -6605,8 +6634,8 @@ class TResumeSkillData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, columnCode, orderNo, content, editContent,
-      subContent, editSubContent, accountId, createAt, updateAt);
+  int get hashCode => Object.hash(id, columnCode, orderNo, uniqueId, content,
+      editContent, subContent, editSubContent, accountId, createAt, updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -6614,6 +6643,7 @@ class TResumeSkillData extends DataClass
           other.id == this.id &&
           other.columnCode == this.columnCode &&
           other.orderNo == this.orderNo &&
+          other.uniqueId == this.uniqueId &&
           other.content == this.content &&
           other.editContent == this.editContent &&
           other.subContent == this.subContent &&
@@ -6627,6 +6657,7 @@ class TResumeSkillCompanion extends UpdateCompanion<TResumeSkillData> {
   final Value<int> id;
   final Value<int> columnCode;
   final Value<int> orderNo;
+  final Value<String> uniqueId;
   final Value<String> content;
   final Value<String> editContent;
   final Value<String> subContent;
@@ -6638,6 +6669,7 @@ class TResumeSkillCompanion extends UpdateCompanion<TResumeSkillData> {
     this.id = const Value.absent(),
     this.columnCode = const Value.absent(),
     this.orderNo = const Value.absent(),
+    this.uniqueId = const Value.absent(),
     this.content = const Value.absent(),
     this.editContent = const Value.absent(),
     this.subContent = const Value.absent(),
@@ -6650,6 +6682,7 @@ class TResumeSkillCompanion extends UpdateCompanion<TResumeSkillData> {
     this.id = const Value.absent(),
     required int columnCode,
     required int orderNo,
+    required String uniqueId,
     required String content,
     this.editContent = const Value.absent(),
     required String subContent,
@@ -6659,6 +6692,7 @@ class TResumeSkillCompanion extends UpdateCompanion<TResumeSkillData> {
     this.updateAt = const Value.absent(),
   })  : columnCode = Value(columnCode),
         orderNo = Value(orderNo),
+        uniqueId = Value(uniqueId),
         content = Value(content),
         subContent = Value(subContent),
         accountId = Value(accountId);
@@ -6666,6 +6700,7 @@ class TResumeSkillCompanion extends UpdateCompanion<TResumeSkillData> {
     Expression<int>? id,
     Expression<int>? columnCode,
     Expression<int>? orderNo,
+    Expression<String>? uniqueId,
     Expression<String>? content,
     Expression<String>? editContent,
     Expression<String>? subContent,
@@ -6678,6 +6713,7 @@ class TResumeSkillCompanion extends UpdateCompanion<TResumeSkillData> {
       if (id != null) 'id': id,
       if (columnCode != null) 'column_code': columnCode,
       if (orderNo != null) 'order_no': orderNo,
+      if (uniqueId != null) 'unique_id': uniqueId,
       if (content != null) 'content': content,
       if (editContent != null) 'edit_content': editContent,
       if (subContent != null) 'sub_content': subContent,
@@ -6692,6 +6728,7 @@ class TResumeSkillCompanion extends UpdateCompanion<TResumeSkillData> {
       {Value<int>? id,
       Value<int>? columnCode,
       Value<int>? orderNo,
+      Value<String>? uniqueId,
       Value<String>? content,
       Value<String>? editContent,
       Value<String>? subContent,
@@ -6703,6 +6740,7 @@ class TResumeSkillCompanion extends UpdateCompanion<TResumeSkillData> {
       id: id ?? this.id,
       columnCode: columnCode ?? this.columnCode,
       orderNo: orderNo ?? this.orderNo,
+      uniqueId: uniqueId ?? this.uniqueId,
       content: content ?? this.content,
       editContent: editContent ?? this.editContent,
       subContent: subContent ?? this.subContent,
@@ -6724,6 +6762,9 @@ class TResumeSkillCompanion extends UpdateCompanion<TResumeSkillData> {
     }
     if (orderNo.present) {
       map['order_no'] = Variable<int>(orderNo.value);
+    }
+    if (uniqueId.present) {
+      map['unique_id'] = Variable<String>(uniqueId.value);
     }
     if (content.present) {
       map['content'] = Variable<String>(content.value);
@@ -6755,6 +6796,7 @@ class TResumeSkillCompanion extends UpdateCompanion<TResumeSkillData> {
           ..write('id: $id, ')
           ..write('columnCode: $columnCode, ')
           ..write('orderNo: $orderNo, ')
+          ..write('uniqueId: $uniqueId, ')
           ..write('content: $content, ')
           ..write('editContent: $editContent, ')
           ..write('subContent: $subContent, ')
@@ -6803,6 +6845,15 @@ class $TResumeProjectTable extends TResumeProject
   late final GeneratedColumn<int> orderNo = GeneratedColumn<int>(
       'order_no', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _uniqueIdMeta =
+      const VerificationMeta('uniqueId');
+  @override
+  late final GeneratedColumn<String> uniqueId = GeneratedColumn<String>(
+      'unique_id', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
   static const VerificationMeta _contentMeta =
       const VerificationMeta('content');
   @override
@@ -6855,6 +6906,7 @@ class $TResumeProjectTable extends TResumeProject
         projectId,
         columnCode,
         orderNo,
+        uniqueId,
         content,
         accountId,
         editContent,
@@ -6893,6 +6945,12 @@ class $TResumeProjectTable extends TResumeProject
           orderNo.isAcceptableOrUnknown(data['order_no']!, _orderNoMeta));
     } else if (isInserting) {
       context.missing(_orderNoMeta);
+    }
+    if (data.containsKey('unique_id')) {
+      context.handle(_uniqueIdMeta,
+          uniqueId.isAcceptableOrUnknown(data['unique_id']!, _uniqueIdMeta));
+    } else if (isInserting) {
+      context.missing(_uniqueIdMeta);
     }
     if (data.containsKey('content')) {
       context.handle(_contentMeta,
@@ -6937,6 +6995,8 @@ class $TResumeProjectTable extends TResumeProject
           .read(DriftSqlType.int, data['${effectivePrefix}column_code'])!,
       orderNo: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}order_no'])!,
+      uniqueId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}unique_id'])!,
       content: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
       accountId: attachedDatabase.typeMapping
@@ -6970,6 +7030,9 @@ class TResumeProjectData extends DataClass
   /// 表示順
   final int orderNo;
 
+  /// ユニークID（ラベルIDなど）
+  final String uniqueId;
+
   /// 内容
   final String content;
   final String accountId;
@@ -6983,6 +7046,7 @@ class TResumeProjectData extends DataClass
       required this.projectId,
       required this.columnCode,
       required this.orderNo,
+      required this.uniqueId,
       required this.content,
       required this.accountId,
       required this.editContent,
@@ -6995,6 +7059,7 @@ class TResumeProjectData extends DataClass
     map['project_id'] = Variable<String>(projectId);
     map['column_code'] = Variable<int>(columnCode);
     map['order_no'] = Variable<int>(orderNo);
+    map['unique_id'] = Variable<String>(uniqueId);
     map['content'] = Variable<String>(content);
     map['account_id'] = Variable<String>(accountId);
     map['edit_content'] = Variable<String>(editContent);
@@ -7009,6 +7074,7 @@ class TResumeProjectData extends DataClass
       projectId: Value(projectId),
       columnCode: Value(columnCode),
       orderNo: Value(orderNo),
+      uniqueId: Value(uniqueId),
       content: Value(content),
       accountId: Value(accountId),
       editContent: Value(editContent),
@@ -7025,6 +7091,7 @@ class TResumeProjectData extends DataClass
       projectId: serializer.fromJson<String>(json['projectId']),
       columnCode: serializer.fromJson<int>(json['columnCode']),
       orderNo: serializer.fromJson<int>(json['orderNo']),
+      uniqueId: serializer.fromJson<String>(json['uniqueId']),
       content: serializer.fromJson<String>(json['content']),
       accountId: serializer.fromJson<String>(json['accountId']),
       editContent: serializer.fromJson<String>(json['editContent']),
@@ -7040,6 +7107,7 @@ class TResumeProjectData extends DataClass
       'projectId': serializer.toJson<String>(projectId),
       'columnCode': serializer.toJson<int>(columnCode),
       'orderNo': serializer.toJson<int>(orderNo),
+      'uniqueId': serializer.toJson<String>(uniqueId),
       'content': serializer.toJson<String>(content),
       'accountId': serializer.toJson<String>(accountId),
       'editContent': serializer.toJson<String>(editContent),
@@ -7053,6 +7121,7 @@ class TResumeProjectData extends DataClass
           String? projectId,
           int? columnCode,
           int? orderNo,
+          String? uniqueId,
           String? content,
           String? accountId,
           String? editContent,
@@ -7063,6 +7132,7 @@ class TResumeProjectData extends DataClass
         projectId: projectId ?? this.projectId,
         columnCode: columnCode ?? this.columnCode,
         orderNo: orderNo ?? this.orderNo,
+        uniqueId: uniqueId ?? this.uniqueId,
         content: content ?? this.content,
         accountId: accountId ?? this.accountId,
         editContent: editContent ?? this.editContent,
@@ -7076,6 +7146,7 @@ class TResumeProjectData extends DataClass
           ..write('projectId: $projectId, ')
           ..write('columnCode: $columnCode, ')
           ..write('orderNo: $orderNo, ')
+          ..write('uniqueId: $uniqueId, ')
           ..write('content: $content, ')
           ..write('accountId: $accountId, ')
           ..write('editContent: $editContent, ')
@@ -7086,8 +7157,8 @@ class TResumeProjectData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, projectId, columnCode, orderNo, content,
-      accountId, editContent, createAt, updateAt);
+  int get hashCode => Object.hash(id, projectId, columnCode, orderNo, uniqueId,
+      content, accountId, editContent, createAt, updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -7096,6 +7167,7 @@ class TResumeProjectData extends DataClass
           other.projectId == this.projectId &&
           other.columnCode == this.columnCode &&
           other.orderNo == this.orderNo &&
+          other.uniqueId == this.uniqueId &&
           other.content == this.content &&
           other.accountId == this.accountId &&
           other.editContent == this.editContent &&
@@ -7108,6 +7180,7 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
   final Value<String> projectId;
   final Value<int> columnCode;
   final Value<int> orderNo;
+  final Value<String> uniqueId;
   final Value<String> content;
   final Value<String> accountId;
   final Value<String> editContent;
@@ -7118,6 +7191,7 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
     this.projectId = const Value.absent(),
     this.columnCode = const Value.absent(),
     this.orderNo = const Value.absent(),
+    this.uniqueId = const Value.absent(),
     this.content = const Value.absent(),
     this.accountId = const Value.absent(),
     this.editContent = const Value.absent(),
@@ -7129,6 +7203,7 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
     required String projectId,
     required int columnCode,
     required int orderNo,
+    required String uniqueId,
     required String content,
     required String accountId,
     this.editContent = const Value.absent(),
@@ -7137,6 +7212,7 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
   })  : projectId = Value(projectId),
         columnCode = Value(columnCode),
         orderNo = Value(orderNo),
+        uniqueId = Value(uniqueId),
         content = Value(content),
         accountId = Value(accountId);
   static Insertable<TResumeProjectData> custom({
@@ -7144,6 +7220,7 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
     Expression<String>? projectId,
     Expression<int>? columnCode,
     Expression<int>? orderNo,
+    Expression<String>? uniqueId,
     Expression<String>? content,
     Expression<String>? accountId,
     Expression<String>? editContent,
@@ -7155,6 +7232,7 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
       if (projectId != null) 'project_id': projectId,
       if (columnCode != null) 'column_code': columnCode,
       if (orderNo != null) 'order_no': orderNo,
+      if (uniqueId != null) 'unique_id': uniqueId,
       if (content != null) 'content': content,
       if (accountId != null) 'account_id': accountId,
       if (editContent != null) 'edit_content': editContent,
@@ -7168,6 +7246,7 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
       Value<String>? projectId,
       Value<int>? columnCode,
       Value<int>? orderNo,
+      Value<String>? uniqueId,
       Value<String>? content,
       Value<String>? accountId,
       Value<String>? editContent,
@@ -7178,6 +7257,7 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
       projectId: projectId ?? this.projectId,
       columnCode: columnCode ?? this.columnCode,
       orderNo: orderNo ?? this.orderNo,
+      uniqueId: uniqueId ?? this.uniqueId,
       content: content ?? this.content,
       accountId: accountId ?? this.accountId,
       editContent: editContent ?? this.editContent,
@@ -7200,6 +7280,9 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
     }
     if (orderNo.present) {
       map['order_no'] = Variable<int>(orderNo.value);
+    }
+    if (uniqueId.present) {
+      map['unique_id'] = Variable<String>(uniqueId.value);
     }
     if (content.present) {
       map['content'] = Variable<String>(content.value);
@@ -7226,6 +7309,7 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
           ..write('projectId: $projectId, ')
           ..write('columnCode: $columnCode, ')
           ..write('orderNo: $orderNo, ')
+          ..write('uniqueId: $uniqueId, ')
           ..write('content: $content, ')
           ..write('accountId: $accountId, ')
           ..write('editContent: $editContent, ')
@@ -7297,6 +7381,8 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final Index resumeProjectId = Index('resume_project_id',
       'CREATE INDEX resume_project_id ON t_resume_project (id)');
   late final MAccountDao mAccountDao = MAccountDao(this as StairsDatabase);
+  late final MCountryCodeDao mCountryCodeDao =
+      MCountryCodeDao(this as StairsDatabase);
   late final TProjectDao tProjectDao = TProjectDao(this as StairsDatabase);
   late final TOsInfoDao tOsInfoDao = TOsInfoDao(this as StairsDatabase);
   late final TDbDao tDbDao = TDbDao(this as StairsDatabase);
@@ -7312,6 +7398,10 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final TTaskDao tTaskDao = TTaskDao(this as StairsDatabase);
   late final TTaskTagDao tTaskTagDao = TTaskTagDao(this as StairsDatabase);
   late final TTaskDevDao tTaskDevDao = TTaskDevDao(this as StairsDatabase);
+  late final TResumeSkillDao tResumeSkillDao =
+      TResumeSkillDao(this as StairsDatabase);
+  late final TResumeProjectDao tResumeProjectDao =
+      TResumeProjectDao(this as StairsDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();

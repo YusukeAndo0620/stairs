@@ -53,8 +53,8 @@ class ResumeModel extends Equatable {
   /// スキルリスト key: SkillColumnType, value: Map<カラムインデックス, 値 >
   final Map<SkillColumnType, Map<int, String>> skillMap;
 
-  /// プロジェクトMap key: 行番号, value: Map<ProjectColumnType, Map<カラムインデックス, 値>>
-  final Map<int, Map<ProjectColumnType, Map<int, String>>> projectMap;
+  /// プロジェクトMap key: プロジェクトID, value: Map<ProjectColumnType, Map<カラムインデックス, 値>>
+  final Map<String, Map<ProjectColumnType, Map<int, String>>> projectMap;
 
   ResumeModel copyWith({
     String? name,
@@ -65,7 +65,7 @@ class ResumeModel extends Equatable {
     String? strongTech,
     String? strongPoint,
     Map<SkillColumnType, Map<int, String>>? skillMap,
-    Map<int, Map<ProjectColumnType, Map<int, String>>>? projectMap,
+    Map<String, Map<ProjectColumnType, Map<int, String>>>? projectMap,
   }) =>
       ResumeModel(
         name: name ?? this.name,
