@@ -29,7 +29,7 @@ class AccountModel {
     final Map<String, dynamic> data = {};
     data['account_id'] = accountId;
     data['address'] = address;
-    data['plan_type'] = planType.planValue;
+    data['plan_type'] = planType.typeValue;
 
     return data;
   }
@@ -41,7 +41,7 @@ class AccountModel {
     AccountModel {
       account_id: $accountId,
       address: $address,
-      plan_type: ${planType.planValue},
+      plan_type: ${planType.typeValue},
     }''';
   }
 }

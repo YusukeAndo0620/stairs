@@ -50,6 +50,8 @@ class ProjectDetail extends _$ProjectDetail {
       themeColorModel: ColorModel(
           id: 1, color: getColorFromCode(code: colorList[0].colorCodeId.value)),
       industry: '',
+      devMethodType: DevMethodType.waterFall,
+      devSize: 50,
       displayCount: 0,
       tableCount: 0,
       startDate: DateTime(now.year, now.month, 1),
@@ -58,7 +60,6 @@ class ProjectDetail extends _$ProjectDetail {
       devLanguageList: const [],
       toolList: [],
       devProgressList: [],
-      devSize: 50,
       tagList: tagList!,
     );
   }
@@ -189,6 +190,46 @@ class ProjectDetail extends _$ProjectDetail {
     );
   }
 
+  void changeDevMethodType({required int typeValue}) {
+    update(
+      (data) {
+        state = const AsyncLoading();
+        return data =
+            data!.copyWith(devMethodType: getDevMethodType(typeValue));
+      },
+      onError: (error, stack) {
+        state = AsyncError(error, stack);
+        throw Exception(error);
+      },
+    );
+  }
+
+  void changeDescription({required String description}) {
+    update(
+      (data) {
+        state = const AsyncLoading();
+        return data = data!.copyWith(description: description);
+      },
+      onError: (error, stack) {
+        state = AsyncError(error, stack);
+        throw Exception(error);
+      },
+    );
+  }
+
+  void changeDevSize({required int devSize}) {
+    update(
+      (data) {
+        state = const AsyncLoading();
+        return data = data!.copyWith(devSize: devSize);
+      },
+      onError: (error, stack) {
+        state = AsyncError(error, stack);
+        throw Exception(error);
+      },
+    );
+  }
+
   void changeDisplayCount({required int displayCount}) {
     update(
       (data) {
@@ -220,19 +261,6 @@ class ProjectDetail extends _$ProjectDetail {
       (data) {
         state = const AsyncLoading();
         return data = data!.copyWith(startDate: startDate, endDate: endDate);
-      },
-      onError: (error, stack) {
-        state = AsyncError(error, stack);
-        throw Exception(error);
-      },
-    );
-  }
-
-  void changeDescription({required String description}) {
-    update(
-      (data) {
-        state = const AsyncLoading();
-        return data = data!.copyWith(description: description);
       },
       onError: (error, stack) {
         state = AsyncError(error, stack);
@@ -307,19 +335,6 @@ class ProjectDetail extends _$ProjectDetail {
       (data) {
         state = const AsyncLoading();
         return data = data!.copyWith(devProgressList: devProgressList);
-      },
-      onError: (error, stack) {
-        state = AsyncError(error, stack);
-        throw Exception(error);
-      },
-    );
-  }
-
-  void changeDevSize({required int devSize}) {
-    update(
-      (data) {
-        state = const AsyncLoading();
-        return data = data!.copyWith(devSize: devSize);
       },
       onError: (error, stack) {
         state = AsyncError(error, stack);

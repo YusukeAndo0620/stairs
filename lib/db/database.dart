@@ -34,7 +34,6 @@ final _logger = stairsLogger(name: 'database');
     TTask,
     TTaskTag,
     TTaskDev,
-    TResumeSkill,
     TResumeProject,
   ],
   daos: [
@@ -53,7 +52,6 @@ final _logger = stairsLogger(name: 'database');
     TTaskDao,
     TTaskTagDao,
     TTaskDevDao,
-    TResumeSkillDao,
     TResumeProjectDao,
   ],
 )

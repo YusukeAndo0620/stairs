@@ -1,4 +1,4 @@
-enum WorkType {
+enum RoleType {
   // PM
   pm('PM'),
   // PL
@@ -15,5 +15,5 @@ enum WorkType {
   tester('テスター');
 
   final String typeValue;
-  const WorkType(this.typeValue);
+  const RoleType(this.typeValue);
 }

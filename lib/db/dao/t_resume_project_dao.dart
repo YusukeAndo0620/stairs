@@ -19,11 +19,7 @@ class TResumeProjectDao extends DatabaseAccessor<StairsDatabase>
     try {
       _logger.d('getResumeProject 通信開始');
       final query = db.select(db.tResumeProject)
-        ..where((tbl) => tbl.accountId.equals(accountId))
-        ..orderBy([
-          (u) => OrderingTerm(expression: u.columnCode),
-          (u) => OrderingTerm(expression: u.orderNo)
-        ]);
+        ..where((tbl) => tbl.accountId.equals(accountId));
 
       final response = await query.get();
       _logger.d('取得データ length ${response.length}');

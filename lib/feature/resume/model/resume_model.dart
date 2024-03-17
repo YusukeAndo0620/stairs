@@ -1,6 +1,3 @@
-import 'package:stairs/feature/resume/enum/project_column_type.dart';
-import 'package:stairs/feature/resume/enum/skill_column_type.dart';
-
 import 'package:stairs/loom/loom_package.dart';
 
 class ResumeModel extends Equatable {
@@ -12,8 +9,6 @@ class ResumeModel extends Equatable {
     required this.academicBackground,
     required this.strongTech,
     required this.strongPoint,
-    required this.skillMap,
-    required this.projectMap,
   });
 
   @override
@@ -25,8 +20,6 @@ class ResumeModel extends Equatable {
         academicBackground,
         strongTech,
         strongPoint,
-        skillMap,
-        projectMap,
       ];
 
   /// 氏名
@@ -50,12 +43,6 @@ class ResumeModel extends Equatable {
   /// 自己PR
   final String strongPoint;
 
-  /// スキルリスト key: SkillColumnType, value: Map<カラムインデックス, 値 >
-  final Map<SkillColumnType, Map<int, String>> skillMap;
-
-  /// プロジェクトMap key: プロジェクトID, value: Map<ProjectColumnType, Map<カラムインデックス, 値>>
-  final Map<String, Map<ProjectColumnType, Map<int, String>>> projectMap;
-
   ResumeModel copyWith({
     String? name,
     SexType? sexType,
@@ -64,8 +51,6 @@ class ResumeModel extends Equatable {
     String? academicBackground,
     String? strongTech,
     String? strongPoint,
-    Map<SkillColumnType, Map<int, String>>? skillMap,
-    Map<String, Map<ProjectColumnType, Map<int, String>>>? projectMap,
   }) =>
       ResumeModel(
         name: name ?? this.name,
@@ -75,7 +60,5 @@ class ResumeModel extends Equatable {
         academicBackground: academicBackground ?? this.academicBackground,
         strongTech: strongTech ?? this.strongTech,
         strongPoint: strongPoint ?? this.strongPoint,
-        skillMap: skillMap ?? this.skillMap,
-        projectMap: projectMap ?? this.projectMap,
       );
 }

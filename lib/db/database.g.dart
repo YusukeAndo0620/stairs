@@ -1931,6 +1931,15 @@ class $TProjectTable extends TProject
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES m_color (id)'));
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 500),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
   static const VerificationMeta _industryMeta =
       const VerificationMeta('industry');
   @override
@@ -1940,6 +1949,14 @@ class $TProjectTable extends TProject
           GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
+  static const VerificationMeta _devMethodTypeMeta =
+      const VerificationMeta('devMethodType');
+  @override
+  late final GeneratedColumn<int> devMethodType = GeneratedColumn<int>(
+      'dev_method_type', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _displayCountMeta =
       const VerificationMeta('displayCount');
   @override
@@ -1968,15 +1985,6 @@ class $TProjectTable extends TProject
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       clientDefault: () => DateTime.now().toIso8601String());
-  static const VerificationMeta _descriptionMeta =
-      const VerificationMeta('description');
-  @override
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 500),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
   static const VerificationMeta _devSizeMeta =
       const VerificationMeta('devSize');
   @override
@@ -2015,12 +2023,13 @@ class $TProjectTable extends TProject
         projectId,
         name,
         colorId,
+        description,
         industry,
+        devMethodType,
         displayCount,
         tableCount,
         startDate,
         endDate,
-        description,
         devSize,
         accountId,
         createAt,
@@ -2054,11 +2063,25 @@ class $TProjectTable extends TProject
     } else if (isInserting) {
       context.missing(_colorIdMeta);
     }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
     if (data.containsKey('industry')) {
       context.handle(_industryMeta,
           industry.isAcceptableOrUnknown(data['industry']!, _industryMeta));
     } else if (isInserting) {
       context.missing(_industryMeta);
+    }
+    if (data.containsKey('dev_method_type')) {
+      context.handle(
+          _devMethodTypeMeta,
+          devMethodType.isAcceptableOrUnknown(
+              data['dev_method_type']!, _devMethodTypeMeta));
     }
     if (data.containsKey('display_count')) {
       context.handle(
@@ -2083,14 +2106,6 @@ class $TProjectTable extends TProject
     if (data.containsKey('end_date')) {
       context.handle(_endDateMeta,
           endDate.isAcceptableOrUnknown(data['end_date']!, _endDateMeta));
-    }
-    if (data.containsKey('description')) {
-      context.handle(
-          _descriptionMeta,
-          description.isAcceptableOrUnknown(
-              data['description']!, _descriptionMeta));
-    } else if (isInserting) {
-      context.missing(_descriptionMeta);
     }
     if (data.containsKey('dev_size')) {
       context.handle(_devSizeMeta,
@@ -2127,8 +2142,12 @@ class $TProjectTable extends TProject
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       colorId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}color_id'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       industry: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}industry'])!,
+      devMethodType: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}dev_method_type'])!,
       displayCount: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}display_count'])!,
       tableCount: attachedDatabase.typeMapping
@@ -2137,8 +2156,6 @@ class $TProjectTable extends TProject
           .read(DriftSqlType.string, data['${effectivePrefix}start_date'])!,
       endDate: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}end_date'])!,
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       devSize: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}dev_size'])!,
       accountId: attachedDatabase.typeMapping
@@ -2157,15 +2174,37 @@ class $TProjectTable extends TProject
 }
 
 class TProjectData extends DataClass implements Insertable<TProjectData> {
+  /// プロジェクトID
   final String projectId;
+
+  /// タイトル名
   final String name;
+
+  /// カラーID
   final int colorId;
-  final String industry;
-  final int displayCount;
-  final int tableCount;
-  final String startDate;
-  final String endDate;
+
+  /// 説明・概要
   final String description;
+
+  /// 業種
+  final String industry;
+
+  /// 開発手法区分
+  final int devMethodType;
+
+  /// 画面数
+  final int displayCount;
+
+  /// テーブル数
+  final int tableCount;
+
+  /// 開始日
+  final String startDate;
+
+  /// 終了日
+  final String endDate;
+
+  /// 開発人数
   final int devSize;
   final String accountId;
   final String createAt;
@@ -2174,12 +2213,13 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       {required this.projectId,
       required this.name,
       required this.colorId,
+      required this.description,
       required this.industry,
+      required this.devMethodType,
       required this.displayCount,
       required this.tableCount,
       required this.startDate,
       required this.endDate,
-      required this.description,
       required this.devSize,
       required this.accountId,
       required this.createAt,
@@ -2190,12 +2230,13 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
     map['project_id'] = Variable<String>(projectId);
     map['name'] = Variable<String>(name);
     map['color_id'] = Variable<int>(colorId);
+    map['description'] = Variable<String>(description);
     map['industry'] = Variable<String>(industry);
+    map['dev_method_type'] = Variable<int>(devMethodType);
     map['display_count'] = Variable<int>(displayCount);
     map['table_count'] = Variable<int>(tableCount);
     map['start_date'] = Variable<String>(startDate);
     map['end_date'] = Variable<String>(endDate);
-    map['description'] = Variable<String>(description);
     map['dev_size'] = Variable<int>(devSize);
     map['account_id'] = Variable<String>(accountId);
     map['create_at'] = Variable<String>(createAt);
@@ -2208,12 +2249,13 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       projectId: Value(projectId),
       name: Value(name),
       colorId: Value(colorId),
+      description: Value(description),
       industry: Value(industry),
+      devMethodType: Value(devMethodType),
       displayCount: Value(displayCount),
       tableCount: Value(tableCount),
       startDate: Value(startDate),
       endDate: Value(endDate),
-      description: Value(description),
       devSize: Value(devSize),
       accountId: Value(accountId),
       createAt: Value(createAt),
@@ -2228,12 +2270,13 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       projectId: serializer.fromJson<String>(json['projectId']),
       name: serializer.fromJson<String>(json['name']),
       colorId: serializer.fromJson<int>(json['colorId']),
+      description: serializer.fromJson<String>(json['description']),
       industry: serializer.fromJson<String>(json['industry']),
+      devMethodType: serializer.fromJson<int>(json['devMethodType']),
       displayCount: serializer.fromJson<int>(json['displayCount']),
       tableCount: serializer.fromJson<int>(json['tableCount']),
       startDate: serializer.fromJson<String>(json['startDate']),
       endDate: serializer.fromJson<String>(json['endDate']),
-      description: serializer.fromJson<String>(json['description']),
       devSize: serializer.fromJson<int>(json['devSize']),
       accountId: serializer.fromJson<String>(json['accountId']),
       createAt: serializer.fromJson<String>(json['createAt']),
@@ -2247,12 +2290,13 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       'projectId': serializer.toJson<String>(projectId),
       'name': serializer.toJson<String>(name),
       'colorId': serializer.toJson<int>(colorId),
+      'description': serializer.toJson<String>(description),
       'industry': serializer.toJson<String>(industry),
+      'devMethodType': serializer.toJson<int>(devMethodType),
       'displayCount': serializer.toJson<int>(displayCount),
       'tableCount': serializer.toJson<int>(tableCount),
       'startDate': serializer.toJson<String>(startDate),
       'endDate': serializer.toJson<String>(endDate),
-      'description': serializer.toJson<String>(description),
       'devSize': serializer.toJson<int>(devSize),
       'accountId': serializer.toJson<String>(accountId),
       'createAt': serializer.toJson<String>(createAt),
@@ -2264,12 +2308,13 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
           {String? projectId,
           String? name,
           int? colorId,
+          String? description,
           String? industry,
+          int? devMethodType,
           int? displayCount,
           int? tableCount,
           String? startDate,
           String? endDate,
-          String? description,
           int? devSize,
           String? accountId,
           String? createAt,
@@ -2278,12 +2323,13 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
         projectId: projectId ?? this.projectId,
         name: name ?? this.name,
         colorId: colorId ?? this.colorId,
+        description: description ?? this.description,
         industry: industry ?? this.industry,
+        devMethodType: devMethodType ?? this.devMethodType,
         displayCount: displayCount ?? this.displayCount,
         tableCount: tableCount ?? this.tableCount,
         startDate: startDate ?? this.startDate,
         endDate: endDate ?? this.endDate,
-        description: description ?? this.description,
         devSize: devSize ?? this.devSize,
         accountId: accountId ?? this.accountId,
         createAt: createAt ?? this.createAt,
@@ -2295,12 +2341,13 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
           ..write('projectId: $projectId, ')
           ..write('name: $name, ')
           ..write('colorId: $colorId, ')
+          ..write('description: $description, ')
           ..write('industry: $industry, ')
+          ..write('devMethodType: $devMethodType, ')
           ..write('displayCount: $displayCount, ')
           ..write('tableCount: $tableCount, ')
           ..write('startDate: $startDate, ')
           ..write('endDate: $endDate, ')
-          ..write('description: $description, ')
           ..write('devSize: $devSize, ')
           ..write('accountId: $accountId, ')
           ..write('createAt: $createAt, ')
@@ -2314,12 +2361,13 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
       projectId,
       name,
       colorId,
+      description,
       industry,
+      devMethodType,
       displayCount,
       tableCount,
       startDate,
       endDate,
-      description,
       devSize,
       accountId,
       createAt,
@@ -2331,12 +2379,13 @@ class TProjectData extends DataClass implements Insertable<TProjectData> {
           other.projectId == this.projectId &&
           other.name == this.name &&
           other.colorId == this.colorId &&
+          other.description == this.description &&
           other.industry == this.industry &&
+          other.devMethodType == this.devMethodType &&
           other.displayCount == this.displayCount &&
           other.tableCount == this.tableCount &&
           other.startDate == this.startDate &&
           other.endDate == this.endDate &&
-          other.description == this.description &&
           other.devSize == this.devSize &&
           other.accountId == this.accountId &&
           other.createAt == this.createAt &&
@@ -2347,12 +2396,13 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
   final Value<String> projectId;
   final Value<String> name;
   final Value<int> colorId;
+  final Value<String> description;
   final Value<String> industry;
+  final Value<int> devMethodType;
   final Value<int> displayCount;
   final Value<int> tableCount;
   final Value<String> startDate;
   final Value<String> endDate;
-  final Value<String> description;
   final Value<int> devSize;
   final Value<String> accountId;
   final Value<String> createAt;
@@ -2362,12 +2412,13 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
     this.projectId = const Value.absent(),
     this.name = const Value.absent(),
     this.colorId = const Value.absent(),
+    this.description = const Value.absent(),
     this.industry = const Value.absent(),
+    this.devMethodType = const Value.absent(),
     this.displayCount = const Value.absent(),
     this.tableCount = const Value.absent(),
     this.startDate = const Value.absent(),
     this.endDate = const Value.absent(),
-    this.description = const Value.absent(),
     this.devSize = const Value.absent(),
     this.accountId = const Value.absent(),
     this.createAt = const Value.absent(),
@@ -2378,12 +2429,13 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
     required String projectId,
     required String name,
     required int colorId,
+    required String description,
     required String industry,
+    this.devMethodType = const Value.absent(),
     required int displayCount,
     required int tableCount,
     this.startDate = const Value.absent(),
     this.endDate = const Value.absent(),
-    required String description,
     required int devSize,
     required String accountId,
     this.createAt = const Value.absent(),
@@ -2392,22 +2444,23 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
   })  : projectId = Value(projectId),
         name = Value(name),
         colorId = Value(colorId),
+        description = Value(description),
         industry = Value(industry),
         displayCount = Value(displayCount),
         tableCount = Value(tableCount),
-        description = Value(description),
         devSize = Value(devSize),
         accountId = Value(accountId);
   static Insertable<TProjectData> custom({
     Expression<String>? projectId,
     Expression<String>? name,
     Expression<int>? colorId,
+    Expression<String>? description,
     Expression<String>? industry,
+    Expression<int>? devMethodType,
     Expression<int>? displayCount,
     Expression<int>? tableCount,
     Expression<String>? startDate,
     Expression<String>? endDate,
-    Expression<String>? description,
     Expression<int>? devSize,
     Expression<String>? accountId,
     Expression<String>? createAt,
@@ -2418,12 +2471,13 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
       if (projectId != null) 'project_id': projectId,
       if (name != null) 'name': name,
       if (colorId != null) 'color_id': colorId,
+      if (description != null) 'description': description,
       if (industry != null) 'industry': industry,
+      if (devMethodType != null) 'dev_method_type': devMethodType,
       if (displayCount != null) 'display_count': displayCount,
       if (tableCount != null) 'table_count': tableCount,
       if (startDate != null) 'start_date': startDate,
       if (endDate != null) 'end_date': endDate,
-      if (description != null) 'description': description,
       if (devSize != null) 'dev_size': devSize,
       if (accountId != null) 'account_id': accountId,
       if (createAt != null) 'create_at': createAt,
@@ -2436,12 +2490,13 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
       {Value<String>? projectId,
       Value<String>? name,
       Value<int>? colorId,
+      Value<String>? description,
       Value<String>? industry,
+      Value<int>? devMethodType,
       Value<int>? displayCount,
       Value<int>? tableCount,
       Value<String>? startDate,
       Value<String>? endDate,
-      Value<String>? description,
       Value<int>? devSize,
       Value<String>? accountId,
       Value<String>? createAt,
@@ -2451,12 +2506,13 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
       projectId: projectId ?? this.projectId,
       name: name ?? this.name,
       colorId: colorId ?? this.colorId,
+      description: description ?? this.description,
       industry: industry ?? this.industry,
+      devMethodType: devMethodType ?? this.devMethodType,
       displayCount: displayCount ?? this.displayCount,
       tableCount: tableCount ?? this.tableCount,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
-      description: description ?? this.description,
       devSize: devSize ?? this.devSize,
       accountId: accountId ?? this.accountId,
       createAt: createAt ?? this.createAt,
@@ -2477,8 +2533,14 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
     if (colorId.present) {
       map['color_id'] = Variable<int>(colorId.value);
     }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
     if (industry.present) {
       map['industry'] = Variable<String>(industry.value);
+    }
+    if (devMethodType.present) {
+      map['dev_method_type'] = Variable<int>(devMethodType.value);
     }
     if (displayCount.present) {
       map['display_count'] = Variable<int>(displayCount.value);
@@ -2491,9 +2553,6 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
     }
     if (endDate.present) {
       map['end_date'] = Variable<String>(endDate.value);
-    }
-    if (description.present) {
-      map['description'] = Variable<String>(description.value);
     }
     if (devSize.present) {
       map['dev_size'] = Variable<int>(devSize.value);
@@ -2519,12 +2578,13 @@ class TProjectCompanion extends UpdateCompanion<TProjectData> {
           ..write('projectId: $projectId, ')
           ..write('name: $name, ')
           ..write('colorId: $colorId, ')
+          ..write('description: $description, ')
           ..write('industry: $industry, ')
+          ..write('devMethodType: $devMethodType, ')
           ..write('displayCount: $displayCount, ')
           ..write('tableCount: $tableCount, ')
           ..write('startDate: $startDate, ')
           ..write('endDate: $endDate, ')
-          ..write('description: $description, ')
           ..write('devSize: $devSize, ')
           ..write('accountId: $accountId, ')
           ..write('createAt: $createAt, ')
@@ -6254,561 +6314,6 @@ class TTaskDevCompanion extends UpdateCompanion<TTaskDevData> {
   }
 }
 
-class $TResumeSkillTable extends TResumeSkill
-    with TableInfo<$TResumeSkillTable, TResumeSkillData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $TResumeSkillTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _columnCodeMeta =
-      const VerificationMeta('columnCode');
-  @override
-  late final GeneratedColumn<int> columnCode = GeneratedColumn<int>(
-      'column_code', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _orderNoMeta =
-      const VerificationMeta('orderNo');
-  @override
-  late final GeneratedColumn<int> orderNo = GeneratedColumn<int>(
-      'order_no', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _uniqueIdMeta =
-      const VerificationMeta('uniqueId');
-  @override
-  late final GeneratedColumn<String> uniqueId = GeneratedColumn<String>(
-      'unique_id', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  static const VerificationMeta _contentMeta =
-      const VerificationMeta('content');
-  @override
-  late final GeneratedColumn<String> content = GeneratedColumn<String>(
-      'content', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  static const VerificationMeta _editContentMeta =
-      const VerificationMeta('editContent');
-  @override
-  late final GeneratedColumn<String> editContent = GeneratedColumn<String>(
-      'edit_content', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(''));
-  static const VerificationMeta _subContentMeta =
-      const VerificationMeta('subContent');
-  @override
-  late final GeneratedColumn<String> subContent = GeneratedColumn<String>(
-      'sub_content', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 30),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  static const VerificationMeta _editSubContentMeta =
-      const VerificationMeta('editSubContent');
-  @override
-  late final GeneratedColumn<String> editSubContent = GeneratedColumn<String>(
-      'edit_sub_content', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 30),
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(''));
-  static const VerificationMeta _accountIdMeta =
-      const VerificationMeta('accountId');
-  @override
-  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
-      'account_id', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES m_account (account_id)'));
-  static const VerificationMeta _createAtMeta =
-      const VerificationMeta('createAt');
-  @override
-  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
-      'create_at', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      clientDefault: () => DateTime.now().toIso8601String());
-  static const VerificationMeta _updateAtMeta =
-      const VerificationMeta('updateAt');
-  @override
-  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
-      'update_at', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      clientDefault: () => DateTime.now().toIso8601String());
-  @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        columnCode,
-        orderNo,
-        uniqueId,
-        content,
-        editContent,
-        subContent,
-        editSubContent,
-        accountId,
-        createAt,
-        updateAt
-      ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 't_resume_skill';
-  @override
-  VerificationContext validateIntegrity(Insertable<TResumeSkillData> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('column_code')) {
-      context.handle(
-          _columnCodeMeta,
-          columnCode.isAcceptableOrUnknown(
-              data['column_code']!, _columnCodeMeta));
-    } else if (isInserting) {
-      context.missing(_columnCodeMeta);
-    }
-    if (data.containsKey('order_no')) {
-      context.handle(_orderNoMeta,
-          orderNo.isAcceptableOrUnknown(data['order_no']!, _orderNoMeta));
-    } else if (isInserting) {
-      context.missing(_orderNoMeta);
-    }
-    if (data.containsKey('unique_id')) {
-      context.handle(_uniqueIdMeta,
-          uniqueId.isAcceptableOrUnknown(data['unique_id']!, _uniqueIdMeta));
-    } else if (isInserting) {
-      context.missing(_uniqueIdMeta);
-    }
-    if (data.containsKey('content')) {
-      context.handle(_contentMeta,
-          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
-    } else if (isInserting) {
-      context.missing(_contentMeta);
-    }
-    if (data.containsKey('edit_content')) {
-      context.handle(
-          _editContentMeta,
-          editContent.isAcceptableOrUnknown(
-              data['edit_content']!, _editContentMeta));
-    }
-    if (data.containsKey('sub_content')) {
-      context.handle(
-          _subContentMeta,
-          subContent.isAcceptableOrUnknown(
-              data['sub_content']!, _subContentMeta));
-    } else if (isInserting) {
-      context.missing(_subContentMeta);
-    }
-    if (data.containsKey('edit_sub_content')) {
-      context.handle(
-          _editSubContentMeta,
-          editSubContent.isAcceptableOrUnknown(
-              data['edit_sub_content']!, _editSubContentMeta));
-    }
-    if (data.containsKey('account_id')) {
-      context.handle(_accountIdMeta,
-          accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
-    } else if (isInserting) {
-      context.missing(_accountIdMeta);
-    }
-    if (data.containsKey('create_at')) {
-      context.handle(_createAtMeta,
-          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
-    }
-    if (data.containsKey('update_at')) {
-      context.handle(_updateAtMeta,
-          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  TResumeSkillData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return TResumeSkillData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      columnCode: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}column_code'])!,
-      orderNo: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}order_no'])!,
-      uniqueId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}unique_id'])!,
-      content: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
-      editContent: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}edit_content'])!,
-      subContent: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}sub_content'])!,
-      editSubContent: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}edit_sub_content'])!,
-      accountId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}account_id'])!,
-      createAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
-      updateAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
-    );
-  }
-
-  @override
-  $TResumeSkillTable createAlias(String alias) {
-    return $TResumeSkillTable(attachedDatabase, alias);
-  }
-}
-
-class TResumeSkillData extends DataClass
-    implements Insertable<TResumeSkillData> {
-  /// id
-  final int id;
-
-  /// カラムのコード番号
-  final int columnCode;
-
-  /// 表示順
-  final int orderNo;
-
-  /// ユニークID（ラベルIDなど）
-  final String uniqueId;
-
-  /// 内容
-  final String content;
-
-  /// 編集内容
-  final String editContent;
-
-  /// サブ内容 年数や取得年次など
-  final String subContent;
-
-  /// 編集サブ内容
-  final String editSubContent;
-  final String accountId;
-  final String createAt;
-  final String updateAt;
-  const TResumeSkillData(
-      {required this.id,
-      required this.columnCode,
-      required this.orderNo,
-      required this.uniqueId,
-      required this.content,
-      required this.editContent,
-      required this.subContent,
-      required this.editSubContent,
-      required this.accountId,
-      required this.createAt,
-      required this.updateAt});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['column_code'] = Variable<int>(columnCode);
-    map['order_no'] = Variable<int>(orderNo);
-    map['unique_id'] = Variable<String>(uniqueId);
-    map['content'] = Variable<String>(content);
-    map['edit_content'] = Variable<String>(editContent);
-    map['sub_content'] = Variable<String>(subContent);
-    map['edit_sub_content'] = Variable<String>(editSubContent);
-    map['account_id'] = Variable<String>(accountId);
-    map['create_at'] = Variable<String>(createAt);
-    map['update_at'] = Variable<String>(updateAt);
-    return map;
-  }
-
-  TResumeSkillCompanion toCompanion(bool nullToAbsent) {
-    return TResumeSkillCompanion(
-      id: Value(id),
-      columnCode: Value(columnCode),
-      orderNo: Value(orderNo),
-      uniqueId: Value(uniqueId),
-      content: Value(content),
-      editContent: Value(editContent),
-      subContent: Value(subContent),
-      editSubContent: Value(editSubContent),
-      accountId: Value(accountId),
-      createAt: Value(createAt),
-      updateAt: Value(updateAt),
-    );
-  }
-
-  factory TResumeSkillData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return TResumeSkillData(
-      id: serializer.fromJson<int>(json['id']),
-      columnCode: serializer.fromJson<int>(json['columnCode']),
-      orderNo: serializer.fromJson<int>(json['orderNo']),
-      uniqueId: serializer.fromJson<String>(json['uniqueId']),
-      content: serializer.fromJson<String>(json['content']),
-      editContent: serializer.fromJson<String>(json['editContent']),
-      subContent: serializer.fromJson<String>(json['subContent']),
-      editSubContent: serializer.fromJson<String>(json['editSubContent']),
-      accountId: serializer.fromJson<String>(json['accountId']),
-      createAt: serializer.fromJson<String>(json['createAt']),
-      updateAt: serializer.fromJson<String>(json['updateAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'columnCode': serializer.toJson<int>(columnCode),
-      'orderNo': serializer.toJson<int>(orderNo),
-      'uniqueId': serializer.toJson<String>(uniqueId),
-      'content': serializer.toJson<String>(content),
-      'editContent': serializer.toJson<String>(editContent),
-      'subContent': serializer.toJson<String>(subContent),
-      'editSubContent': serializer.toJson<String>(editSubContent),
-      'accountId': serializer.toJson<String>(accountId),
-      'createAt': serializer.toJson<String>(createAt),
-      'updateAt': serializer.toJson<String>(updateAt),
-    };
-  }
-
-  TResumeSkillData copyWith(
-          {int? id,
-          int? columnCode,
-          int? orderNo,
-          String? uniqueId,
-          String? content,
-          String? editContent,
-          String? subContent,
-          String? editSubContent,
-          String? accountId,
-          String? createAt,
-          String? updateAt}) =>
-      TResumeSkillData(
-        id: id ?? this.id,
-        columnCode: columnCode ?? this.columnCode,
-        orderNo: orderNo ?? this.orderNo,
-        uniqueId: uniqueId ?? this.uniqueId,
-        content: content ?? this.content,
-        editContent: editContent ?? this.editContent,
-        subContent: subContent ?? this.subContent,
-        editSubContent: editSubContent ?? this.editSubContent,
-        accountId: accountId ?? this.accountId,
-        createAt: createAt ?? this.createAt,
-        updateAt: updateAt ?? this.updateAt,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('TResumeSkillData(')
-          ..write('id: $id, ')
-          ..write('columnCode: $columnCode, ')
-          ..write('orderNo: $orderNo, ')
-          ..write('uniqueId: $uniqueId, ')
-          ..write('content: $content, ')
-          ..write('editContent: $editContent, ')
-          ..write('subContent: $subContent, ')
-          ..write('editSubContent: $editSubContent, ')
-          ..write('accountId: $accountId, ')
-          ..write('createAt: $createAt, ')
-          ..write('updateAt: $updateAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, columnCode, orderNo, uniqueId, content,
-      editContent, subContent, editSubContent, accountId, createAt, updateAt);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is TResumeSkillData &&
-          other.id == this.id &&
-          other.columnCode == this.columnCode &&
-          other.orderNo == this.orderNo &&
-          other.uniqueId == this.uniqueId &&
-          other.content == this.content &&
-          other.editContent == this.editContent &&
-          other.subContent == this.subContent &&
-          other.editSubContent == this.editSubContent &&
-          other.accountId == this.accountId &&
-          other.createAt == this.createAt &&
-          other.updateAt == this.updateAt);
-}
-
-class TResumeSkillCompanion extends UpdateCompanion<TResumeSkillData> {
-  final Value<int> id;
-  final Value<int> columnCode;
-  final Value<int> orderNo;
-  final Value<String> uniqueId;
-  final Value<String> content;
-  final Value<String> editContent;
-  final Value<String> subContent;
-  final Value<String> editSubContent;
-  final Value<String> accountId;
-  final Value<String> createAt;
-  final Value<String> updateAt;
-  const TResumeSkillCompanion({
-    this.id = const Value.absent(),
-    this.columnCode = const Value.absent(),
-    this.orderNo = const Value.absent(),
-    this.uniqueId = const Value.absent(),
-    this.content = const Value.absent(),
-    this.editContent = const Value.absent(),
-    this.subContent = const Value.absent(),
-    this.editSubContent = const Value.absent(),
-    this.accountId = const Value.absent(),
-    this.createAt = const Value.absent(),
-    this.updateAt = const Value.absent(),
-  });
-  TResumeSkillCompanion.insert({
-    this.id = const Value.absent(),
-    required int columnCode,
-    required int orderNo,
-    required String uniqueId,
-    required String content,
-    this.editContent = const Value.absent(),
-    required String subContent,
-    this.editSubContent = const Value.absent(),
-    required String accountId,
-    this.createAt = const Value.absent(),
-    this.updateAt = const Value.absent(),
-  })  : columnCode = Value(columnCode),
-        orderNo = Value(orderNo),
-        uniqueId = Value(uniqueId),
-        content = Value(content),
-        subContent = Value(subContent),
-        accountId = Value(accountId);
-  static Insertable<TResumeSkillData> custom({
-    Expression<int>? id,
-    Expression<int>? columnCode,
-    Expression<int>? orderNo,
-    Expression<String>? uniqueId,
-    Expression<String>? content,
-    Expression<String>? editContent,
-    Expression<String>? subContent,
-    Expression<String>? editSubContent,
-    Expression<String>? accountId,
-    Expression<String>? createAt,
-    Expression<String>? updateAt,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (columnCode != null) 'column_code': columnCode,
-      if (orderNo != null) 'order_no': orderNo,
-      if (uniqueId != null) 'unique_id': uniqueId,
-      if (content != null) 'content': content,
-      if (editContent != null) 'edit_content': editContent,
-      if (subContent != null) 'sub_content': subContent,
-      if (editSubContent != null) 'edit_sub_content': editSubContent,
-      if (accountId != null) 'account_id': accountId,
-      if (createAt != null) 'create_at': createAt,
-      if (updateAt != null) 'update_at': updateAt,
-    });
-  }
-
-  TResumeSkillCompanion copyWith(
-      {Value<int>? id,
-      Value<int>? columnCode,
-      Value<int>? orderNo,
-      Value<String>? uniqueId,
-      Value<String>? content,
-      Value<String>? editContent,
-      Value<String>? subContent,
-      Value<String>? editSubContent,
-      Value<String>? accountId,
-      Value<String>? createAt,
-      Value<String>? updateAt}) {
-    return TResumeSkillCompanion(
-      id: id ?? this.id,
-      columnCode: columnCode ?? this.columnCode,
-      orderNo: orderNo ?? this.orderNo,
-      uniqueId: uniqueId ?? this.uniqueId,
-      content: content ?? this.content,
-      editContent: editContent ?? this.editContent,
-      subContent: subContent ?? this.subContent,
-      editSubContent: editSubContent ?? this.editSubContent,
-      accountId: accountId ?? this.accountId,
-      createAt: createAt ?? this.createAt,
-      updateAt: updateAt ?? this.updateAt,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (columnCode.present) {
-      map['column_code'] = Variable<int>(columnCode.value);
-    }
-    if (orderNo.present) {
-      map['order_no'] = Variable<int>(orderNo.value);
-    }
-    if (uniqueId.present) {
-      map['unique_id'] = Variable<String>(uniqueId.value);
-    }
-    if (content.present) {
-      map['content'] = Variable<String>(content.value);
-    }
-    if (editContent.present) {
-      map['edit_content'] = Variable<String>(editContent.value);
-    }
-    if (subContent.present) {
-      map['sub_content'] = Variable<String>(subContent.value);
-    }
-    if (editSubContent.present) {
-      map['edit_sub_content'] = Variable<String>(editSubContent.value);
-    }
-    if (accountId.present) {
-      map['account_id'] = Variable<String>(accountId.value);
-    }
-    if (createAt.present) {
-      map['create_at'] = Variable<String>(createAt.value);
-    }
-    if (updateAt.present) {
-      map['update_at'] = Variable<String>(updateAt.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('TResumeSkillCompanion(')
-          ..write('id: $id, ')
-          ..write('columnCode: $columnCode, ')
-          ..write('orderNo: $orderNo, ')
-          ..write('uniqueId: $uniqueId, ')
-          ..write('content: $content, ')
-          ..write('editContent: $editContent, ')
-          ..write('subContent: $subContent, ')
-          ..write('editSubContent: $editSubContent, ')
-          ..write('accountId: $accountId, ')
-          ..write('createAt: $createAt, ')
-          ..write('updateAt: $updateAt')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $TResumeProjectTable extends TResumeProject
     with TableInfo<$TResumeProjectTable, TResumeProjectData> {
   @override
@@ -6824,45 +6329,83 @@ class $TResumeProjectTable extends TResumeProject
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _projectIdMeta =
-      const VerificationMeta('projectId');
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
-  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
-      'project_id', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  static const VerificationMeta _columnCodeMeta =
-      const VerificationMeta('columnCode');
-  @override
-  late final GeneratedColumn<int> columnCode = GeneratedColumn<int>(
-      'column_code', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _orderNoMeta =
-      const VerificationMeta('orderNo');
-  @override
-  late final GeneratedColumn<int> orderNo = GeneratedColumn<int>(
-      'order_no', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _uniqueIdMeta =
-      const VerificationMeta('uniqueId');
-  @override
-  late final GeneratedColumn<String> uniqueId = GeneratedColumn<String>(
-      'unique_id', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
-  static const VerificationMeta _contentMeta =
-      const VerificationMeta('content');
-  @override
-  late final GeneratedColumn<String> content = GeneratedColumn<String>(
-      'content', aliasedName, false,
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
       additionalChecks:
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
+  static const VerificationMeta _colorIdMeta =
+      const VerificationMeta('colorId');
+  @override
+  late final GeneratedColumn<int> colorId = GeneratedColumn<int>(
+      'color_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES m_color (id)'));
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 500),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _industryMeta =
+      const VerificationMeta('industry');
+  @override
+  late final GeneratedColumn<String> industry = GeneratedColumn<String>(
+      'industry', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _devMethodCodeMeta =
+      const VerificationMeta('devMethodCode');
+  @override
+  late final GeneratedColumn<int> devMethodCode = GeneratedColumn<int>(
+      'dev_method_code', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _displayCountMeta =
+      const VerificationMeta('displayCount');
+  @override
+  late final GeneratedColumn<int> displayCount = GeneratedColumn<int>(
+      'display_count', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _tableCountMeta =
+      const VerificationMeta('tableCount');
+  @override
+  late final GeneratedColumn<int> tableCount = GeneratedColumn<int>(
+      'table_count', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _startDateMeta =
+      const VerificationMeta('startDate');
+  @override
+  late final GeneratedColumn<String> startDate = GeneratedColumn<String>(
+      'start_date', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _endDateMeta =
+      const VerificationMeta('endDate');
+  @override
+  late final GeneratedColumn<String> endDate = GeneratedColumn<String>(
+      'end_date', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _devSizeMeta =
+      const VerificationMeta('devSize');
+  @override
+  late final GeneratedColumn<int> devSize = GeneratedColumn<int>(
+      'dev_size', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _accountIdMeta =
       const VerificationMeta('accountId');
   @override
@@ -6874,16 +6417,6 @@ class $TResumeProjectTable extends TResumeProject
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES m_account (account_id)'));
-  static const VerificationMeta _editContentMeta =
-      const VerificationMeta('editContent');
-  @override
-  late final GeneratedColumn<String> editContent = GeneratedColumn<String>(
-      'edit_content', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 100),
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(''));
   static const VerificationMeta _createAtMeta =
       const VerificationMeta('createAt');
   @override
@@ -6903,13 +6436,17 @@ class $TResumeProjectTable extends TResumeProject
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        projectId,
-        columnCode,
-        orderNo,
-        uniqueId,
-        content,
+        name,
+        colorId,
+        description,
+        industry,
+        devMethodCode,
+        displayCount,
+        tableCount,
+        startDate,
+        endDate,
+        devSize,
         accountId,
-        editContent,
         createAt,
         updateAt
       ];
@@ -6926,49 +6463,73 @@ class $TResumeProjectTable extends TResumeProject
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('project_id')) {
-      context.handle(_projectIdMeta,
-          projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta));
-    } else if (isInserting) {
-      context.missing(_projectIdMeta);
-    }
-    if (data.containsKey('column_code')) {
+    if (data.containsKey('name')) {
       context.handle(
-          _columnCodeMeta,
-          columnCode.isAcceptableOrUnknown(
-              data['column_code']!, _columnCodeMeta));
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
-      context.missing(_columnCodeMeta);
+      context.missing(_nameMeta);
     }
-    if (data.containsKey('order_no')) {
-      context.handle(_orderNoMeta,
-          orderNo.isAcceptableOrUnknown(data['order_no']!, _orderNoMeta));
+    if (data.containsKey('color_id')) {
+      context.handle(_colorIdMeta,
+          colorId.isAcceptableOrUnknown(data['color_id']!, _colorIdMeta));
     } else if (isInserting) {
-      context.missing(_orderNoMeta);
+      context.missing(_colorIdMeta);
     }
-    if (data.containsKey('unique_id')) {
-      context.handle(_uniqueIdMeta,
-          uniqueId.isAcceptableOrUnknown(data['unique_id']!, _uniqueIdMeta));
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
     } else if (isInserting) {
-      context.missing(_uniqueIdMeta);
+      context.missing(_descriptionMeta);
     }
-    if (data.containsKey('content')) {
-      context.handle(_contentMeta,
-          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+    if (data.containsKey('industry')) {
+      context.handle(_industryMeta,
+          industry.isAcceptableOrUnknown(data['industry']!, _industryMeta));
     } else if (isInserting) {
-      context.missing(_contentMeta);
+      context.missing(_industryMeta);
+    }
+    if (data.containsKey('dev_method_code')) {
+      context.handle(
+          _devMethodCodeMeta,
+          devMethodCode.isAcceptableOrUnknown(
+              data['dev_method_code']!, _devMethodCodeMeta));
+    }
+    if (data.containsKey('display_count')) {
+      context.handle(
+          _displayCountMeta,
+          displayCount.isAcceptableOrUnknown(
+              data['display_count']!, _displayCountMeta));
+    } else if (isInserting) {
+      context.missing(_displayCountMeta);
+    }
+    if (data.containsKey('table_count')) {
+      context.handle(
+          _tableCountMeta,
+          tableCount.isAcceptableOrUnknown(
+              data['table_count']!, _tableCountMeta));
+    } else if (isInserting) {
+      context.missing(_tableCountMeta);
+    }
+    if (data.containsKey('start_date')) {
+      context.handle(_startDateMeta,
+          startDate.isAcceptableOrUnknown(data['start_date']!, _startDateMeta));
+    }
+    if (data.containsKey('end_date')) {
+      context.handle(_endDateMeta,
+          endDate.isAcceptableOrUnknown(data['end_date']!, _endDateMeta));
+    }
+    if (data.containsKey('dev_size')) {
+      context.handle(_devSizeMeta,
+          devSize.isAcceptableOrUnknown(data['dev_size']!, _devSizeMeta));
+    } else if (isInserting) {
+      context.missing(_devSizeMeta);
     }
     if (data.containsKey('account_id')) {
       context.handle(_accountIdMeta,
           accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
     } else if (isInserting) {
       context.missing(_accountIdMeta);
-    }
-    if (data.containsKey('edit_content')) {
-      context.handle(
-          _editContentMeta,
-          editContent.isAcceptableOrUnknown(
-              data['edit_content']!, _editContentMeta));
     }
     if (data.containsKey('create_at')) {
       context.handle(_createAtMeta,
@@ -6989,20 +6550,28 @@ class $TResumeProjectTable extends TResumeProject
     return TResumeProjectData(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      projectId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}project_id'])!,
-      columnCode: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}column_code'])!,
-      orderNo: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}order_no'])!,
-      uniqueId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}unique_id'])!,
-      content: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      colorId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}color_id'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      industry: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}industry'])!,
+      devMethodCode: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}dev_method_code'])!,
+      displayCount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}display_count'])!,
+      tableCount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}table_count'])!,
+      startDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}start_date'])!,
+      endDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}end_date'])!,
+      devSize: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}dev_size'])!,
       accountId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}account_id'])!,
-      editContent: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}edit_content'])!,
       createAt: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
       updateAt: attachedDatabase.typeMapping
@@ -7021,48 +6590,68 @@ class TResumeProjectData extends DataClass
   /// id
   final int id;
 
-  /// プロジェクトID
-  final String projectId;
+  /// タイトル名
+  final String name;
 
-  /// カラムのコード番号
-  final int columnCode;
+  /// カラーID
+  final int colorId;
 
-  /// 表示順
-  final int orderNo;
+  /// 説明・概要
+  final String description;
 
-  /// ユニークID（ラベルIDなど）
-  final String uniqueId;
+  /// 業種
+  final String industry;
 
-  /// 内容
-  final String content;
+  /// 開発手法
+  final int devMethodCode;
+
+  /// 画面数
+  final int displayCount;
+
+  /// テーブル数
+  final int tableCount;
+
+  /// 開始日
+  final String startDate;
+
+  /// 終了日
+  final String endDate;
+
+  /// 開発人数
+  final int devSize;
   final String accountId;
-
-  /// 編集内容
-  final String editContent;
   final String createAt;
   final String updateAt;
   const TResumeProjectData(
       {required this.id,
-      required this.projectId,
-      required this.columnCode,
-      required this.orderNo,
-      required this.uniqueId,
-      required this.content,
+      required this.name,
+      required this.colorId,
+      required this.description,
+      required this.industry,
+      required this.devMethodCode,
+      required this.displayCount,
+      required this.tableCount,
+      required this.startDate,
+      required this.endDate,
+      required this.devSize,
       required this.accountId,
-      required this.editContent,
       required this.createAt,
       required this.updateAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['project_id'] = Variable<String>(projectId);
-    map['column_code'] = Variable<int>(columnCode);
-    map['order_no'] = Variable<int>(orderNo);
-    map['unique_id'] = Variable<String>(uniqueId);
-    map['content'] = Variable<String>(content);
+    map['name'] = Variable<String>(name);
+    map['color_id'] = Variable<int>(colorId);
+    map['description'] = Variable<String>(description);
+    map['industry'] = Variable<String>(industry);
+    map['dev_method_code'] = Variable<int>(devMethodCode);
+    map['display_count'] = Variable<int>(displayCount);
+    map['table_count'] = Variable<int>(tableCount);
+    map['start_date'] = Variable<String>(startDate);
+    map['end_date'] = Variable<String>(endDate);
+    map['dev_size'] = Variable<int>(devSize);
     map['account_id'] = Variable<String>(accountId);
-    map['edit_content'] = Variable<String>(editContent);
     map['create_at'] = Variable<String>(createAt);
     map['update_at'] = Variable<String>(updateAt);
     return map;
@@ -7071,13 +6660,17 @@ class TResumeProjectData extends DataClass
   TResumeProjectCompanion toCompanion(bool nullToAbsent) {
     return TResumeProjectCompanion(
       id: Value(id),
-      projectId: Value(projectId),
-      columnCode: Value(columnCode),
-      orderNo: Value(orderNo),
-      uniqueId: Value(uniqueId),
-      content: Value(content),
+      name: Value(name),
+      colorId: Value(colorId),
+      description: Value(description),
+      industry: Value(industry),
+      devMethodCode: Value(devMethodCode),
+      displayCount: Value(displayCount),
+      tableCount: Value(tableCount),
+      startDate: Value(startDate),
+      endDate: Value(endDate),
+      devSize: Value(devSize),
       accountId: Value(accountId),
-      editContent: Value(editContent),
       createAt: Value(createAt),
       updateAt: Value(updateAt),
     );
@@ -7088,13 +6681,17 @@ class TResumeProjectData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TResumeProjectData(
       id: serializer.fromJson<int>(json['id']),
-      projectId: serializer.fromJson<String>(json['projectId']),
-      columnCode: serializer.fromJson<int>(json['columnCode']),
-      orderNo: serializer.fromJson<int>(json['orderNo']),
-      uniqueId: serializer.fromJson<String>(json['uniqueId']),
-      content: serializer.fromJson<String>(json['content']),
+      name: serializer.fromJson<String>(json['name']),
+      colorId: serializer.fromJson<int>(json['colorId']),
+      description: serializer.fromJson<String>(json['description']),
+      industry: serializer.fromJson<String>(json['industry']),
+      devMethodCode: serializer.fromJson<int>(json['devMethodCode']),
+      displayCount: serializer.fromJson<int>(json['displayCount']),
+      tableCount: serializer.fromJson<int>(json['tableCount']),
+      startDate: serializer.fromJson<String>(json['startDate']),
+      endDate: serializer.fromJson<String>(json['endDate']),
+      devSize: serializer.fromJson<int>(json['devSize']),
       accountId: serializer.fromJson<String>(json['accountId']),
-      editContent: serializer.fromJson<String>(json['editContent']),
       createAt: serializer.fromJson<String>(json['createAt']),
       updateAt: serializer.fromJson<String>(json['updateAt']),
     );
@@ -7104,13 +6701,17 @@ class TResumeProjectData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'projectId': serializer.toJson<String>(projectId),
-      'columnCode': serializer.toJson<int>(columnCode),
-      'orderNo': serializer.toJson<int>(orderNo),
-      'uniqueId': serializer.toJson<String>(uniqueId),
-      'content': serializer.toJson<String>(content),
+      'name': serializer.toJson<String>(name),
+      'colorId': serializer.toJson<int>(colorId),
+      'description': serializer.toJson<String>(description),
+      'industry': serializer.toJson<String>(industry),
+      'devMethodCode': serializer.toJson<int>(devMethodCode),
+      'displayCount': serializer.toJson<int>(displayCount),
+      'tableCount': serializer.toJson<int>(tableCount),
+      'startDate': serializer.toJson<String>(startDate),
+      'endDate': serializer.toJson<String>(endDate),
+      'devSize': serializer.toJson<int>(devSize),
       'accountId': serializer.toJson<String>(accountId),
-      'editContent': serializer.toJson<String>(editContent),
       'createAt': serializer.toJson<String>(createAt),
       'updateAt': serializer.toJson<String>(updateAt),
     };
@@ -7118,24 +6719,32 @@ class TResumeProjectData extends DataClass
 
   TResumeProjectData copyWith(
           {int? id,
-          String? projectId,
-          int? columnCode,
-          int? orderNo,
-          String? uniqueId,
-          String? content,
+          String? name,
+          int? colorId,
+          String? description,
+          String? industry,
+          int? devMethodCode,
+          int? displayCount,
+          int? tableCount,
+          String? startDate,
+          String? endDate,
+          int? devSize,
           String? accountId,
-          String? editContent,
           String? createAt,
           String? updateAt}) =>
       TResumeProjectData(
         id: id ?? this.id,
-        projectId: projectId ?? this.projectId,
-        columnCode: columnCode ?? this.columnCode,
-        orderNo: orderNo ?? this.orderNo,
-        uniqueId: uniqueId ?? this.uniqueId,
-        content: content ?? this.content,
+        name: name ?? this.name,
+        colorId: colorId ?? this.colorId,
+        description: description ?? this.description,
+        industry: industry ?? this.industry,
+        devMethodCode: devMethodCode ?? this.devMethodCode,
+        displayCount: displayCount ?? this.displayCount,
+        tableCount: tableCount ?? this.tableCount,
+        startDate: startDate ?? this.startDate,
+        endDate: endDate ?? this.endDate,
+        devSize: devSize ?? this.devSize,
         accountId: accountId ?? this.accountId,
-        editContent: editContent ?? this.editContent,
         createAt: createAt ?? this.createAt,
         updateAt: updateAt ?? this.updateAt,
       );
@@ -7143,13 +6752,17 @@ class TResumeProjectData extends DataClass
   String toString() {
     return (StringBuffer('TResumeProjectData(')
           ..write('id: $id, ')
-          ..write('projectId: $projectId, ')
-          ..write('columnCode: $columnCode, ')
-          ..write('orderNo: $orderNo, ')
-          ..write('uniqueId: $uniqueId, ')
-          ..write('content: $content, ')
+          ..write('name: $name, ')
+          ..write('colorId: $colorId, ')
+          ..write('description: $description, ')
+          ..write('industry: $industry, ')
+          ..write('devMethodCode: $devMethodCode, ')
+          ..write('displayCount: $displayCount, ')
+          ..write('tableCount: $tableCount, ')
+          ..write('startDate: $startDate, ')
+          ..write('endDate: $endDate, ')
+          ..write('devSize: $devSize, ')
           ..write('accountId: $accountId, ')
-          ..write('editContent: $editContent, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
           ..write(')'))
@@ -7157,85 +6770,124 @@ class TResumeProjectData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, projectId, columnCode, orderNo, uniqueId,
-      content, accountId, editContent, createAt, updateAt);
+  int get hashCode => Object.hash(
+      id,
+      name,
+      colorId,
+      description,
+      industry,
+      devMethodCode,
+      displayCount,
+      tableCount,
+      startDate,
+      endDate,
+      devSize,
+      accountId,
+      createAt,
+      updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TResumeProjectData &&
           other.id == this.id &&
-          other.projectId == this.projectId &&
-          other.columnCode == this.columnCode &&
-          other.orderNo == this.orderNo &&
-          other.uniqueId == this.uniqueId &&
-          other.content == this.content &&
+          other.name == this.name &&
+          other.colorId == this.colorId &&
+          other.description == this.description &&
+          other.industry == this.industry &&
+          other.devMethodCode == this.devMethodCode &&
+          other.displayCount == this.displayCount &&
+          other.tableCount == this.tableCount &&
+          other.startDate == this.startDate &&
+          other.endDate == this.endDate &&
+          other.devSize == this.devSize &&
           other.accountId == this.accountId &&
-          other.editContent == this.editContent &&
           other.createAt == this.createAt &&
           other.updateAt == this.updateAt);
 }
 
 class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
   final Value<int> id;
-  final Value<String> projectId;
-  final Value<int> columnCode;
-  final Value<int> orderNo;
-  final Value<String> uniqueId;
-  final Value<String> content;
+  final Value<String> name;
+  final Value<int> colorId;
+  final Value<String> description;
+  final Value<String> industry;
+  final Value<int> devMethodCode;
+  final Value<int> displayCount;
+  final Value<int> tableCount;
+  final Value<String> startDate;
+  final Value<String> endDate;
+  final Value<int> devSize;
   final Value<String> accountId;
-  final Value<String> editContent;
   final Value<String> createAt;
   final Value<String> updateAt;
   const TResumeProjectCompanion({
     this.id = const Value.absent(),
-    this.projectId = const Value.absent(),
-    this.columnCode = const Value.absent(),
-    this.orderNo = const Value.absent(),
-    this.uniqueId = const Value.absent(),
-    this.content = const Value.absent(),
+    this.name = const Value.absent(),
+    this.colorId = const Value.absent(),
+    this.description = const Value.absent(),
+    this.industry = const Value.absent(),
+    this.devMethodCode = const Value.absent(),
+    this.displayCount = const Value.absent(),
+    this.tableCount = const Value.absent(),
+    this.startDate = const Value.absent(),
+    this.endDate = const Value.absent(),
+    this.devSize = const Value.absent(),
     this.accountId = const Value.absent(),
-    this.editContent = const Value.absent(),
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
   });
   TResumeProjectCompanion.insert({
     this.id = const Value.absent(),
-    required String projectId,
-    required int columnCode,
-    required int orderNo,
-    required String uniqueId,
-    required String content,
+    required String name,
+    required int colorId,
+    required String description,
+    required String industry,
+    this.devMethodCode = const Value.absent(),
+    required int displayCount,
+    required int tableCount,
+    this.startDate = const Value.absent(),
+    this.endDate = const Value.absent(),
+    required int devSize,
     required String accountId,
-    this.editContent = const Value.absent(),
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
-  })  : projectId = Value(projectId),
-        columnCode = Value(columnCode),
-        orderNo = Value(orderNo),
-        uniqueId = Value(uniqueId),
-        content = Value(content),
+  })  : name = Value(name),
+        colorId = Value(colorId),
+        description = Value(description),
+        industry = Value(industry),
+        displayCount = Value(displayCount),
+        tableCount = Value(tableCount),
+        devSize = Value(devSize),
         accountId = Value(accountId);
   static Insertable<TResumeProjectData> custom({
     Expression<int>? id,
-    Expression<String>? projectId,
-    Expression<int>? columnCode,
-    Expression<int>? orderNo,
-    Expression<String>? uniqueId,
-    Expression<String>? content,
+    Expression<String>? name,
+    Expression<int>? colorId,
+    Expression<String>? description,
+    Expression<String>? industry,
+    Expression<int>? devMethodCode,
+    Expression<int>? displayCount,
+    Expression<int>? tableCount,
+    Expression<String>? startDate,
+    Expression<String>? endDate,
+    Expression<int>? devSize,
     Expression<String>? accountId,
-    Expression<String>? editContent,
     Expression<String>? createAt,
     Expression<String>? updateAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (projectId != null) 'project_id': projectId,
-      if (columnCode != null) 'column_code': columnCode,
-      if (orderNo != null) 'order_no': orderNo,
-      if (uniqueId != null) 'unique_id': uniqueId,
-      if (content != null) 'content': content,
+      if (name != null) 'name': name,
+      if (colorId != null) 'color_id': colorId,
+      if (description != null) 'description': description,
+      if (industry != null) 'industry': industry,
+      if (devMethodCode != null) 'dev_method_code': devMethodCode,
+      if (displayCount != null) 'display_count': displayCount,
+      if (tableCount != null) 'table_count': tableCount,
+      if (startDate != null) 'start_date': startDate,
+      if (endDate != null) 'end_date': endDate,
+      if (devSize != null) 'dev_size': devSize,
       if (accountId != null) 'account_id': accountId,
-      if (editContent != null) 'edit_content': editContent,
       if (createAt != null) 'create_at': createAt,
       if (updateAt != null) 'update_at': updateAt,
     });
@@ -7243,24 +6895,32 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
 
   TResumeProjectCompanion copyWith(
       {Value<int>? id,
-      Value<String>? projectId,
-      Value<int>? columnCode,
-      Value<int>? orderNo,
-      Value<String>? uniqueId,
-      Value<String>? content,
+      Value<String>? name,
+      Value<int>? colorId,
+      Value<String>? description,
+      Value<String>? industry,
+      Value<int>? devMethodCode,
+      Value<int>? displayCount,
+      Value<int>? tableCount,
+      Value<String>? startDate,
+      Value<String>? endDate,
+      Value<int>? devSize,
       Value<String>? accountId,
-      Value<String>? editContent,
       Value<String>? createAt,
       Value<String>? updateAt}) {
     return TResumeProjectCompanion(
       id: id ?? this.id,
-      projectId: projectId ?? this.projectId,
-      columnCode: columnCode ?? this.columnCode,
-      orderNo: orderNo ?? this.orderNo,
-      uniqueId: uniqueId ?? this.uniqueId,
-      content: content ?? this.content,
+      name: name ?? this.name,
+      colorId: colorId ?? this.colorId,
+      description: description ?? this.description,
+      industry: industry ?? this.industry,
+      devMethodCode: devMethodCode ?? this.devMethodCode,
+      displayCount: displayCount ?? this.displayCount,
+      tableCount: tableCount ?? this.tableCount,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      devSize: devSize ?? this.devSize,
       accountId: accountId ?? this.accountId,
-      editContent: editContent ?? this.editContent,
       createAt: createAt ?? this.createAt,
       updateAt: updateAt ?? this.updateAt,
     );
@@ -7272,26 +6932,38 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (projectId.present) {
-      map['project_id'] = Variable<String>(projectId.value);
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
     }
-    if (columnCode.present) {
-      map['column_code'] = Variable<int>(columnCode.value);
+    if (colorId.present) {
+      map['color_id'] = Variable<int>(colorId.value);
     }
-    if (orderNo.present) {
-      map['order_no'] = Variable<int>(orderNo.value);
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
     }
-    if (uniqueId.present) {
-      map['unique_id'] = Variable<String>(uniqueId.value);
+    if (industry.present) {
+      map['industry'] = Variable<String>(industry.value);
     }
-    if (content.present) {
-      map['content'] = Variable<String>(content.value);
+    if (devMethodCode.present) {
+      map['dev_method_code'] = Variable<int>(devMethodCode.value);
+    }
+    if (displayCount.present) {
+      map['display_count'] = Variable<int>(displayCount.value);
+    }
+    if (tableCount.present) {
+      map['table_count'] = Variable<int>(tableCount.value);
+    }
+    if (startDate.present) {
+      map['start_date'] = Variable<String>(startDate.value);
+    }
+    if (endDate.present) {
+      map['end_date'] = Variable<String>(endDate.value);
+    }
+    if (devSize.present) {
+      map['dev_size'] = Variable<int>(devSize.value);
     }
     if (accountId.present) {
       map['account_id'] = Variable<String>(accountId.value);
-    }
-    if (editContent.present) {
-      map['edit_content'] = Variable<String>(editContent.value);
     }
     if (createAt.present) {
       map['create_at'] = Variable<String>(createAt.value);
@@ -7306,13 +6978,17 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
   String toString() {
     return (StringBuffer('TResumeProjectCompanion(')
           ..write('id: $id, ')
-          ..write('projectId: $projectId, ')
-          ..write('columnCode: $columnCode, ')
-          ..write('orderNo: $orderNo, ')
-          ..write('uniqueId: $uniqueId, ')
-          ..write('content: $content, ')
+          ..write('name: $name, ')
+          ..write('colorId: $colorId, ')
+          ..write('description: $description, ')
+          ..write('industry: $industry, ')
+          ..write('devMethodCode: $devMethodCode, ')
+          ..write('displayCount: $displayCount, ')
+          ..write('tableCount: $tableCount, ')
+          ..write('startDate: $startDate, ')
+          ..write('endDate: $endDate, ')
+          ..write('devSize: $devSize, ')
           ..write('accountId: $accountId, ')
-          ..write('editContent: $editContent, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
           ..write(')'))
@@ -7342,7 +7018,6 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final $TTaskTable tTask = $TTaskTable(this);
   late final $TTaskTagTable tTaskTag = $TTaskTagTable(this);
   late final $TTaskDevTable tTaskDev = $TTaskDevTable(this);
-  late final $TResumeSkillTable tResumeSkill = $TResumeSkillTable(this);
   late final $TResumeProjectTable tResumeProject = $TResumeProjectTable(this);
   late final Index colorId =
       Index('color_id', 'CREATE INDEX color_id ON m_color (id)');
@@ -7376,8 +7051,6 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
       Index('task_tag_id', 'CREATE INDEX task_tag_id ON t_task_tag (id)');
   late final Index taskDevId =
       Index('task_dev_id', 'CREATE INDEX task_dev_id ON t_task_dev (task_id)');
-  late final Index resumeSkillId = Index(
-      'resume_skill_id', 'CREATE INDEX resume_skill_id ON t_resume_skill (id)');
   late final Index resumeProjectId = Index('resume_project_id',
       'CREATE INDEX resume_project_id ON t_resume_project (id)');
   late final MAccountDao mAccountDao = MAccountDao(this as StairsDatabase);
@@ -7398,8 +7071,6 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final TTaskDao tTaskDao = TTaskDao(this as StairsDatabase);
   late final TTaskTagDao tTaskTagDao = TTaskTagDao(this as StairsDatabase);
   late final TTaskDevDao tTaskDevDao = TTaskDevDao(this as StairsDatabase);
-  late final TResumeSkillDao tResumeSkillDao =
-      TResumeSkillDao(this as StairsDatabase);
   late final TResumeProjectDao tResumeProjectDao =
       TResumeProjectDao(this as StairsDatabase);
   @override
@@ -7424,7 +7095,6 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         tTask,
         tTaskTag,
         tTaskDev,
-        tResumeSkill,
         tResumeProject,
         colorId,
         accountId,
@@ -7443,7 +7113,6 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         taskId,
         taskTagId,
         taskDevId,
-        resumeSkillId,
         resumeProjectId
       ];
 }

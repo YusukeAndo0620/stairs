@@ -109,6 +109,7 @@ class CardLstItem extends StatelessWidget {
     required Color iconColor,
     required IconData iconData,
     required String selectedItemId,
+    bool isShownDefaultItem = true,
     required List<LabelModel> itemList,
     required Function(String) onChange,
   }) : this._(
@@ -121,6 +122,7 @@ class CardLstItem extends StatelessWidget {
           secondaryItem: _SecondaryItem(
             widget: _DropDown(
               width: width,
+              isShownDefaultItem: isShownDefaultItem,
               selectedItemId: selectedItemId,
               itemList: itemList,
               onChange: (id) => onChange(id),
@@ -229,11 +231,13 @@ class _DropDown extends StatelessWidget {
   const _DropDown({
     this.width,
     required this.selectedItemId,
+    required this.isShownDefaultItem,
     required this.itemList,
     required this.onChange,
   });
   final double? width;
   final String selectedItemId;
+  final bool isShownDefaultItem;
   final List<LabelModel> itemList;
   final Function(String) onChange;
 
@@ -243,16 +247,17 @@ class _DropDown extends StatelessWidget {
     return DropdownButton(
       value: selectedItemId,
       items: [
-        DropdownMenuItem(
-          value: '',
-          child: SizedBox(
-            width: width ?? MediaQuery.of(context).size.width * 0.4,
-            child: Text(
-              _kNoSelectedName,
-              style: theme.textStyleBody,
+        if (isShownDefaultItem)
+          DropdownMenuItem(
+            value: '',
+            child: SizedBox(
+              width: width ?? MediaQuery.of(context).size.width * 0.4,
+              child: Text(
+                _kNoSelectedName,
+                style: theme.textStyleBody,
+              ),
             ),
           ),
-        ),
         ...itemList
             .map(
               (item) => DropdownMenuItem(

@@ -51,7 +51,8 @@ export 'view/event_area.dart';
 // enum
 export 'enum/plan_type.dart';
 export 'enum/sex_type.dart';
-export 'enum/work_type.dart';
+export 'enum/role_type.dart';
+export 'enum/dev_method_type.dart';
 
 // common provider
 export 'provider/modal/select_item_provider.dart';

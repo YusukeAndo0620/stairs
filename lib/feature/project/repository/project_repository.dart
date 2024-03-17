@@ -392,11 +392,13 @@ ProjectDetailModel _convertProjectDetailToModel({
       color: getColorFromCode(code: colorData.colorCodeId),
     ),
     industry: projectData.industry,
+    devMethodType: getDevMethodType(projectData.devMethodType),
+    description: projectData.description,
+    devSize: projectData.devSize,
     displayCount: projectData.displayCount,
     tableCount: projectData.tableCount,
     startDate: DateTime.parse(projectData.startDate).toLocal(),
     endDate: DateTime.parse(projectData.endDate).toLocal(),
-    description: projectData.description,
     osList: osData
         .map((item) => LabelModel(id: item.osId, labelName: item.name))
         .toList(),
@@ -410,7 +412,6 @@ ProjectDetailModel _convertProjectDetailToModel({
     devProgressList: devProgressData
         .map((item) => LabelModel(id: item.id.toString(), labelName: item.name))
         .toList(),
-    devSize: projectData.devSize,
     tagList: tagList,
   );
 }
@@ -424,12 +425,13 @@ TProjectCompanion _convertProjectDetailToEntity({
     name: Value(detailModel.projectName),
     colorId: Value(detailModel.themeColorModel.id),
     industry: Value(detailModel.industry),
+    devMethodType: Value(detailModel.devMethodType.typeValue),
+    description: Value(detailModel.description),
+    devSize: Value(detailModel.devSize),
     displayCount: Value(detailModel.displayCount),
     tableCount: Value(detailModel.tableCount),
     startDate: Value(detailModel.startDate.toIso8601String()),
     endDate: Value(detailModel.endDate.toIso8601String()),
-    description: Value(detailModel.description),
-    devSize: Value(detailModel.devSize),
     accountId: const Value('1'),
     updateAt: Value(DateTime.now().toIso8601String()),
   );

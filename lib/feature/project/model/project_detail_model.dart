@@ -6,17 +6,18 @@ class ProjectDetailModel {
     required this.projectName,
     required this.themeColorModel,
     required this.industry,
+    required this.devMethodType,
+    this.description = '',
+    this.devSize = 0,
     this.displayCount = 0,
     this.tableCount = 0,
     required this.startDate,
     required this.endDate,
-    this.description = '',
     this.osList = const [],
     this.dbList = const [],
     this.devLanguageList = const [],
     this.toolList = const [],
     this.devProgressList = const [],
-    this.devSize = 0,
     this.tagList = const [],
   });
 
@@ -32,10 +33,19 @@ class ProjectDetailModel {
   /// 業種
   final String industry;
 
+  /// 開発手法区分
+  final DevMethodType devMethodType;
+
+  /// 説明
+  final String description;
+
+  /// 開発人数
+  final int devSize;
+
   /// 画面数
   final int displayCount;
 
-  /// 画面数
+  /// テーブル数
   final int tableCount;
 
   /// 開始日
@@ -43,9 +53,6 @@ class ProjectDetailModel {
 
   /// 終了日
   final DateTime endDate;
-
-  /// 説明
-  final String description;
 
   /// OS
   final List<LabelModel> osList;
@@ -62,9 +69,6 @@ class ProjectDetailModel {
   /// 開発工程リスト
   final List<LabelModel> devProgressList;
 
-  /// 開発人数
-  final int devSize;
-
   /// タグリスト
   final List<ColorLabelModel> tagList;
 
@@ -73,17 +77,18 @@ class ProjectDetailModel {
     String? projectName,
     ColorModel? themeColorModel,
     String? industry,
+    DevMethodType? devMethodType,
+    String? description,
+    int? devSize,
     int? displayCount,
     int? tableCount,
     DateTime? startDate,
     DateTime? endDate,
-    String? description,
     List<LabelModel>? osList,
     List<LabelModel>? dbList,
     List<LabelWithContent>? devLanguageList,
     List<LabelModel>? toolList,
     List<LabelModel>? devProgressList,
-    int? devSize,
     List<ColorLabelModel>? tagList,
   }) =>
       ProjectDetailModel(
@@ -91,17 +96,18 @@ class ProjectDetailModel {
         projectName: projectName ?? this.projectName,
         themeColorModel: themeColorModel ?? this.themeColorModel,
         industry: industry ?? this.industry,
+        description: description ?? this.description,
+        devMethodType: devMethodType ?? this.devMethodType,
+        devSize: devSize ?? this.devSize,
         displayCount: displayCount ?? this.displayCount,
         tableCount: tableCount ?? this.tableCount,
         startDate: startDate ?? this.startDate,
         endDate: endDate ?? this.endDate,
-        description: description ?? this.description,
         osList: osList ?? this.osList,
         dbList: dbList ?? this.dbList,
         devLanguageList: devLanguageList ?? this.devLanguageList,
         toolList: toolList ?? this.toolList,
         devProgressList: devProgressList ?? this.devProgressList,
-        devSize: devSize ?? this.devSize,
         tagList: tagList ?? this.tagList,
       );
 

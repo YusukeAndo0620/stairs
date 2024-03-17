@@ -2,8 +2,6 @@ import 'package:drift/drift.dart';
 import 'package:stairs/db/database.dart';
 import 'package:stairs/feature/project/enum/project_update_param.dart';
 import 'package:stairs/feature/project/model/project_detail_model.dart';
-import 'package:stairs/feature/resume/enum/project_column_type.dart';
-import 'package:stairs/feature/resume/enum/skill_column_type.dart';
 import 'package:stairs/feature/resume/model/resume_model.dart';
 import 'package:stairs/loom/loom_package.dart' hide Row;
 
@@ -29,9 +27,6 @@ class ResumeRepository {
       final countryCodeResponse = await db.mCountryCodeDao
           .getCountryByCode(countryCode: accountResponse.countryCode);
 
-      // 経歴書 スキル取得
-      final skillResponse = await db.tResumeSkillDao
-          .getResumeSkill(accountId: accountResponse.accountId);
       // 経歴書 プロジェクト取得
       final projectResponse = await db.tResumeProjectDao
           .getResumeProject(accountId: accountResponse.accountId);
@@ -39,7 +34,6 @@ class ResumeRepository {
       return _convertResumeToModel(
           accountData: accountResponse,
           countryCodeData: countryCodeResponse,
-          skillData: skillResponse,
           projectData: projectResponse);
     } on Exception catch (exception) {
       _logger.e(exception);
@@ -86,27 +80,8 @@ class ResumeRepository {
 ResumeModel _convertResumeToModel({
   required MAccountData accountData,
   required MCountryCodeData countryCodeData,
-  required List<TResumeSkillData> skillData,
   required List<TResumeProjectData> projectData,
 }) {
-  // スキルリスト key: SkillColumnType, value: Map<表示順, 値 >
-  Map<SkillColumnType, Map<int, String>> skillMap = {};
-
-  // プロジェクトMap key: 行番号, value: Map<ProjectColumnType, Map<表示順, 値>>
-  Map<String, Map<ProjectColumnType, Map<int, String>>> projectMap = {};
-
-  for (final item in skillData) {
-    final skillColumnType = getSkillColumnTypeWithCol(item.columnCode);
-    skillMap[skillColumnType]![item.orderNo] =
-        item.editContent.isNotEmpty ? item.editContent : item.content;
-  }
-
-  for (final item in projectData) {
-    final projectColumnType = getSkillColumnTypeWithCol(item.columnCode);
-    projectMap[item.projectId]![projectColumnType]![item.orderNo] =
-        item.editContent.isNotEmpty ? item.editContent : item.content;
-  }
-
   return ResumeModel(
     name: accountData.firstName + accountData.lastName,
     sexType: accountData.isMale ? SexType.male : SexType.female,
@@ -119,8 +94,6 @@ ResumeModel _convertResumeToModel({
     academicBackground: accountData.academicBackground,
     strongTech: accountData.strongTech,
     strongPoint: accountData.strongPoint,
-    skillMap: skillMap,
-    projectMap: projectMap,
   );
 }
 

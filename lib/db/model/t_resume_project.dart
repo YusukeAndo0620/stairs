@@ -7,27 +7,40 @@ class TResumeProject extends Table {
   /// id
   IntColumn get id => integer().autoIncrement()();
 
-  /// プロジェクトID
-  TextColumn get projectId => text().withLength(min: 0, max: 100)();
+  /// タイトル名
+  TextColumn get name => text().withLength(min: 1, max: 100)();
 
-  /// カラムのコード番号
-  IntColumn get columnCode => integer()();
+  /// カラーID
+  IntColumn get colorId => integer().references(MColor, #id)();
 
-  /// 表示順
-  IntColumn get orderNo => integer()();
+  /// 説明・概要
+  TextColumn get description => text().withLength(min: 0, max: 500)();
 
-  /// ユニークID（ラベルIDなど）
-  TextColumn get uniqueId => text().withLength(min: 0, max: 100)();
+  /// 業種
+  TextColumn get industry => text().withLength(min: 0, max: 100)();
 
-  /// 内容
-  TextColumn get content => text().withLength(min: 1, max: 100)();
+  /// 開発手法
+  IntColumn get devMethodCode => integer().withDefault(const Constant(0))();
+
+  /// 画面数
+  IntColumn get displayCount => integer()();
+
+  /// テーブル数
+  IntColumn get tableCount => integer()();
+
+  /// 開始日
+  TextColumn get startDate =>
+      text().clientDefault(() => DateTime.now().toIso8601String())();
+
+  /// 終了日
+  TextColumn get endDate =>
+      text().clientDefault(() => DateTime.now().toIso8601String())();
+
+  /// 開発人数
+  IntColumn get devSize => integer()();
 
   TextColumn get accountId =>
       text().withLength(min: 1, max: 50).references(MAccount, #accountId)();
-
-  /// 編集内容
-  TextColumn get editContent =>
-      text().withDefault(const Constant('')).withLength(min: 0, max: 100)();
 
   TextColumn get createAt =>
       text().clientDefault(() => DateTime.now().toIso8601String())();

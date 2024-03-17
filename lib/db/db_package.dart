@@ -17,7 +17,6 @@ export 'model/t_board.dart';
 export 'model/t_task.dart';
 export 'model/t_task_tag.dart';
 export 'model/t_task_dev.dart';
-export 'model/t_resume_skill.dart';
 export 'model/t_resume_project.dart';
 
 // dao
@@ -31,7 +30,6 @@ export 'dao/t_dev_progress_rel_dao.dart';
 export 'dao/t_os_info_dao.dart';
 export 'dao/t_project_dao.dart';
 export 'dao/t_resume_project_dao.dart';
-export 'dao/t_resume_skill_dao.dart';
 export 'dao/t_tag_dao.dart';
 export 'dao/t_tag_rel_dao.dart';
 export 'dao/t_task_dao.dart';

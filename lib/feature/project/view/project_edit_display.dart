@@ -16,6 +16,8 @@ const _kColorHintTxt = 'メインテーマを設定';
 const _kIndustryTxt = '業種';
 const _kIndustryHintTxt = '業種';
 
+const _kDevMethodTxt = '開発手法';
+
 const _kDueTxt = '期間';
 const _kDueHintTxt = '期間を設定';
 
@@ -233,6 +235,30 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             }
                           },
                         ),
+                        // 開発手法
+                        CardLstItem.dropDown(
+                          width: secondaryItemWidth * 0.8,
+                          label: _kDevMethodTxt,
+                          iconData: theme.icons.developers,
+                          iconColor: theme.colorPrimary,
+                          isShownDefaultItem: false,
+                          selectedItemId:
+                              detail.devMethodType.typeValue.toString(),
+                          itemList: DevMethodType.values
+                              .map((item) => LabelModel(
+                                  id: item.typeValue.toString(),
+                                  labelName: item.name))
+                              .toList(),
+                          onChange: (devMethodType) {
+                            if (detail.devMethodType.typeValue.toString() !=
+                                devMethodType) {
+                              addUpdateParam(param: ProjectUpdateParam.project);
+                              projectDetailNotifier.changeDevMethodType(
+                                  typeValue: int.tryParse(devMethodType) ?? 0);
+                            }
+                          },
+                        ),
+
                         // 開発人数
                         CardLstItem.input(
                           width: secondaryItemWidth,
