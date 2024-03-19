@@ -6,7 +6,7 @@ part of 'select_label_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$selectLabelHash() => r'bd8db4cb9bceb53b5c751863f36ca610ccbddc2d';
+String _$selectLabelHash() => r'5bf60db317627406126bfbff4dcf8107782a556e';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -32,11 +32,11 @@ class _SystemHash {
 abstract class _$SelectLabel
     extends BuildlessAutoDisposeNotifier<List<CheckedLabelModel>> {
   late final List<LabelModel> labelList;
-  late final List<LabelModel> selectedLabelList;
+  late final List<String> checkedIdList;
 
   List<CheckedLabelModel> build({
     required List<LabelModel> labelList,
-    required List<LabelModel> selectedLabelList,
+    required List<String> checkedIdList,
   });
 }
 
@@ -52,11 +52,11 @@ class SelectLabelFamily extends Family<List<CheckedLabelModel>> {
   /// See also [SelectLabel].
   SelectLabelProvider call({
     required List<LabelModel> labelList,
-    required List<LabelModel> selectedLabelList,
+    required List<String> checkedIdList,
   }) {
     return SelectLabelProvider(
       labelList: labelList,
-      selectedLabelList: selectedLabelList,
+      checkedIdList: checkedIdList,
     );
   }
 
@@ -66,7 +66,7 @@ class SelectLabelFamily extends Family<List<CheckedLabelModel>> {
   ) {
     return call(
       labelList: provider.labelList,
-      selectedLabelList: provider.selectedLabelList,
+      checkedIdList: provider.checkedIdList,
     );
   }
 
@@ -91,11 +91,11 @@ class SelectLabelProvider extends AutoDisposeNotifierProviderImpl<SelectLabel,
   /// See also [SelectLabel].
   SelectLabelProvider({
     required List<LabelModel> labelList,
-    required List<LabelModel> selectedLabelList,
+    required List<String> checkedIdList,
   }) : this._internal(
           () => SelectLabel()
             ..labelList = labelList
-            ..selectedLabelList = selectedLabelList,
+            ..checkedIdList = checkedIdList,
           from: selectLabelProvider,
           name: r'selectLabelProvider',
           debugGetCreateSourceHash:
@@ -106,7 +106,7 @@ class SelectLabelProvider extends AutoDisposeNotifierProviderImpl<SelectLabel,
           allTransitiveDependencies:
               SelectLabelFamily._allTransitiveDependencies,
           labelList: labelList,
-          selectedLabelList: selectedLabelList,
+          checkedIdList: checkedIdList,
         );
 
   SelectLabelProvider._internal(
@@ -117,11 +117,11 @@ class SelectLabelProvider extends AutoDisposeNotifierProviderImpl<SelectLabel,
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.labelList,
-    required this.selectedLabelList,
+    required this.checkedIdList,
   }) : super.internal();
 
   final List<LabelModel> labelList;
-  final List<LabelModel> selectedLabelList;
+  final List<String> checkedIdList;
 
   @override
   List<CheckedLabelModel> runNotifierBuild(
@@ -129,7 +129,7 @@ class SelectLabelProvider extends AutoDisposeNotifierProviderImpl<SelectLabel,
   ) {
     return notifier.build(
       labelList: labelList,
-      selectedLabelList: selectedLabelList,
+      checkedIdList: checkedIdList,
     );
   }
 
@@ -140,14 +140,14 @@ class SelectLabelProvider extends AutoDisposeNotifierProviderImpl<SelectLabel,
       override: SelectLabelProvider._internal(
         () => create()
           ..labelList = labelList
-          ..selectedLabelList = selectedLabelList,
+          ..checkedIdList = checkedIdList,
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         labelList: labelList,
-        selectedLabelList: selectedLabelList,
+        checkedIdList: checkedIdList,
       ),
     );
   }
@@ -162,14 +162,14 @@ class SelectLabelProvider extends AutoDisposeNotifierProviderImpl<SelectLabel,
   bool operator ==(Object other) {
     return other is SelectLabelProvider &&
         other.labelList == labelList &&
-        other.selectedLabelList == selectedLabelList;
+        other.checkedIdList == checkedIdList;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, labelList.hashCode);
-    hash = _SystemHash.combine(hash, selectedLabelList.hashCode);
+    hash = _SystemHash.combine(hash, checkedIdList.hashCode);
 
     return _SystemHash.finish(hash);
   }
@@ -180,8 +180,8 @@ mixin SelectLabelRef
   /// The parameter `labelList` of this provider.
   List<LabelModel> get labelList;
 
-  /// The parameter `selectedLabelList` of this provider.
-  List<LabelModel> get selectedLabelList;
+  /// The parameter `checkedIdList` of this provider.
+  List<String> get checkedIdList;
 }
 
 class _SelectLabelProviderElement extends AutoDisposeNotifierProviderElement<
@@ -191,8 +191,8 @@ class _SelectLabelProviderElement extends AutoDisposeNotifierProviderElement<
   @override
   List<LabelModel> get labelList => (origin as SelectLabelProvider).labelList;
   @override
-  List<LabelModel> get selectedLabelList =>
-      (origin as SelectLabelProvider).selectedLabelList;
+  List<String> get checkedIdList =>
+      (origin as SelectLabelProvider).checkedIdList;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

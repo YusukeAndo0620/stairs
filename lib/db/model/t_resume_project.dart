@@ -10,9 +10,6 @@ class TResumeProject extends Table {
   /// タイトル名
   TextColumn get name => text().withLength(min: 1, max: 100)();
 
-  /// カラーID
-  IntColumn get colorId => integer().references(MColor, #id)();
-
   /// 説明・概要
   TextColumn get description => text().withLength(min: 0, max: 500)();
 

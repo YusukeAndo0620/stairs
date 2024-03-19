@@ -10,14 +10,14 @@ class TDbDao extends DatabaseAccessor<StairsDatabase> with _$TDbDaoMixin {
   TDbDao(StairsDatabase db) : super(db);
   final _logger = stairsLogger(name: 't_db_dao');
 
-  /// プロジェクトで設定されたDB取得
+  /// アカウントで設定されたDB取得
   Future<List<TDbData>> getDbList({
-    required String projectId,
+    required String accountId,
   }) async {
     try {
       _logger.d('getDbList 通信開始');
       final query = db.select(db.tDb)
-        ..where((tbl) => tbl.projectId.equals(projectId));
+        ..where((tbl) => tbl.accountId.equals(accountId));
       final response = await query.get();
       _logger.d('取得データ：$response');
       return response;
@@ -62,32 +62,34 @@ class TDbDao extends DatabaseAccessor<StairsDatabase> with _$TDbDaoMixin {
   }
 
   /// DB 削除
-  Future<void> deleteDbByProjectId({
-    required String projectId,
+  Future<void> deleteDb({
+    required String accountId,
+    required String dbId,
   }) async {
     try {
-      _logger.d('deleteDbByProjectId 通信開始');
-      _logger.d('projectId: $projectId');
+      _logger.d('deleteDb 通信開始');
+      _logger.d('dbId: $dbId');
       final query = db.delete(db.tDb)
-        ..where((tbl) => tbl.projectId.equals(projectId));
+        ..where(
+            (tbl) => tbl.dbId.equals(dbId) & tbl.accountId.equals(accountId));
       await query.go();
     } on Exception catch (exception) {
       _logger.e(exception);
       rethrow;
     } finally {
-      _logger.d('deleteDbByProjectId 通信終了');
+      _logger.d('deleteDb 通信終了');
     }
   }
 
   // DB model to entity
   TDbCompanion convertDbToEntity({
-    required String projectId,
+    required String accountId,
     required LabelModel model,
   }) {
     return TDbCompanion(
       dbId: Value(model.id),
       name: Value(model.labelName),
-      projectId: Value(projectId),
+      accountId: Value(accountId),
       updateAt: Value(DateTime.now().toIso8601String()),
     );
   }

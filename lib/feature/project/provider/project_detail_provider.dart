@@ -59,7 +59,7 @@ class ProjectDetail extends _$ProjectDetail {
           DateTime(now.year, now.month + 7, 1).add(const Duration(days: -1)),
       devLanguageList: const [],
       toolList: [],
-      devProgressList: [],
+      devProgressIdList: [],
       tagList: tagList!,
     );
   }
@@ -284,13 +284,11 @@ class ProjectDetail extends _$ProjectDetail {
     );
   }
 
-  void changeDb({required List<LabelModel> dbList}) {
-    final targetDbList =
-        dbList.where((item) => item.labelName.isNotEmpty).toList();
+  void changeDb({required List<String> dbIdList}) {
     update(
       (data) {
         state = const AsyncLoading();
-        return data = data!.copyWith(dbList: targetDbList);
+        return data = data!.copyWith(dbIdList: dbIdList);
       },
       onError: (error, stack) {
         state = AsyncError(error, stack);
@@ -330,11 +328,11 @@ class ProjectDetail extends _$ProjectDetail {
     );
   }
 
-  void changeDevProgressList({required List<LabelModel> devProgressList}) {
+  void changeDevProgressList({required List<String> devProgressIdList}) {
     update(
       (data) {
         state = const AsyncLoading();
-        return data = data!.copyWith(devProgressList: devProgressList);
+        return data = data!.copyWith(devProgressIdList: devProgressIdList);
       },
       onError: (error, stack) {
         state = AsyncError(error, stack);

@@ -1,4 +1,3 @@
-import 'package:stairs/db/provider/database_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,8 +24,7 @@ class SelectColorDisplay extends ConsumerWidget {
     SelectColorModel? selectColorState;
     SelectColor? selectColorNotifier;
 
-    final colorList =
-        ref.watch(mColorProvider(db: ref.watch(databaseProvider)));
+    final colorList = ref.watch(customColorProvider);
 
     colorList.whenData((value) {
       selectColorState = ref.watch(

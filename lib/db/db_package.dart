@@ -13,17 +13,22 @@ export 'model/t_tag_rel.dart';
 export 'model/t_tool.dart';
 export 'model/t_os_info.dart';
 export 'model/t_db.dart';
+export 'model/t_db_rel.dart';
 export 'model/t_board.dart';
 export 'model/t_task.dart';
 export 'model/t_task_tag.dart';
 export 'model/t_task_dev.dart';
 export 'model/t_resume_project.dart';
+export 'model/t_resume_role.dart';
+export 'model/t_resume_dev_lang_rel.dart';
+export 'model/t_resume_tag.dart';
 
 // dao
 export 'dao/m_account_dao.dart';
 export 'dao/m_country_code_dao.dart';
 export 'dao/t_board_dao.dart';
 export 'dao/t_db_dao.dart';
+export 'dao/t_db_rel_dao.dart';
 export 'dao/t_dev_lang_dao.dart';
 export 'dao/t_dev_lang_rel_dao.dart';
 export 'dao/t_dev_progress_rel_dao.dart';

@@ -1,17 +1,18 @@
-import 'package:stairs/db/database.dart';
+import 'package:stairs/db/provider/database_provider.dart';
 import 'package:stairs/feature/common/repository/common_repository.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'm_color_provider.g.dart';
+part 'custom_color_provider.g.dart';
 
 @riverpod
-class MColor extends _$MColor {
+class CustomColor extends _$CustomColor {
   @override
-  FutureOr<List<ColorModel>?> build({required StairsDatabase db}) =>
-      getColorList(db: db);
+  FutureOr<List<ColorModel>?> build() => getColorList();
 
-  Future<List<ColorModel>?> getColorList({required StairsDatabase db}) async {
+  Future<List<ColorModel>?> getColorList() async {
+    // DBプロバイダー
+    final db = ref.watch(databaseProvider);
     final commonRepositoryProvider =
         Provider((ref) => CommonRepository(db: db));
     // API通信開始

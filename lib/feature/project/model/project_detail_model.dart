@@ -14,10 +14,10 @@ class ProjectDetailModel {
     required this.startDate,
     required this.endDate,
     this.osList = const [],
-    this.dbList = const [],
+    this.dbIdList = const [],
     this.devLanguageList = const [],
     this.toolList = const [],
-    this.devProgressList = const [],
+    this.devProgressIdList = const [],
     this.tagList = const [],
   });
 
@@ -58,7 +58,7 @@ class ProjectDetailModel {
   final List<LabelModel> osList;
 
   /// DB
-  final List<LabelModel> dbList;
+  final List<String> dbIdList;
 
   /// 開発言語
   final List<LabelWithContent> devLanguageList;
@@ -67,7 +67,7 @@ class ProjectDetailModel {
   final List<LabelModel> toolList;
 
   /// 開発工程リスト
-  final List<LabelModel> devProgressList;
+  final List<String> devProgressIdList;
 
   /// タグリスト
   final List<ColorLabelModel> tagList;
@@ -85,10 +85,10 @@ class ProjectDetailModel {
     DateTime? startDate,
     DateTime? endDate,
     List<LabelModel>? osList,
-    List<LabelModel>? dbList,
+    List<String>? dbIdList,
     List<LabelWithContent>? devLanguageList,
     List<LabelModel>? toolList,
-    List<LabelModel>? devProgressList,
+    List<String>? devProgressIdList,
     List<ColorLabelModel>? tagList,
   }) =>
       ProjectDetailModel(
@@ -104,10 +104,10 @@ class ProjectDetailModel {
         startDate: startDate ?? this.startDate,
         endDate: endDate ?? this.endDate,
         osList: osList ?? this.osList,
-        dbList: dbList ?? this.dbList,
+        dbIdList: dbIdList ?? this.dbIdList,
         devLanguageList: devLanguageList ?? this.devLanguageList,
         toolList: toolList ?? this.toolList,
-        devProgressList: devProgressList ?? this.devProgressList,
+        devProgressIdList: devProgressIdList ?? this.devProgressIdList,
         tagList: tagList ?? this.tagList,
       );
 
@@ -136,10 +136,10 @@ class ProjectDetailModel {
   //     toolList.add(labelModel);
   //   }
   //   // 開発工程リスト
-  //   final List<LabelModel> devProgressList = [];
+  //   final List<LabelModel> devProgressIdList = [];
   //   for (final item in json["dev_progress_list"]) {
   //     final labelModel = LabelModel.fromJson(item);
-  //     devProgressList.add(labelModel);
+  //     devProgressIdList.add(labelModel);
   //   }
 
   //   // 開発人数
@@ -165,7 +165,7 @@ class ProjectDetailModel {
   //     db: db,
   //     devLanguageList: devLanguageList,
   //     toolList: toolList,
-  //     devProgressList: devProgressList,
+  //     devProgressIdList: devProgressIdList,
   //     devSize: devSize,
   //     tagList: tagList,
   //   );
@@ -203,12 +203,12 @@ class ProjectDetailModel {
   //   data['tool_list'] = targetToolList;
 
   //   // 開発工程リスト
-  //   final targetDevProgressList = [];
-  //   for (final item in devProgressList) {
+  //   final targetdevProgressIdList = [];
+  //   for (final item in devProgressIdList) {
   //     final labelModel = item.toJson();
-  //     targetDevProgressList.add(labelModel);
+  //     targetdevProgressIdList.add(labelModel);
   //   }
-  //   data['dev_progress_list'] = targetDevProgressList;
+  //   data['dev_progress_list'] = targetdevProgressIdList;
 
   //   // 開発人数
   //   data['dev_size'] = devSize;
@@ -240,10 +240,10 @@ class ProjectDetailModel {
   //   }
 
   //   // 開発工程リスト
-  //   final targetDevProgressList = [];
-  //   for (final item in devProgressList) {
+  //   final targetdevProgressIdList = [];
+  //   for (final item in devProgressIdList) {
   //     final labelModel = item.toJson();
-  //     targetDevProgressList.add(labelModel);
+  //     targetdevProgressIdList.add(labelModel);
   //   }
   //   // タグリスト
   //   final targetTagList = [];
@@ -266,7 +266,7 @@ class ProjectDetailModel {
   //       db: $db,
   //       devLanguageList: $targetDevLanguageList,
   //       toolList: $targetToolList,
-  //       devProgressList: $targetDevProgressList,
+  //       devProgressIdList: $targetdevProgressIdList,
   //       dev_size: $devSize,
   //       tool_list: $targetTagList
   //     },

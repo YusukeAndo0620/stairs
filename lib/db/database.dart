@@ -4,6 +4,7 @@ import 'package:drift/native.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:stairs/db/constant/country_code_list.dart';
+import 'package:stairs/db/constant/db_list.dart';
 import 'package:stairs/loom/stairs_logger.dart';
 
 import 'db_package.dart';
@@ -30,11 +31,15 @@ final _logger = stairsLogger(name: 'database');
     TTool,
     TOsInfo,
     TDb,
+    TDbRel,
     TBoard,
     TTask,
     TTaskTag,
     TTaskDev,
     TResumeProject,
+    TResumeRole,
+    TResumeDevLangRel,
+    TResumeTag,
   ],
   daos: [
     MAccountDao,
@@ -42,6 +47,7 @@ final _logger = stairsLogger(name: 'database');
     TProjectDao,
     TOsInfoDao,
     TDbDao,
+    TDbRelDao,
     TDevLangRelDao,
     TToolDao,
     TDevProgressRelDao,
@@ -95,6 +101,10 @@ class StairsDatabase extends _$StairsDatabase {
               // 開発言語
               for (final item in defaultTDevLangList) {
                 await into(tDevLanguage).insert(item);
+              }
+              // DB
+              for (final item in defaultDbList) {
+                await into(tDb).insert(item);
               }
               // 開発工程
               for (final item in defaultDevProgressList) {

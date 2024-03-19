@@ -1,4 +1,4 @@
-import 'package:stairs/db/provider/database_provider.dart';
+import 'package:stairs/feature/common/provider/db_provider.dart';
 import 'package:stairs/feature/project/provider/component/dev_lang_provider.dart';
 import 'package:stairs/feature/project/enum/project_update_param.dart';
 import 'package:stairs/feature/project/provider/project_detail_provider.dart';
@@ -111,12 +111,14 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
     final projectListNotifier = ref.watch(projectListProvider.notifier);
 
     //開発言語一覧
-    final devLangList =
-        ref.watch(devLangProvider(db: ref.watch(databaseProvider)));
+    final devLangList = ref.watch(devLangProvider);
+
+    // DB一覧
+    final dbList = ref.watch(dbProvider);
 
     //開発工程一覧
-    final devProgressList =
-        ref.watch(devProgressProvider(db: ref.watch(databaseProvider)));
+    final devProgressList = ref.watch(devProgressProvider);
+    final devProgressNotifier = ref.watch(devProgressProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -431,7 +433,14 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                           iconData: theme.icons.resume,
                           hintText: _kDbHintTxt,
                           itemList: [
-                            for (final item in detail.dbList)
+                            for (final item in dbList.value == null
+                                ? []
+                                : dbList.value!
+                                    .map((e) => detail.dbIdList.contains(e.id)
+                                        ? e
+                                        : null)
+                                    .whereType<LabelModel>()
+                                    .toList())
                               LabelTip(
                                 label: item.labelName,
                                 themeColor: theme.colorFgDisabled,
@@ -440,17 +449,18 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) {
-                                return LabelInputDisplay(
+                                return SelectLabelDisplay(
                                   title: _kDbTxt,
-                                  labelList: detail.dbList,
-                                  hintText: _kDbInputHintTxt,
+                                  labelList: dbList.value ?? [],
+                                  checkedIdList: detail.dbIdList,
+                                  hintText: _kDbListEmptyTxt,
                                   emptyText: _kDbListEmptyTxt,
-                                  onTapBack: (data) {
-                                    if (detail.dbList != data) {
+                                  onTapBackIcon: (idList) {
+                                    if (detail.dbIdList != idList) {
                                       addUpdateParam(
                                           param: ProjectUpdateParam.db);
                                       projectDetailNotifier.changeDb(
-                                          dbList: (data as List<LabelModel>));
+                                          dbIdList: idList);
                                     }
                                   },
                                 );
@@ -538,9 +548,11 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                           iconData: theme.icons.resume,
                           hintText: _kProgressHintTxt,
                           itemList: [
-                            for (final item in detail.devProgressList)
+                            for (final devProgressId
+                                in detail.devProgressIdList)
                               LabelTip(
-                                label: item.labelName,
+                                label: devProgressNotifier.getName(
+                                    devProgressId: devProgressId),
                                 themeColor: theme.colorFgDisabled,
                               )
                           ],
@@ -550,15 +562,15 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                                 return SelectLabelDisplay(
                                   title: _kProgressTxt,
                                   labelList: devProgressList.value!,
-                                  selectedLabelList: detail.devProgressList,
-                                  onTapBackIcon: (labelList) {
-                                    if (detail.devProgressList != labelList) {
+                                  checkedIdList: detail.devProgressIdList,
+                                  onTapBackIcon: (idList) {
+                                    if (detail.devProgressIdList != idList) {
                                       addUpdateParam(
                                           param:
                                               ProjectUpdateParam.devProgress);
                                       projectDetailNotifier
                                           .changeDevProgressList(
-                                        devProgressList: labelList,
+                                        devProgressIdList: idList,
                                       );
                                     }
                                   },

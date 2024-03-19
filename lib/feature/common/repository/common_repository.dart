@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:stairs/db/database.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:collection/collection.dart';
@@ -64,6 +65,69 @@ class CommonRepository {
     }
   }
 
+  /// DB一覧取得
+  Future<List<LabelModel>?> getDbList({required String accountId}) async {
+    try {
+      _logger.i('getDbList 通信開始');
+      final response = await db.tDbDao.getDbList(accountId: accountId);
+      _logger.i('取得数：${response.length}件');
+      final responseData = _convertTDbToModel(dbList: response);
+
+      return responseData;
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('getDbList 通信終了');
+    }
+  }
+
+  /// DB 追加
+  Future<void> createDb(
+      {required String accountId, required LabelModel labelModel}) async {
+    try {
+      _logger.i('createDb 通信開始');
+      final dbData =
+          _convertTDbToEntity(accountId: accountId, labelModel: labelModel);
+      await db.tDbDao.insertDb(dbData: dbData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('createDb 通信終了');
+    }
+  }
+
+  /// DB 更新
+  Future<void> updateDb(
+      {required String accountId, required LabelModel labelModel}) async {
+    try {
+      _logger.i('updateDb 通信開始');
+      final dbData =
+          _convertTDbToEntity(accountId: accountId, labelModel: labelModel);
+      await db.tDbDao.updateDb(dbData: dbData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('updateDb 通信終了');
+    }
+  }
+
+  /// DB 削除
+  Future<void> deleteDb(
+      {required String accountId, required String dbId}) async {
+    try {
+      _logger.i('deleteDb 通信開始');
+      await db.tDbDao.deleteDb(accountId: accountId, dbId: dbId);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('deleteDb 通信終了');
+    }
+  }
+
   /// 開発工程一覧取得
   Future<List<LabelModel>?> getDevProgressList() async {
     try {
@@ -104,6 +168,7 @@ class CommonRepository {
   }
 }
 
+/// account to model
 AccountModel _convertMAccountToModel({required MAccountData accountData}) {
   return AccountModel(
       accountId: accountData.accountId,
@@ -111,6 +176,7 @@ AccountModel _convertMAccountToModel({required MAccountData accountData}) {
       planType: getPlanType(accountData.planType));
 }
 
+/// color to model
 List<ColorModel> _convertMColorToModel({required List<MColorData> colorData}) {
   return colorData
       .map((item) => ColorModel(
@@ -118,6 +184,29 @@ List<ColorModel> _convertMColorToModel({required List<MColorData> colorData}) {
       .toList();
 }
 
+/// db to model
+List<LabelModel> _convertTDbToModel({required List<TDbData> dbList}) {
+  return dbList
+      .map((item) => LabelModel(id: item.dbId, labelName: item.name))
+      .toList();
+}
+
+/// db to entity
+TDbCompanion _convertTDbToEntity({
+  required String accountId,
+  required LabelModel labelModel,
+}) {
+  return TDbCompanion(
+    dbId: Value(labelModel.id),
+    name: Value(
+      labelModel.labelName,
+    ),
+    accountId: Value(accountId),
+    updateAt: Value(DateTime.now().toIso8601String()),
+  );
+}
+
+/// dev progress to model
 List<LabelModel> _convertMDevProgressToModel(
     {required List<MDevProgressListData> devProgressList}) {
   return devProgressList

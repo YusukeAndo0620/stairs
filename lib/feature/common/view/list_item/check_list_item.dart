@@ -6,9 +6,11 @@ const _kContentPadding = EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0);
 class CheckListItem extends StatelessWidget {
   const CheckListItem({
     super.key,
+    this.isTopBorderShown = false,
     required this.info,
     required this.onTap,
   });
+  final bool isTopBorderShown;
   final CheckedLabelModel info;
   final Function(CheckedLabelModel) onTap;
 
@@ -21,6 +23,12 @@ class CheckListItem extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           border: Border(
+            top: isTopBorderShown
+                ? BorderSide(
+                    color: theme.colorFgDefault,
+                    width: _kBorderWidth,
+                  )
+                : BorderSide.none,
             bottom: BorderSide(
               color: theme.colorFgDefault,
               width: _kBorderWidth,

@@ -61,5 +61,5 @@ export 'provider/view/label_input_provider.dart';
 export 'provider/view/drumroll_with_content_provider.dart';
 export 'provider/view/select_color_provider.dart';
 export 'provider/view/select_label_provider.dart';
-export 'provider/m_color_provider.dart';
+export 'provider/custom_color_provider.dart';
 export 'provider/dev_progress_provider.dart';

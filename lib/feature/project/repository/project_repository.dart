@@ -53,7 +53,7 @@ class ProjectRepository {
       final osResponse = await db.tOsInfoDao.getOsList(projectId: projectId);
 
       // DB
-      final dbResponse = await db.tDbDao.getDbList(projectId: projectId);
+      final dbResponse = await db.tDbRelDao.getDbRelList(projectId: projectId);
 
       // 開発言語
       final devLangResponse =
@@ -73,7 +73,10 @@ class ProjectRepository {
         projectData: detailResponse.readTable(db.tProject),
         colorData: detailResponse.readTable(db.mColor),
         osData: osResponse,
-        dbData: dbResponse,
+        dbRelData: dbResponse
+            .map((e) => e.readTableOrNull(db.tDbRel))
+            .whereType<TDbRelData>()
+            .toList(),
         devLangData: devLangResponse
             .map((e) => e.readTableOrNull(db.tDevLanguage))
             .whereType<TDevLanguageData>()
@@ -82,9 +85,7 @@ class ProjectRepository {
             .map((e) => e.readTable(db.tDevLanguageRel))
             .toList(),
         toolData: toolResponse,
-        devProgressData: devProgressResponse
-            .map((e) => e.readTable(db.mDevProgressList))
-            .toList(),
+        devProgressRelData: devProgressResponse,
         tagData: tagResponse.map((e) => e.readTable(db.tTag)).toList(),
         tagRelData: tagResponse.map((e) => e.readTable(db.tTagRel)).toList(),
         tagColorData: tagResponse.map((e) => e.readTable(db.mColor)).toList(),
@@ -93,7 +94,8 @@ class ProjectRepository {
       _logger.d(
           'projectId: ${responseData.projectId}, projectName: ${responseData.projectName}');
       _logger.d('devLanguageList: ${responseData.devLanguageList}');
-      _logger.d('devProgressList: ${responseData.devProgressList}');
+      _logger.d(
+          'devProgressList length: ${responseData.devProgressIdList.length}');
       _logger.d('tagList: ${responseData.tagList}');
       return responseData;
     } on Exception catch (exception) {
@@ -117,9 +119,9 @@ class ProjectRepository {
               .convertOsToEntity(projectId: detailModel.projectId, model: item))
           .toList();
 
-      final dbDataList = detailModel.dbList
-          .map((item) => db.tDbDao
-              .convertDbToEntity(projectId: detailModel.projectId, model: item))
+      final dbRelDataList = detailModel.dbIdList
+          .map((dbId) => db.tDbRelDao.convertDbRelToEntity(
+              projectId: detailModel.projectId, dbId: dbId))
           .toList();
 
       final devLangDataList = detailModel.devLanguageList
@@ -134,9 +136,10 @@ class ProjectRepository {
           .whereType<TToolCompanion>()
           .toList();
 
-      final devProgressDataList = detailModel.devProgressList
-          .map((item) => db.tDevProgressRelDao.convertDevProgressToEntity(
-              projectId: detailModel.projectId, model: item))
+      final devProgressDataList = detailModel.devProgressIdList
+          .map((id) => db.tDevProgressRelDao.convertDevProgressToEntity(
+              projectId: detailModel.projectId,
+              devProgressId: int.tryParse(id) ?? 0))
           .toList()
           .whereType<TDevProgressRelCompanion>()
           .toList();
@@ -154,9 +157,9 @@ class ProjectRepository {
       for (final item in osDataList) {
         await db.tOsInfoDao.insertOs(osData: item);
       }
-      // DB 作成
-      for (final item in dbDataList) {
-        await db.tDbDao.insertDb(dbData: item);
+      // DB紐付け 作成
+      for (final item in dbRelDataList) {
+        await db.tDbRelDao.insertDbRel(dbRelData: item);
       }
       // 開発言語紐付け 作成
       for (final item in devLangDataList) {
@@ -215,16 +218,16 @@ class ProjectRepository {
             // DB
             case ProjectUpdateParam.db:
               _logger.d('DB 更新');
-              final dbDataList = detailModel.dbList
-                  .map((item) => db.tDbDao.convertDbToEntity(
-                      projectId: detailModel.projectId, model: item))
+              final dbRelDataList = detailModel.dbIdList
+                  .map((dbId) => db.tDbRelDao.convertDbRelToEntity(
+                      projectId: detailModel.projectId, dbId: dbId))
                   .toList();
               // DB 削除
-              await db.tDbDao
-                  .deleteDbByProjectId(projectId: detailModel.projectId);
+              await db.tDbRelDao
+                  .deleteDbRelByProjectId(projectId: detailModel.projectId);
               // DB 作成
-              for (final item in dbDataList) {
-                await db.tDbDao.insertDb(dbData: item);
+              for (final item in dbRelDataList) {
+                await db.tDbRelDao.insertDbRel(dbRelData: item);
               }
             // 開発言語紐付け
             case ProjectUpdateParam.devLangRel:
@@ -255,13 +258,13 @@ class ProjectRepository {
               for (final item in toolDataList) {
                 await db.tToolDao.insertTool(toolData: item);
               }
-            // 開発工程
+            // 開発工程(delete & insert)
             case ProjectUpdateParam.devProgress:
               _logger.d('開発工程 更新');
-              final devProgressDataList = detailModel.devProgressList
-                  .map((item) => db.tDevProgressRelDao
-                      .convertDevProgressToEntity(
-                          projectId: detailModel.projectId, model: item))
+              final devProgressDataList = detailModel.devProgressIdList
+                  .map((id) => db.tDevProgressRelDao.convertDevProgressToEntity(
+                      projectId: detailModel.projectId,
+                      devProgressId: int.tryParse(id) ?? 0))
                   .whereType<TDevProgressRelCompanion>()
                   .toList();
               // 開発工程 削除
@@ -344,11 +347,11 @@ ProjectDetailModel _convertProjectDetailToModel({
   required TProjectData projectData,
   required MColorData colorData,
   required List<TOsInfoData> osData,
-  required List<TDbData> dbData,
+  required List<TDbRelData> dbRelData,
   required List<TDevLanguageData> devLangData,
   required List<TDevLanguageRelData> devLangRelData,
   required List<TToolData> toolData,
-  required List<MDevProgressListData> devProgressData,
+  required List<TDevProgressRelData> devProgressRelData,
   required List<TTagData> tagData,
   required List<TTagRelData> tagRelData,
   required List<MColorData> tagColorData,
@@ -402,15 +405,13 @@ ProjectDetailModel _convertProjectDetailToModel({
     osList: osData
         .map((item) => LabelModel(id: item.osId, labelName: item.name))
         .toList(),
-    dbList: dbData
-        .map((item) => LabelModel(id: item.dbId, labelName: item.name))
-        .toList(),
+    dbIdList: dbRelData.map((item) => item.dbId).toList(),
     devLanguageList: devLangList,
     toolList: toolData
         .map((item) => LabelModel(id: item.toolId, labelName: item.name))
         .toList(),
-    devProgressList: devProgressData
-        .map((item) => LabelModel(id: item.id.toString(), labelName: item.name))
+    devProgressIdList: devProgressRelData
+        .map((item) => item.devProgressId.toString())
         .toList(),
     tagList: tagList,
   );

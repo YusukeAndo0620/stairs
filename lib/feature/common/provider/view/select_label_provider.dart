@@ -16,17 +16,17 @@ class CheckedLabelModel extends LabelModel {
 @riverpod
 class SelectLabel extends _$SelectLabel {
   @override
-  List<CheckedLabelModel> build(
-      {required List<LabelModel> labelList,
-      required List<LabelModel> selectedLabelList}) {
-    // ダミーデータ
+  List<CheckedLabelModel> build({
+    required List<LabelModel> labelList,
+    required List<String> checkedIdList,
+  }) {
     final checkList = labelList
         .map(
           (item) => CheckedLabelModel(
             id: item.id,
             labelName: item.labelName,
-            checked: selectedLabelList.firstWhereOrNull(
-                  (element) => element.id == item.id,
+            checked: checkedIdList.firstWhereOrNull(
+                  (id) => id == item.id,
                 ) !=
                 null,
           ),
@@ -50,10 +50,11 @@ class SelectLabel extends _$SelectLabel {
   }
 
   // チェックリストで、選択された要素のリストを取得
-  List<LabelModel> get selectedList {
-    final selectedList =
-        state.map((item) => item.checked ? item : null).toList();
-    selectedList.removeWhere((element) => element == null);
-    return selectedList.whereType<LabelModel>().toList();
+  List<String> get selectedIdList {
+    final selectedIdList = state
+        .map((item) => item.checked ? item.id : null)
+        .whereType<String>()
+        .toList();
+    return selectedIdList;
   }
 }
