@@ -6,7 +6,7 @@ part of 'select_label_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$selectLabelHash() => r'5bf60db317627406126bfbff4dcf8107782a556e';
+String _$selectLabelHash() => r'082337abb7a853c4ab9ba13e5c2f7116f7cefe2d';
 
 /// Copied from Dart SDK
 class _SystemHash {

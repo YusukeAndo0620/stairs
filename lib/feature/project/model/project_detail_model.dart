@@ -13,7 +13,7 @@ class ProjectDetailModel {
     this.tableCount = 0,
     required this.startDate,
     required this.endDate,
-    this.osList = const [],
+    this.osIdList = const [],
     this.dbIdList = const [],
     this.devLanguageList = const [],
     this.toolList = const [],
@@ -55,7 +55,7 @@ class ProjectDetailModel {
   final DateTime endDate;
 
   /// OS
-  final List<LabelModel> osList;
+  final List<String> osIdList;
 
   /// DB
   final List<String> dbIdList;
@@ -84,7 +84,7 @@ class ProjectDetailModel {
     int? tableCount,
     DateTime? startDate,
     DateTime? endDate,
-    List<LabelModel>? osList,
+    List<String>? osIdList,
     List<String>? dbIdList,
     List<LabelWithContent>? devLanguageList,
     List<LabelModel>? toolList,
@@ -103,7 +103,7 @@ class ProjectDetailModel {
         tableCount: tableCount ?? this.tableCount,
         startDate: startDate ?? this.startDate,
         endDate: endDate ?? this.endDate,
-        osList: osList ?? this.osList,
+        osIdList: osIdList ?? this.osIdList,
         dbIdList: dbIdList ?? this.dbIdList,
         devLanguageList: devLanguageList ?? this.devLanguageList,
         toolList: toolList ?? this.toolList,

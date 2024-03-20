@@ -14,13 +14,13 @@ class TOsInfoDao extends DatabaseAccessor<StairsDatabase>
 
   /// プロジェクトで設定されたOS取得
   Future<List<TOsInfoData>> getOsList({
-    required String projectId,
+    required String accountId,
   }) async {
     try {
       _logger.d('getOsList 通信開始');
-      _logger.d('projectId: $projectId');
+      _logger.d('accountId: $accountId');
       final query = db.select(db.tOsInfo)
-        ..where((tbl) => tbl.projectId.equals(projectId));
+        ..where((tbl) => tbl.accountId.equals(accountId));
       final response = await query.get();
       _logger.d('取得データ：$response');
       return response;
@@ -65,32 +65,34 @@ class TOsInfoDao extends DatabaseAccessor<StairsDatabase>
   }
 
   /// OS 削除
-  Future<void> deleteOsByProjectId({
-    required String projectId,
+  Future<void> deleteOs({
+    required String accountId,
+    required String osId,
   }) async {
     try {
-      _logger.d('deleteOsByProjectId 通信開始');
-      _logger.d('projectId: $projectId');
+      _logger.d('deleteOs 通信開始');
+      _logger.d('osId: $osId');
       final query = db.delete(db.tOsInfo)
-        ..where((tbl) => tbl.projectId.equals(projectId));
+        ..where(
+            (tbl) => tbl.osId.equals(osId) & tbl.accountId.equals(accountId));
       await query.go();
     } on Exception catch (exception) {
       _logger.e(exception);
       rethrow;
     } finally {
-      _logger.d('deleteOsByProjectId 通信終了');
+      _logger.d('deleteOs 通信終了');
     }
   }
 
   // OS model to entity
   TOsInfoCompanion convertOsToEntity({
-    required String projectId,
+    required String accountId,
     required LabelModel model,
   }) {
     return TOsInfoCompanion(
       osId: Value(model.id),
       name: Value(model.labelName),
-      projectId: Value(projectId),
+      accountId: Value(accountId),
       updateAt: Value(DateTime.now().toIso8601String()),
     );
   }

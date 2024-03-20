@@ -1,4 +1,5 @@
 import 'package:stairs/feature/common/provider/db_provider.dart';
+import 'package:stairs/feature/common/provider/os_provider.dart';
 import 'package:stairs/feature/project/provider/component/dev_lang_provider.dart';
 import 'package:stairs/feature/project/enum/project_update_param.dart';
 import 'package:stairs/feature/project/provider/project_detail_provider.dart';
@@ -112,6 +113,10 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
 
     //開発言語一覧
     final devLangList = ref.watch(devLangProvider);
+
+    // OS一覧
+    final osList = ref.watch(osProvider);
+    final osNotifier = ref.watch(osProvider.notifier);
 
     // DB一覧
     final dbList = ref.watch(dbProvider);
@@ -398,26 +403,52 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                           iconData: theme.icons.resume,
                           hintText: _kOsHintTxt,
                           itemList: [
-                            for (final item in detail.osList)
+                            for (final osId in detail.osIdList)
                               LabelTip(
-                                label: item.labelName,
+                                label: osNotifier.getName(osId: osId),
                                 themeColor: theme.colorFgDisabled,
                               )
                           ],
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) {
-                                return LabelInputDisplay(
+                                return SelectLabelDisplay(
                                   title: _kOsTxt,
-                                  labelList: detail.osList,
+                                  labelList: osList.value ?? [],
+                                  checkedIdList: detail.osIdList,
                                   hintText: _kOsInputHintTxt,
                                   emptyText: _kOsListEmptyTxt,
-                                  onTapBack: (data) {
-                                    if (detail.osList != data) {
+                                  isEditable: true,
+                                  onAddLabel: (id, labelName) async {
+                                    // OS項目追加
+                                    await osNotifier.createOs(
+                                      labelModel: LabelModel(
+                                          id: id, labelName: labelName),
+                                    );
+                                    // 更新後のOS一覧をStateにセット
+                                    await osNotifier.setOsList();
+                                  },
+                                  onSubmitEditedText: (id, labelName) async {
+                                    // OSの名称変更
+                                    await osNotifier.updateOs(
+                                      labelModel: LabelModel(
+                                          id: id, labelName: labelName),
+                                    );
+                                    // 更新後のOS一覧をStateにセット
+                                    await osNotifier.setOsList();
+                                  },
+                                  onTapDelete: (id) async {
+                                    // OSの項目削除
+                                    await osNotifier.deleteOs(osId: id);
+                                    // 更新後のOS一覧をStateにセット
+                                    await osNotifier.setOsList();
+                                  },
+                                  onTapBackIcon: (idList) {
+                                    if (detail.osIdList != idList) {
                                       addUpdateParam(
                                           param: ProjectUpdateParam.os);
                                       projectDetailNotifier.changeOs(
-                                          osList: (data as List<LabelModel>));
+                                          osIdList: idList);
                                     }
                                   },
                                 );
@@ -459,7 +490,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                                     await dbNotifier.setDbList();
                                   },
                                   onSubmitEditedText: (id, labelName) async {
-                                    // dbの名称変更
+                                    // DBの名称変更
                                     await dbNotifier.updateDb(
                                       labelModel: LabelModel(
                                           id: id, labelName: labelName),
@@ -468,7 +499,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                                     await dbNotifier.setDbList();
                                   },
                                   onTapDelete: (id) async {
-                                    // dbの項目削除
+                                    // DBの項目削除
                                     await dbNotifier.deleteDb(dbId: id);
                                     // 更新後のDB一覧をStateにセット
                                     await dbNotifier.setDbList();

@@ -269,13 +269,11 @@ class ProjectDetail extends _$ProjectDetail {
     );
   }
 
-  void changeOs({required List<LabelModel> osList}) {
-    final targetOsList =
-        osList.where((item) => item.labelName.isNotEmpty).toList();
+  void changeOs({required List<String> osIdList}) {
     update(
       (data) {
         state = const AsyncLoading();
-        return data = data!.copyWith(osList: targetOsList);
+        return data = data!.copyWith(osIdList: osIdList);
       },
       onError: (error, stack) {
         state = AsyncError(error, stack);

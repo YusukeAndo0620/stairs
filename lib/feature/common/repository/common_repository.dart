@@ -65,7 +65,7 @@ class CommonRepository {
     }
   }
 
-  /// DB一覧取得
+  /// DB 一覧取得
   Future<List<LabelModel>?> getDbList({required String accountId}) async {
     try {
       _logger.i('getDbList 通信開始');
@@ -125,6 +125,69 @@ class CommonRepository {
       rethrow;
     } finally {
       _logger.i('deleteDb 通信終了');
+    }
+  }
+
+  /// OS 一覧取得
+  Future<List<LabelModel>?> getOsList({required String accountId}) async {
+    try {
+      _logger.i('getOsList 通信開始');
+      final response = await db.tOsInfoDao.getOsList(accountId: accountId);
+      _logger.i('取得数：${response.length}件');
+      final responseData = _convertTOsToModel(osList: response);
+
+      return responseData;
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('getOsList 通信終了');
+    }
+  }
+
+  /// OS 追加
+  Future<void> createOs(
+      {required String accountId, required LabelModel labelModel}) async {
+    try {
+      _logger.i('createOs 通信開始');
+      final osData =
+          _convertTOsToEntity(accountId: accountId, labelModel: labelModel);
+      await db.tOsInfoDao.insertOs(osData: osData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('createOs 通信終了');
+    }
+  }
+
+  /// OS 更新
+  Future<void> updateOs(
+      {required String accountId, required LabelModel labelModel}) async {
+    try {
+      _logger.i('updateOs 通信開始');
+      final osData =
+          _convertTOsToEntity(accountId: accountId, labelModel: labelModel);
+      await db.tOsInfoDao.updateOs(osData: osData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('updateOs 通信終了');
+    }
+  }
+
+  /// OS 削除
+  Future<void> deleteOs(
+      {required String accountId, required String osId}) async {
+    try {
+      _logger.i('deleteOs 通信開始');
+      await db.tOsInfoDao.deleteOs(accountId: accountId, osId: osId);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('deleteOs 通信終了');
     }
   }
 
@@ -198,6 +261,28 @@ TDbCompanion _convertTDbToEntity({
 }) {
   return TDbCompanion(
     dbId: Value(labelModel.id),
+    name: Value(
+      labelModel.labelName,
+    ),
+    accountId: Value(accountId),
+    updateAt: Value(DateTime.now().toIso8601String()),
+  );
+}
+
+/// os to model
+List<LabelModel> _convertTOsToModel({required List<TOsInfoData> osList}) {
+  return osList
+      .map((item) => LabelModel(id: item.osId, labelName: item.name))
+      .toList();
+}
+
+/// os to entity
+TOsInfoCompanion _convertTOsToEntity({
+  required String accountId,
+  required LabelModel labelModel,
+}) {
+  return TOsInfoCompanion(
+    osId: Value(labelModel.id),
     name: Value(
       labelModel.labelName,
     ),

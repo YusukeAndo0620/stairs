@@ -50,7 +50,7 @@ class ProjectRepository {
           await db.tProjectDao.getProjectDetail(projectId: projectId);
 
       // OS
-      final osResponse = await db.tOsInfoDao.getOsList(projectId: projectId);
+      final osResponse = await db.tOsRelDao.getOsRelList(projectId: projectId);
 
       // DB
       final dbResponse = await db.tDbRelDao.getDbRelList(projectId: projectId);
@@ -72,7 +72,10 @@ class ProjectRepository {
       final responseData = _convertProjectDetailToModel(
         projectData: detailResponse.readTable(db.tProject),
         colorData: detailResponse.readTable(db.mColor),
-        osData: osResponse,
+        osData: osResponse
+            .map((e) => e.readTableOrNull(db.tOsRel))
+            .whereType<TOsRelData>()
+            .toList(),
         dbRelData: dbResponse
             .map((e) => e.readTableOrNull(db.tDbRel))
             .whereType<TDbRelData>()
@@ -114,9 +117,9 @@ class ProjectRepository {
       final projectData =
           _convertProjectDetailToEntity(detailModel: detailModel);
 
-      final osDataList = detailModel.osList
-          .map((item) => db.tOsInfoDao
-              .convertOsToEntity(projectId: detailModel.projectId, model: item))
+      final osRelDataList = detailModel.osIdList
+          .map((osId) => db.tOsRelDao.convertOsRelToEntity(
+              projectId: detailModel.projectId, osId: osId))
           .toList();
 
       final dbRelDataList = detailModel.dbIdList
@@ -154,8 +157,8 @@ class ProjectRepository {
       // プロジェクト作成
       await db.tProjectDao.insertProject(projectData: projectData);
       // OS 作成
-      for (final item in osDataList) {
-        await db.tOsInfoDao.insertOs(osData: item);
+      for (final item in osRelDataList) {
+        await db.tOsRelDao.insertOsRel(osRelData: item);
       }
       // DB紐付け 作成
       for (final item in dbRelDataList) {
@@ -204,16 +207,16 @@ class ProjectRepository {
             // OS
             case ProjectUpdateParam.os:
               _logger.d('OS 更新');
-              final osDataList = detailModel.osList
-                  .map((item) => db.tOsInfoDao.convertOsToEntity(
-                      projectId: detailModel.projectId, model: item))
+              final osRelDataList = detailModel.osIdList
+                  .map((osId) => db.tOsRelDao.convertOsRelToEntity(
+                      projectId: detailModel.projectId, osId: osId))
                   .toList();
               // OS 削除
-              await db.tOsInfoDao
-                  .deleteOsByProjectId(projectId: detailModel.projectId);
+              await db.tOsRelDao
+                  .deleteOsRelByProjectId(projectId: detailModel.projectId);
               // OS 作成
-              for (final item in osDataList) {
-                await db.tOsInfoDao.insertOs(osData: item);
+              for (final item in osRelDataList) {
+                await db.tOsRelDao.insertOsRel(osRelData: item);
               }
             // DB
             case ProjectUpdateParam.db:
@@ -346,7 +349,7 @@ ProjectListItemModel _convertProjectListToModel({
 ProjectDetailModel _convertProjectDetailToModel({
   required TProjectData projectData,
   required MColorData colorData,
-  required List<TOsInfoData> osData,
+  required List<TOsRelData> osData,
   required List<TDbRelData> dbRelData,
   required List<TDevLanguageData> devLangData,
   required List<TDevLanguageRelData> devLangRelData,
@@ -402,9 +405,7 @@ ProjectDetailModel _convertProjectDetailToModel({
     tableCount: projectData.tableCount,
     startDate: DateTime.parse(projectData.startDate).toLocal(),
     endDate: DateTime.parse(projectData.endDate).toLocal(),
-    osList: osData
-        .map((item) => LabelModel(id: item.osId, labelName: item.name))
-        .toList(),
+    osIdList: osData.map((item) => item.osId).toList(),
     dbIdList: dbRelData.map((item) => item.dbId).toList(),
     devLanguageList: devLangList,
     toolList: toolData

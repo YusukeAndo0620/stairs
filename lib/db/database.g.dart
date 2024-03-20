@@ -4267,17 +4267,15 @@ class $TOsInfoTable extends TOsInfo with TableInfo<$TOsInfoTable, TOsInfoData> {
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
-  static const VerificationMeta _projectIdMeta =
-      const VerificationMeta('projectId');
+  static const VerificationMeta _accountIdMeta =
+      const VerificationMeta('accountId');
   @override
-  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
-      'project_id', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+      'account_id', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES t_project (project_id)'));
+          'REFERENCES m_account (account_id)'));
   static const VerificationMeta _createAtMeta =
       const VerificationMeta('createAt');
   @override
@@ -4296,7 +4294,7 @@ class $TOsInfoTable extends TOsInfo with TableInfo<$TOsInfoTable, TOsInfoData> {
       clientDefault: () => DateTime.now().toIso8601String());
   @override
   List<GeneratedColumn> get $columns =>
-      [osId, name, projectId, createAt, updateAt];
+      [osId, name, accountId, createAt, updateAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4319,11 +4317,11 @@ class $TOsInfoTable extends TOsInfo with TableInfo<$TOsInfoTable, TOsInfoData> {
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('project_id')) {
-      context.handle(_projectIdMeta,
-          projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta));
+    if (data.containsKey('account_id')) {
+      context.handle(_accountIdMeta,
+          accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
     } else if (isInserting) {
-      context.missing(_projectIdMeta);
+      context.missing(_accountIdMeta);
     }
     if (data.containsKey('create_at')) {
       context.handle(_createAtMeta,
@@ -4346,8 +4344,8 @@ class $TOsInfoTable extends TOsInfo with TableInfo<$TOsInfoTable, TOsInfoData> {
           .read(DriftSqlType.string, data['${effectivePrefix}os_id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      projectId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}project_id'])!,
+      accountId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}account_id'])!,
       createAt: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
       updateAt: attachedDatabase.typeMapping
@@ -4364,13 +4362,13 @@ class $TOsInfoTable extends TOsInfo with TableInfo<$TOsInfoTable, TOsInfoData> {
 class TOsInfoData extends DataClass implements Insertable<TOsInfoData> {
   final String osId;
   final String name;
-  final String projectId;
+  final String accountId;
   final String createAt;
   final String updateAt;
   const TOsInfoData(
       {required this.osId,
       required this.name,
-      required this.projectId,
+      required this.accountId,
       required this.createAt,
       required this.updateAt});
   @override
@@ -4378,7 +4376,7 @@ class TOsInfoData extends DataClass implements Insertable<TOsInfoData> {
     final map = <String, Expression>{};
     map['os_id'] = Variable<String>(osId);
     map['name'] = Variable<String>(name);
-    map['project_id'] = Variable<String>(projectId);
+    map['account_id'] = Variable<String>(accountId);
     map['create_at'] = Variable<String>(createAt);
     map['update_at'] = Variable<String>(updateAt);
     return map;
@@ -4388,7 +4386,7 @@ class TOsInfoData extends DataClass implements Insertable<TOsInfoData> {
     return TOsInfoCompanion(
       osId: Value(osId),
       name: Value(name),
-      projectId: Value(projectId),
+      accountId: Value(accountId),
       createAt: Value(createAt),
       updateAt: Value(updateAt),
     );
@@ -4400,7 +4398,7 @@ class TOsInfoData extends DataClass implements Insertable<TOsInfoData> {
     return TOsInfoData(
       osId: serializer.fromJson<String>(json['osId']),
       name: serializer.fromJson<String>(json['name']),
-      projectId: serializer.fromJson<String>(json['projectId']),
+      accountId: serializer.fromJson<String>(json['accountId']),
       createAt: serializer.fromJson<String>(json['createAt']),
       updateAt: serializer.fromJson<String>(json['updateAt']),
     );
@@ -4411,7 +4409,7 @@ class TOsInfoData extends DataClass implements Insertable<TOsInfoData> {
     return <String, dynamic>{
       'osId': serializer.toJson<String>(osId),
       'name': serializer.toJson<String>(name),
-      'projectId': serializer.toJson<String>(projectId),
+      'accountId': serializer.toJson<String>(accountId),
       'createAt': serializer.toJson<String>(createAt),
       'updateAt': serializer.toJson<String>(updateAt),
     };
@@ -4420,13 +4418,13 @@ class TOsInfoData extends DataClass implements Insertable<TOsInfoData> {
   TOsInfoData copyWith(
           {String? osId,
           String? name,
-          String? projectId,
+          String? accountId,
           String? createAt,
           String? updateAt}) =>
       TOsInfoData(
         osId: osId ?? this.osId,
         name: name ?? this.name,
-        projectId: projectId ?? this.projectId,
+        accountId: accountId ?? this.accountId,
         createAt: createAt ?? this.createAt,
         updateAt: updateAt ?? this.updateAt,
       );
@@ -4435,7 +4433,7 @@ class TOsInfoData extends DataClass implements Insertable<TOsInfoData> {
     return (StringBuffer('TOsInfoData(')
           ..write('osId: $osId, ')
           ..write('name: $name, ')
-          ..write('projectId: $projectId, ')
+          ..write('accountId: $accountId, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
           ..write(')'))
@@ -4443,14 +4441,14 @@ class TOsInfoData extends DataClass implements Insertable<TOsInfoData> {
   }
 
   @override
-  int get hashCode => Object.hash(osId, name, projectId, createAt, updateAt);
+  int get hashCode => Object.hash(osId, name, accountId, createAt, updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TOsInfoData &&
           other.osId == this.osId &&
           other.name == this.name &&
-          other.projectId == this.projectId &&
+          other.accountId == this.accountId &&
           other.createAt == this.createAt &&
           other.updateAt == this.updateAt);
 }
@@ -4458,14 +4456,14 @@ class TOsInfoData extends DataClass implements Insertable<TOsInfoData> {
 class TOsInfoCompanion extends UpdateCompanion<TOsInfoData> {
   final Value<String> osId;
   final Value<String> name;
-  final Value<String> projectId;
+  final Value<String> accountId;
   final Value<String> createAt;
   final Value<String> updateAt;
   final Value<int> rowid;
   const TOsInfoCompanion({
     this.osId = const Value.absent(),
     this.name = const Value.absent(),
-    this.projectId = const Value.absent(),
+    this.accountId = const Value.absent(),
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -4473,17 +4471,17 @@ class TOsInfoCompanion extends UpdateCompanion<TOsInfoData> {
   TOsInfoCompanion.insert({
     required String osId,
     required String name,
-    required String projectId,
+    required String accountId,
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : osId = Value(osId),
         name = Value(name),
-        projectId = Value(projectId);
+        accountId = Value(accountId);
   static Insertable<TOsInfoData> custom({
     Expression<String>? osId,
     Expression<String>? name,
-    Expression<String>? projectId,
+    Expression<String>? accountId,
     Expression<String>? createAt,
     Expression<String>? updateAt,
     Expression<int>? rowid,
@@ -4491,7 +4489,7 @@ class TOsInfoCompanion extends UpdateCompanion<TOsInfoData> {
     return RawValuesInsertable({
       if (osId != null) 'os_id': osId,
       if (name != null) 'name': name,
-      if (projectId != null) 'project_id': projectId,
+      if (accountId != null) 'account_id': accountId,
       if (createAt != null) 'create_at': createAt,
       if (updateAt != null) 'update_at': updateAt,
       if (rowid != null) 'rowid': rowid,
@@ -4501,14 +4499,14 @@ class TOsInfoCompanion extends UpdateCompanion<TOsInfoData> {
   TOsInfoCompanion copyWith(
       {Value<String>? osId,
       Value<String>? name,
-      Value<String>? projectId,
+      Value<String>? accountId,
       Value<String>? createAt,
       Value<String>? updateAt,
       Value<int>? rowid}) {
     return TOsInfoCompanion(
       osId: osId ?? this.osId,
       name: name ?? this.name,
-      projectId: projectId ?? this.projectId,
+      accountId: accountId ?? this.accountId,
       createAt: createAt ?? this.createAt,
       updateAt: updateAt ?? this.updateAt,
       rowid: rowid ?? this.rowid,
@@ -4524,8 +4522,8 @@ class TOsInfoCompanion extends UpdateCompanion<TOsInfoData> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (projectId.present) {
-      map['project_id'] = Variable<String>(projectId.value);
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
     }
     if (createAt.present) {
       map['create_at'] = Variable<String>(createAt.value);
@@ -4544,10 +4542,301 @@ class TOsInfoCompanion extends UpdateCompanion<TOsInfoData> {
     return (StringBuffer('TOsInfoCompanion(')
           ..write('osId: $osId, ')
           ..write('name: $name, ')
-          ..write('projectId: $projectId, ')
+          ..write('accountId: $accountId, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt, ')
           ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TOsRelTable extends TOsRel with TableInfo<$TOsRelTable, TOsRelData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TOsRelTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _projectIdMeta =
+      const VerificationMeta('projectId');
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+      'project_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES t_project (project_id)'));
+  static const VerificationMeta _osIdMeta = const VerificationMeta('osId');
+  @override
+  late final GeneratedColumn<String> osId = GeneratedColumn<String>(
+      'os_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES t_os_info (os_id)'));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, projectId, osId, createAt, updateAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 't_os_rel';
+  @override
+  VerificationContext validateIntegrity(Insertable<TOsRelData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(_projectIdMeta,
+          projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta));
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('os_id')) {
+      context.handle(
+          _osIdMeta, osId.isAcceptableOrUnknown(data['os_id']!, _osIdMeta));
+    } else if (isInserting) {
+      context.missing(_osIdMeta);
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TOsRelData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TOsRelData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      projectId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}project_id'])!,
+      osId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}os_id'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $TOsRelTable createAlias(String alias) {
+    return $TOsRelTable(attachedDatabase, alias);
+  }
+}
+
+class TOsRelData extends DataClass implements Insertable<TOsRelData> {
+  final int id;
+  final String projectId;
+  final String osId;
+  final String createAt;
+  final String updateAt;
+  const TOsRelData(
+      {required this.id,
+      required this.projectId,
+      required this.osId,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['os_id'] = Variable<String>(osId);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  TOsRelCompanion toCompanion(bool nullToAbsent) {
+    return TOsRelCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      osId: Value(osId),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory TOsRelData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TOsRelData(
+      id: serializer.fromJson<int>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      osId: serializer.fromJson<String>(json['osId']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'osId': serializer.toJson<String>(osId),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  TOsRelData copyWith(
+          {int? id,
+          String? projectId,
+          String? osId,
+          String? createAt,
+          String? updateAt}) =>
+      TOsRelData(
+        id: id ?? this.id,
+        projectId: projectId ?? this.projectId,
+        osId: osId ?? this.osId,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TOsRelData(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('osId: $osId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, projectId, osId, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TOsRelData &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.osId == this.osId &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class TOsRelCompanion extends UpdateCompanion<TOsRelData> {
+  final Value<int> id;
+  final Value<String> projectId;
+  final Value<String> osId;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  const TOsRelCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.osId = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  });
+  TOsRelCompanion.insert({
+    this.id = const Value.absent(),
+    required String projectId,
+    required String osId,
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  })  : projectId = Value(projectId),
+        osId = Value(osId);
+  static Insertable<TOsRelData> custom({
+    Expression<int>? id,
+    Expression<String>? projectId,
+    Expression<String>? osId,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (osId != null) 'os_id': osId,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+    });
+  }
+
+  TOsRelCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? projectId,
+      Value<String>? osId,
+      Value<String>? createAt,
+      Value<String>? updateAt}) {
+    return TOsRelCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      osId: osId ?? this.osId,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (osId.present) {
+      map['os_id'] = Variable<String>(osId.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TOsRelCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('osId: $osId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
           ..write(')'))
         .toString();
   }
@@ -7357,7 +7646,7 @@ class TResumeRoleData extends DataClass implements Insertable<TResumeRoleData> {
   /// id
   final int id;
 
-  /// コード
+  /// コード PM: 1, PL: 2, SM: 3, TL: 4, SL: 5, 開発: 6, テスター: 7
   final int code;
 
   /// 経歴書プロジェクトID
@@ -8241,6 +8530,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final $TTagRelTable tTagRel = $TTagRelTable(this);
   late final $TToolTable tTool = $TToolTable(this);
   late final $TOsInfoTable tOsInfo = $TOsInfoTable(this);
+  late final $TOsRelTable tOsRel = $TOsRelTable(this);
   late final $TDbTable tDb = $TDbTable(this);
   late final $TDbRelTable tDbRel = $TDbRelTable(this);
   late final $TBoardTable tBoard = $TBoardTable(this);
@@ -8275,6 +8565,8 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
       Index('tool_id', 'CREATE INDEX tool_id ON t_tool (tool_id)');
   late final Index osId =
       Index('os_id', 'CREATE INDEX os_id ON t_os_info (os_id)');
+  late final Index osRelId =
+      Index('os_rel_id', 'CREATE INDEX os_rel_id ON t_os_rel (id)');
   late final Index dbId = Index('db_id', 'CREATE INDEX db_id ON t_db (db_id)');
   late final Index dbRelId =
       Index('db_rel_id', 'CREATE INDEX db_rel_id ON t_db_rel (id)');
@@ -8299,6 +8591,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
       MCountryCodeDao(this as StairsDatabase);
   late final TProjectDao tProjectDao = TProjectDao(this as StairsDatabase);
   late final TOsInfoDao tOsInfoDao = TOsInfoDao(this as StairsDatabase);
+  late final TOsRelDao tOsRelDao = TOsRelDao(this as StairsDatabase);
   late final TDbDao tDbDao = TDbDao(this as StairsDatabase);
   late final TDbRelDao tDbRelDao = TDbRelDao(this as StairsDatabase);
   late final TDevLangRelDao tDevLangRelDao =
@@ -8332,6 +8625,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         tTagRel,
         tTool,
         tOsInfo,
+        tOsRel,
         tDb,
         tDbRel,
         tBoard,
@@ -8354,6 +8648,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         tagRelId,
         toolId,
         osId,
+        osRelId,
         dbId,
         dbRelId,
         boardId,

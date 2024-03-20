@@ -5,6 +5,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:stairs/db/constant/country_code_list.dart';
 import 'package:stairs/db/constant/db_list.dart';
+import 'package:stairs/db/constant/os_list.dart';
 import 'package:stairs/loom/stairs_logger.dart';
 
 import 'db_package.dart';
@@ -30,6 +31,7 @@ final _logger = stairsLogger(name: 'database');
     TTagRel,
     TTool,
     TOsInfo,
+    TOsRel,
     TDb,
     TDbRel,
     TBoard,
@@ -46,6 +48,7 @@ final _logger = stairsLogger(name: 'database');
     MCountryCodeDao,
     TProjectDao,
     TOsInfoDao,
+    TOsRelDao,
     TDbDao,
     TDbRelDao,
     TDevLangRelDao,
@@ -101,6 +104,10 @@ class StairsDatabase extends _$StairsDatabase {
               // 開発言語
               for (final item in defaultTDevLangList) {
                 await into(tDevLanguage).insert(item);
+              }
+              // OS
+              for (final item in defaultOsList) {
+                await into(tOsInfo).insert(item);
               }
               // DB
               for (final item in defaultDbList) {
