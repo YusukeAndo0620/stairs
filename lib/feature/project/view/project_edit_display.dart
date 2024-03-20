@@ -115,7 +115,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
 
     // DB一覧
     final dbList = ref.watch(dbProvider);
-
+    final dbNotifier = ref.watch(dbProvider.notifier);
     //開発工程一覧
     final devProgressList = ref.watch(devProgressProvider);
     final devProgressNotifier = ref.watch(devProgressProvider.notifier);
@@ -433,16 +433,9 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                           iconData: theme.icons.resume,
                           hintText: _kDbHintTxt,
                           itemList: [
-                            for (final item in dbList.value == null
-                                ? []
-                                : dbList.value!
-                                    .map((e) => detail.dbIdList.contains(e.id)
-                                        ? e
-                                        : null)
-                                    .whereType<LabelModel>()
-                                    .toList())
+                            for (final dbId in detail.dbIdList)
                               LabelTip(
-                                label: item.labelName,
+                                label: dbNotifier.getName(dbId: dbId),
                                 themeColor: theme.colorFgDisabled,
                               )
                           ],
@@ -453,8 +446,33 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                                   title: _kDbTxt,
                                   labelList: dbList.value ?? [],
                                   checkedIdList: detail.dbIdList,
-                                  hintText: _kDbListEmptyTxt,
+                                  hintText: _kDbInputHintTxt,
                                   emptyText: _kDbListEmptyTxt,
+                                  isEditable: true,
+                                  onAddLabel: (id, labelName) async {
+                                    // DB項目追加
+                                    await dbNotifier.createDb(
+                                      labelModel: LabelModel(
+                                          id: id, labelName: labelName),
+                                    );
+                                    // 更新後のDB一覧をStateにセット
+                                    await dbNotifier.setDbList();
+                                  },
+                                  onSubmitEditedText: (id, labelName) async {
+                                    // dbの名称変更
+                                    await dbNotifier.updateDb(
+                                      labelModel: LabelModel(
+                                          id: id, labelName: labelName),
+                                    );
+                                    // 更新後のDB一覧をStateにセット
+                                    await dbNotifier.setDbList();
+                                  },
+                                  onTapDelete: (id) async {
+                                    // dbの項目削除
+                                    await dbNotifier.deleteDb(dbId: id);
+                                    // 更新後のDB一覧をStateにセット
+                                    await dbNotifier.setDbList();
+                                  },
                                   onTapBackIcon: (idList) {
                                     if (detail.dbIdList != idList) {
                                       addUpdateParam(

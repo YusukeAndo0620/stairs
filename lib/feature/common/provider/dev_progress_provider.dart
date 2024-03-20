@@ -28,10 +28,9 @@ class DevProgress extends _$DevProgress {
   }
 
   String getName({required String devProgressId}) {
-    return state.value == null
-        ? ''
-        : state.value!
-            .firstWhere((element) => element.id == devProgressId)
-            .labelName;
+    if (state.value == null) return '';
+    final index =
+        state.value!.indexWhere((element) => element.id == devProgressId);
+    return index == -1 ? '' : state.value![index].labelName;
   }
 }

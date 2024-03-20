@@ -26,6 +26,7 @@ export 'view/input/text_input.dart';
 // list item
 export 'view/list_item/card_list_item.dart';
 export 'view/list_item/check_list_item.dart';
+export 'view/list_item/new_check_list_item.dart';
 export 'view/list_item/color_list_item.dart';
 export 'view/list_item/input_list_item.dart';
 export 'view/list_item/link_list_item.dart';

@@ -15,6 +15,21 @@ class Db extends _$Db {
     return await getDbList();
   }
 
+  /// DB一覧取得しStateにセット
+  Future<void> setDbList() async {
+    final list = await getDbList();
+    update(
+      (data) {
+        state = const AsyncLoading();
+        return data = list;
+      },
+      onError: (error, stack) {
+        state = AsyncError(error, stack);
+        throw Exception(error);
+      },
+    );
+  }
+
   /// DB一覧取得
   Future<List<LabelModel>> getDbList() async {
     _logger.d('getDbList: DB一覧取得');
@@ -88,8 +103,8 @@ class Db extends _$Db {
   }
 
   String getName({required String dbId}) {
-    return state.value == null
-        ? ''
-        : state.value!.firstWhere((element) => element.id == dbId).labelName;
+    if (state.value == null) return '';
+    final index = state.value!.indexWhere((element) => element.id == dbId);
+    return index == -1 ? '' : state.value![index].labelName;
   }
 }
