@@ -71,7 +71,7 @@ class _EventAreaState extends State<EventArea> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                width: widget.width - _kIconWidth * 2.5,
+                width: widget.width - _kIconWidth,
                 child: widget.itemList.isEmpty
                     ? Text(
                         widget.hintText,

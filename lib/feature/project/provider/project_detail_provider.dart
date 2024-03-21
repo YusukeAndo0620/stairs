@@ -58,6 +58,8 @@ class ProjectDetail extends _$ProjectDetail {
       endDate:
           DateTime(now.year, now.month + 7, 1).add(const Duration(days: -1)),
       devLanguageList: const [],
+      gitIdList: [],
+      mwIdList: [],
       toolIdList: [],
       devProgressIdList: [],
       tagList: tagList!,
@@ -303,6 +305,32 @@ class ProjectDetail extends _$ProjectDetail {
       (data) {
         state = const AsyncLoading();
         return data = data!.copyWith(devLanguageList: targetDevLangList);
+      },
+      onError: (error, stack) {
+        state = AsyncError(error, stack);
+        throw Exception(error);
+      },
+    );
+  }
+
+  void changeGitList({required List<String> gitIdList}) {
+    update(
+      (data) {
+        state = const AsyncLoading();
+        return data = data!.copyWith(gitIdList: gitIdList);
+      },
+      onError: (error, stack) {
+        state = AsyncError(error, stack);
+        throw Exception(error);
+      },
+    );
+  }
+
+  void changeMwList({required List<String> mwIdList}) {
+    update(
+      (data) {
+        state = const AsyncLoading();
+        return data = data!.copyWith(mwIdList: mwIdList);
       },
       onError: (error, stack) {
         state = AsyncError(error, stack);

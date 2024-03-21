@@ -59,6 +59,13 @@ class ProjectRepository {
       final devLangResponse =
           await db.tDevLangRelDao.getDevLangList(projectId: projectId);
 
+      // Git
+      final gitResponse =
+          await db.tGitRelDao.getGitRelList(projectId: projectId);
+
+      // ミドルウェア
+      final mwResponse = await db.tMwRelDao.getMwRelList(projectId: projectId);
+
       // 開発ツール
       final toolResponse =
           await db.tToolRelDao.getToolRelList(projectId: projectId);
@@ -88,6 +95,8 @@ class ProjectRepository {
         devLangRelData: devLangResponse
             .map((e) => e.readTable(db.tDevLanguageRel))
             .toList(),
+        gitRelData: gitResponse.map((e) => e.readTable(db.tGitRel)).toList(),
+        mwRelData: mwResponse.map((e) => e.readTable(db.tMwRel)).toList(),
         toolRelData: toolResponse.map((e) => e.readTable(db.tToolRel)).toList(),
         devProgressRelData: devProgressResponse,
         tagData: tagResponse.map((e) => e.readTable(db.tTag)).toList(),
@@ -97,10 +106,6 @@ class ProjectRepository {
 
       _logger.d(
           'projectId: ${responseData.projectId}, projectName: ${responseData.projectName}');
-      _logger.d('devLanguageList: ${responseData.devLanguageList}');
-      _logger.d(
-          'devProgressList length: ${responseData.devProgressIdList.length}');
-      _logger.d('tagList: ${responseData.tagList}');
       return responseData;
     } on Exception catch (exception) {
       _logger.e(exception);
@@ -131,6 +136,20 @@ class ProjectRepository {
       final devLangDataList = detailModel.devLanguageList
           .map((item) => db.tDevLangRelDao.convertDevLangRelToEntity(
               projectId: detailModel.projectId, model: item))
+          .toList();
+
+      final gitRelDataList = detailModel.gitIdList
+          .map((gitId) => db.tGitRelDao.convertGitRelToEntity(
+              projectId: detailModel.projectId, gitId: gitId))
+          .toList()
+          .whereType<TGitRelCompanion>()
+          .toList();
+
+      final mwRelDataList = detailModel.mwIdList
+          .map((mwId) => db.tMwRelDao.convertMwRelToEntity(
+              projectId: detailModel.projectId, mwId: mwId))
+          .toList()
+          .whereType<TMwRelCompanion>()
           .toList();
 
       final toolRelDataList = detailModel.toolIdList
@@ -168,6 +187,14 @@ class ProjectRepository {
       // 開発言語紐付け 作成
       for (final item in devLangDataList) {
         await db.tDevLangRelDao.insertDevLanguage(devLangData: item);
+      }
+      // Git 作成
+      for (final item in gitRelDataList) {
+        await db.tGitRelDao.insertGitRel(gitRelData: item);
+      }
+      // ミドルウェア 作成
+      for (final item in mwRelDataList) {
+        await db.tMwRelDao.insertMwRel(mwRelData: item);
       }
       // 開発ツール 作成
       for (final item in toolRelDataList) {
@@ -246,6 +273,38 @@ class ProjectRepository {
               // 開発言語紐付け 作成
               for (final item in devLangDataList) {
                 await db.tDevLangRelDao.insertDevLanguage(devLangData: item);
+              }
+            // Git
+            case ProjectUpdateParam.git:
+              _logger.d('Git 更新');
+              final gitRelDataList = detailModel.gitIdList
+                  .map((gitId) => db.tGitRelDao.convertGitRelToEntity(
+                      projectId: detailModel.projectId, gitId: gitId))
+                  .toList()
+                  .whereType<TGitRelCompanion>()
+                  .toList();
+              // Git 削除
+              await db.tGitRelDao
+                  .deleteGitRelByProjectId(projectId: detailModel.projectId);
+              // Git 作成
+              for (final item in gitRelDataList) {
+                await db.tGitRelDao.insertGitRel(gitRelData: item);
+              }
+            // ミドルウェア
+            case ProjectUpdateParam.mw:
+              _logger.d('ミドルウェア 更新');
+              final mwRelDataList = detailModel.mwIdList
+                  .map((mwId) => db.tMwRelDao.convertMwRelToEntity(
+                      projectId: detailModel.projectId, mwId: mwId))
+                  .toList()
+                  .whereType<TMwRelCompanion>()
+                  .toList();
+              // ミドルウェア 削除
+              await db.tMwRelDao
+                  .deleteMwRelByProjectId(projectId: detailModel.projectId);
+              // ミドルウェア 作成
+              for (final item in mwRelDataList) {
+                await db.tMwRelDao.insertMwRel(mwRelData: item);
               }
             // 開発ツール
             case ProjectUpdateParam.tool:
@@ -354,6 +413,8 @@ ProjectDetailModel _convertProjectDetailToModel({
   required List<TDbRelData> dbRelData,
   required List<TDevLanguageData> devLangData,
   required List<TDevLanguageRelData> devLangRelData,
+  required List<TGitRelData> gitRelData,
+  required List<TMwRelData> mwRelData,
   required List<TToolRelData> toolRelData,
   required List<TDevProgressRelData> devProgressRelData,
   required List<TTagData> tagData,
@@ -409,6 +470,8 @@ ProjectDetailModel _convertProjectDetailToModel({
     osIdList: osData.map((item) => item.osId).toList(),
     dbIdList: dbRelData.map((item) => item.dbId).toList(),
     devLanguageList: devLangList,
+    gitIdList: gitRelData.map((item) => item.gitId).toList(),
+    mwIdList: mwRelData.map((item) => item.mwId).toList(),
     toolIdList: toolRelData.map((item) => item.toolId).toList(),
     devProgressIdList: devProgressRelData
         .map((item) => item.devProgressId.toString())

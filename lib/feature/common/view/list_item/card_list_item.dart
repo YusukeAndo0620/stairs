@@ -137,9 +137,11 @@ class CardLstItem extends StatelessWidget {
     required IconData iconData,
     required String hintText,
     required List<Widget> itemList,
+    RowType rowType = RowType.single,
     required VoidCallback onTap,
   }) : this._(
           key: key,
+          rowType: rowType,
           primaryItem: _PrimaryItem(
             label: label,
             iconColor: iconColor,

@@ -1,4 +1,6 @@
 import 'package:stairs/feature/common/provider/db_provider.dart';
+import 'package:stairs/feature/common/provider/git_provider.dart';
+import 'package:stairs/feature/common/provider/mw_provider.dart';
 import 'package:stairs/feature/common/provider/os_provider.dart';
 import 'package:stairs/feature/common/provider/tool_provider.dart';
 import 'package:stairs/feature/project/provider/component/dev_lang_provider.dart';
@@ -26,7 +28,7 @@ const _kDueHintTxt = '期間を設定';
 const _kContentTxt = '業務内容';
 const _kContentHintTxt = '業務内容';
 const _kContentMaxLength = 500;
-const _kContentMaxLines = 8;
+const _kContentMaxLines = 10;
 
 const _kDevSizeTxt = '開発人数';
 const _kDevSizeHintTxt = '開発人数を設定';
@@ -51,6 +53,16 @@ const _kDevLangTxt = '開発言語';
 const _kDevLangHintTxt = '開発言語、フレームワークを設定';
 const _kDevLangListEmptyTxt = '言語が登録されていません。\n言語を登録してください。';
 const _kDevLangVersionHintTxt = 'バージョンなどを入力してください。表示例: Java(Java8)';
+
+const _kGitTxt = 'Git';
+const _kGitHintTxt = 'Gitを設定（GitHubなど）';
+const _kGitInputHintTxt = 'Gitを入力';
+const _kGitListEmptyTxt = 'Gitが登録されていません。\nGitを追加してください';
+
+const _kMwTxt = 'ミドルウェア';
+const _kMwHintTxt = 'ミドルウェアを設定（Apacheなど）';
+const _kMwInputHintTxt = 'ミドルウェアを入力';
+const _kMwListEmptyTxt = 'ミドルウェアが登録されていません。\nミドルウェアを追加してください';
 
 const _kToolTxt = '開発ツール';
 const _kToolHintTxt = 'ツールを設定（Backlog, Figmaなど）';
@@ -123,6 +135,14 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
     // 開発言語一覧
     final devLangList = ref.watch(devLangProvider);
 
+    // Git一覧
+    final gitList = ref.watch(gitProvider);
+    final gitNotifier = ref.watch(gitProvider.notifier);
+
+    // ミドルウェア一覧
+    final mwList = ref.watch(mwProvider);
+    final mwNotifier = ref.watch(mwProvider.notifier);
+
     // 開発Tool一覧
     final toolList = ref.watch(toolProvider);
     final toolNotifier = ref.watch(toolProvider.notifier);
@@ -167,7 +187,10 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
       ),
       body: projectDetailState.when(
         data: (detail) {
+          // 単一レコードの横幅
           final secondaryItemWidth = MediaQuery.of(context).size.width * 0.52;
+          // 2行表示するレコードの横幅
+          final fullWidth = MediaQuery.of(context).size.width * 0.85;
           return detail == null
               ? const SizedBox.shrink()
               : Padding(
@@ -384,8 +407,8 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                           },
                         ),
                         // 業務内容
-                        CardLstItem.input(
-                          width: secondaryItemWidth,
+                        CardLstItem.inputArea(
+                          width: fullWidth,
                           label: _kContentTxt,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.description,
@@ -560,6 +583,128 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             ),
                           ),
                         ),
+                        // Git
+                        CardLstItem.labeWithIcon(
+                          width: secondaryItemWidth,
+                          label: _kGitTxt,
+                          iconColor: theme.colorPrimary,
+                          iconData: theme.icons.tool,
+                          hintText: _kGitHintTxt,
+                          itemList: [
+                            for (final gitId in detail.gitIdList)
+                              LabelTip(
+                                label: gitNotifier.getName(gitId: gitId),
+                                themeColor: theme.colorFgDisabled,
+                              )
+                          ],
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return SelectLabelDisplay(
+                                  title: _kGitTxt,
+                                  labelList: gitList.value ?? [],
+                                  checkedIdList: detail.gitIdList,
+                                  hintText: _kGitInputHintTxt,
+                                  emptyText: _kGitListEmptyTxt,
+                                  isEditable: true,
+                                  onAddLabel: (id, labelName) async {
+                                    // Git項目追加
+                                    await gitNotifier.createGit(
+                                      labelModel: LabelModel(
+                                          id: id, labelName: labelName),
+                                    );
+                                    // 更新後のGit一覧をStateにセット
+                                    await gitNotifier.setGitList();
+                                  },
+                                  onSubmitEditedText: (id, labelName) async {
+                                    // Gitの名称変更
+                                    await gitNotifier.updateGit(
+                                      labelModel: LabelModel(
+                                          id: id, labelName: labelName),
+                                    );
+                                    // 更新後のGit一覧をStateにセット
+                                    await gitNotifier.setGitList();
+                                  },
+                                  onTapDelete: (id) async {
+                                    // Gitの項目削除
+                                    await gitNotifier.deleteGit(gitId: id);
+                                    // 更新後のGit一覧をStateにセット
+                                    await gitNotifier.setGitList();
+                                  },
+                                  onTapBackIcon: (idList) {
+                                    if (detail.gitIdList != idList) {
+                                      addUpdateParam(
+                                          param: ProjectUpdateParam.git);
+                                      projectDetailNotifier.changeGitList(
+                                          gitIdList: idList);
+                                    }
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        // ミドルウェア
+                        CardLstItem.labeWithIcon(
+                          width: secondaryItemWidth,
+                          label: _kMwTxt,
+                          iconColor: theme.colorPrimary,
+                          iconData: theme.icons.tool,
+                          hintText: _kMwHintTxt,
+                          itemList: [
+                            for (final mwId in detail.mwIdList)
+                              LabelTip(
+                                label: mwNotifier.getName(mwId: mwId),
+                                themeColor: theme.colorFgDisabled,
+                              )
+                          ],
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return SelectLabelDisplay(
+                                  title: _kMwTxt,
+                                  labelList: mwList.value ?? [],
+                                  checkedIdList: detail.mwIdList,
+                                  hintText: _kMwInputHintTxt,
+                                  emptyText: _kMwListEmptyTxt,
+                                  isEditable: true,
+                                  onAddLabel: (id, labelName) async {
+                                    // ミドルウェア項目追加
+                                    await mwNotifier.createMw(
+                                      labelModel: LabelModel(
+                                          id: id, labelName: labelName),
+                                    );
+                                    // 更新後のミドルウェア一覧をStateにセット
+                                    await mwNotifier.setMwList();
+                                  },
+                                  onSubmitEditedText: (id, labelName) async {
+                                    // ミドルウェアの名称変更
+                                    await mwNotifier.updateMw(
+                                      labelModel: LabelModel(
+                                          id: id, labelName: labelName),
+                                    );
+                                    // 更新後のミドルウェア一覧をStateにセット
+                                    await mwNotifier.setMwList();
+                                  },
+                                  onTapDelete: (id) async {
+                                    // ミドルウェアの項目削除
+                                    await mwNotifier.deleteMw(mwId: id);
+                                    // 更新後のミドルウェア一覧をStateにセット
+                                    await mwNotifier.setMwList();
+                                  },
+                                  onTapBackIcon: (idList) {
+                                    if (detail.mwIdList != idList) {
+                                      addUpdateParam(
+                                          param: ProjectUpdateParam.mw);
+                                      projectDetailNotifier.changeMwList(
+                                          mwIdList: idList);
+                                    }
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ),
                         // 開発ツール
                         CardLstItem.labeWithIcon(
                           width: secondaryItemWidth,
@@ -670,11 +815,12 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         ),
                         // ラベル
                         CardLstItem.labeWithIcon(
-                          width: secondaryItemWidth,
+                          width: fullWidth,
                           label: _kLabelTxt,
                           iconColor: theme.colorPrimary,
                           iconData: Icons.label,
                           hintText: _kLabelHintTxt,
+                          rowType: RowType.double,
                           itemList: [
                             for (final item in detail.tagList)
                               LabelTip(

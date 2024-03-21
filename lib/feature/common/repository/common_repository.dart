@@ -128,6 +128,132 @@ class CommonRepository {
     }
   }
 
+  /// Git 一覧取得
+  Future<List<LabelModel>?> getGitList({required String accountId}) async {
+    try {
+      _logger.i('getGitList 通信開始');
+      final response = await db.tGitDao.getGitList(accountId: accountId);
+      _logger.i('取得数：${response.length}件');
+      final responseData = _convertGitToModel(gitList: response);
+
+      return responseData;
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('getGitList 通信終了');
+    }
+  }
+
+  /// Git 追加
+  Future<void> createGit(
+      {required String accountId, required LabelModel labelModel}) async {
+    try {
+      _logger.i('createGit 通信開始');
+      final gitData =
+          _convertGitToEntity(accountId: accountId, labelModel: labelModel);
+      await db.tGitDao.insertGit(gitData: gitData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('createGit 通信終了');
+    }
+  }
+
+  /// Git 更新
+  Future<void> updateGit(
+      {required String accountId, required LabelModel labelModel}) async {
+    try {
+      _logger.i('updateGit 通信開始');
+      final gitData =
+          _convertGitToEntity(accountId: accountId, labelModel: labelModel);
+      await db.tGitDao.updateGit(gitData: gitData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('updateGit 通信終了');
+    }
+  }
+
+  /// Git 削除
+  Future<void> deleteGit(
+      {required String accountId, required String gitId}) async {
+    try {
+      _logger.i('deleteGit 通信開始');
+      await db.tGitDao.deleteGit(accountId: accountId, gitId: gitId);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('deleteGit 通信終了');
+    }
+  }
+
+  /// Mw 一覧取得
+  Future<List<LabelModel>?> getMwList({required String accountId}) async {
+    try {
+      _logger.i('getMwList 通信開始');
+      final response = await db.tMwDao.getMwList(accountId: accountId);
+      _logger.i('取得数：${response.length}件');
+      final responseData = _convertMwToModel(mwList: response);
+
+      return responseData;
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('getMwList 通信終了');
+    }
+  }
+
+  /// Mw 追加
+  Future<void> createMw(
+      {required String accountId, required LabelModel labelModel}) async {
+    try {
+      _logger.i('createMw 通信開始');
+      final mwData =
+          _convertMwToEntity(accountId: accountId, labelModel: labelModel);
+      await db.tMwDao.insertMw(mwData: mwData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('createMw 通信終了');
+    }
+  }
+
+  /// Mw 更新
+  Future<void> updateMw(
+      {required String accountId, required LabelModel labelModel}) async {
+    try {
+      _logger.i('updateMw 通信開始');
+      final mwData =
+          _convertMwToEntity(accountId: accountId, labelModel: labelModel);
+      await db.tMwDao.updateMw(mwData: mwData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('updateMw 通信終了');
+    }
+  }
+
+  /// Mw 削除
+  Future<void> deleteMw(
+      {required String accountId, required String mwId}) async {
+    try {
+      _logger.i('deleteMw 通信開始');
+      await db.tMwDao.deleteMw(accountId: accountId, mwId: mwId);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('deleteMw 通信終了');
+    }
+  }
+
   /// Tool 一覧取得
   Future<List<LabelModel>?> getToolList({required String accountId}) async {
     try {
@@ -310,20 +436,64 @@ List<ColorModel> _convertColorToModel({required List<MColorData> colorData}) {
       .toList();
 }
 
-/// db to model
+/// DB to model
 List<LabelModel> _convertDbToModel({required List<TDbData> dbList}) {
   return dbList
       .map((item) => LabelModel(id: item.dbId, labelName: item.name))
       .toList();
 }
 
-/// db to entity
+/// DB to entity
 TDbCompanion _convertDbToEntity({
   required String accountId,
   required LabelModel labelModel,
 }) {
   return TDbCompanion(
     dbId: Value(labelModel.id),
+    name: Value(
+      labelModel.labelName,
+    ),
+    accountId: Value(accountId),
+    updateAt: Value(DateTime.now().toIso8601String()),
+  );
+}
+
+/// Git to model
+List<LabelModel> _convertGitToModel({required List<TGitData> gitList}) {
+  return gitList
+      .map((item) => LabelModel(id: item.gitId, labelName: item.name))
+      .toList();
+}
+
+/// Git to entity
+TGitCompanion _convertGitToEntity({
+  required String accountId,
+  required LabelModel labelModel,
+}) {
+  return TGitCompanion(
+    gitId: Value(labelModel.id),
+    name: Value(
+      labelModel.labelName,
+    ),
+    accountId: Value(accountId),
+    updateAt: Value(DateTime.now().toIso8601String()),
+  );
+}
+
+/// Mw to model
+List<LabelModel> _convertMwToModel({required List<TMwData> mwList}) {
+  return mwList
+      .map((item) => LabelModel(id: item.mwId, labelName: item.name))
+      .toList();
+}
+
+/// Mw to entity
+TMwCompanion _convertMwToEntity({
+  required String accountId,
+  required LabelModel labelModel,
+}) {
+  return TMwCompanion(
+    mwId: Value(labelModel.id),
     name: Value(
       labelModel.labelName,
     ),
@@ -354,14 +524,14 @@ TToolCompanion _convertToolToEntity({
   );
 }
 
-/// os to model
+/// OS to model
 List<LabelModel> _convertOsToModel({required List<TOsInfoData> osList}) {
   return osList
       .map((item) => LabelModel(id: item.osId, labelName: item.name))
       .toList();
 }
 
-/// os to entity
+/// OS to entity
 TOsInfoCompanion _convertOsToEntity({
   required String accountId,
   required LabelModel labelModel,

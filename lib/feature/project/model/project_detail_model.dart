@@ -16,6 +16,8 @@ class ProjectDetailModel {
     this.osIdList = const [],
     this.dbIdList = const [],
     this.devLanguageList = const [],
+    this.gitIdList = const [],
+    this.mwIdList = const [],
     this.toolIdList = const [],
     this.devProgressIdList = const [],
     this.tagList = const [],
@@ -63,6 +65,12 @@ class ProjectDetailModel {
   /// 開発言語
   final List<LabelWithContent> devLanguageList;
 
+  /// Git
+  final List<String> gitIdList;
+
+  /// ミドルウェア
+  final List<String> mwIdList;
+
   /// 開発ツールリスト
   final List<String> toolIdList;
 
@@ -87,6 +95,8 @@ class ProjectDetailModel {
     List<String>? osIdList,
     List<String>? dbIdList,
     List<LabelWithContent>? devLanguageList,
+    List<String>? gitIdList,
+    List<String>? mwIdList,
     List<String>? toolIdList,
     List<String>? devProgressIdList,
     List<ColorLabelModel>? tagList,
@@ -107,6 +117,8 @@ class ProjectDetailModel {
         dbIdList: dbIdList ?? this.dbIdList,
         devLanguageList: devLanguageList ?? this.devLanguageList,
         toolIdList: toolIdList ?? this.toolIdList,
+        gitIdList: gitIdList ?? this.gitIdList,
+        mwIdList: mwIdList ?? this.mwIdList,
         devProgressIdList: devProgressIdList ?? this.devProgressIdList,
         tagList: tagList ?? this.tagList,
       );

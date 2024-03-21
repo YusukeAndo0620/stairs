@@ -3939,6 +3939,1198 @@ class TTagRelCompanion extends UpdateCompanion<TTagRelData> {
   }
 }
 
+class $TGitTable extends TGit with TableInfo<$TGitTable, TGitData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TGitTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _gitIdMeta = const VerificationMeta('gitId');
+  @override
+  late final GeneratedColumn<String> gitId = GeneratedColumn<String>(
+      'git_id', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _accountIdMeta =
+      const VerificationMeta('accountId');
+  @override
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+      'account_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES m_account (account_id)'));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns =>
+      [gitId, name, accountId, createAt, updateAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 't_git';
+  @override
+  VerificationContext validateIntegrity(Insertable<TGitData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('git_id')) {
+      context.handle(
+          _gitIdMeta, gitId.isAcceptableOrUnknown(data['git_id']!, _gitIdMeta));
+    } else if (isInserting) {
+      context.missing(_gitIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(_accountIdMeta,
+          accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {gitId};
+  @override
+  TGitData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TGitData(
+      gitId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}git_id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      accountId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}account_id'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $TGitTable createAlias(String alias) {
+    return $TGitTable(attachedDatabase, alias);
+  }
+}
+
+class TGitData extends DataClass implements Insertable<TGitData> {
+  final String gitId;
+  final String name;
+  final String accountId;
+  final String createAt;
+  final String updateAt;
+  const TGitData(
+      {required this.gitId,
+      required this.name,
+      required this.accountId,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['git_id'] = Variable<String>(gitId);
+    map['name'] = Variable<String>(name);
+    map['account_id'] = Variable<String>(accountId);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  TGitCompanion toCompanion(bool nullToAbsent) {
+    return TGitCompanion(
+      gitId: Value(gitId),
+      name: Value(name),
+      accountId: Value(accountId),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory TGitData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TGitData(
+      gitId: serializer.fromJson<String>(json['gitId']),
+      name: serializer.fromJson<String>(json['name']),
+      accountId: serializer.fromJson<String>(json['accountId']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'gitId': serializer.toJson<String>(gitId),
+      'name': serializer.toJson<String>(name),
+      'accountId': serializer.toJson<String>(accountId),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  TGitData copyWith(
+          {String? gitId,
+          String? name,
+          String? accountId,
+          String? createAt,
+          String? updateAt}) =>
+      TGitData(
+        gitId: gitId ?? this.gitId,
+        name: name ?? this.name,
+        accountId: accountId ?? this.accountId,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TGitData(')
+          ..write('gitId: $gitId, ')
+          ..write('name: $name, ')
+          ..write('accountId: $accountId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(gitId, name, accountId, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TGitData &&
+          other.gitId == this.gitId &&
+          other.name == this.name &&
+          other.accountId == this.accountId &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class TGitCompanion extends UpdateCompanion<TGitData> {
+  final Value<String> gitId;
+  final Value<String> name;
+  final Value<String> accountId;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  final Value<int> rowid;
+  const TGitCompanion({
+    this.gitId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TGitCompanion.insert({
+    required String gitId,
+    required String name,
+    required String accountId,
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : gitId = Value(gitId),
+        name = Value(name),
+        accountId = Value(accountId);
+  static Insertable<TGitData> custom({
+    Expression<String>? gitId,
+    Expression<String>? name,
+    Expression<String>? accountId,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (gitId != null) 'git_id': gitId,
+      if (name != null) 'name': name,
+      if (accountId != null) 'account_id': accountId,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TGitCompanion copyWith(
+      {Value<String>? gitId,
+      Value<String>? name,
+      Value<String>? accountId,
+      Value<String>? createAt,
+      Value<String>? updateAt,
+      Value<int>? rowid}) {
+    return TGitCompanion(
+      gitId: gitId ?? this.gitId,
+      name: name ?? this.name,
+      accountId: accountId ?? this.accountId,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (gitId.present) {
+      map['git_id'] = Variable<String>(gitId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TGitCompanion(')
+          ..write('gitId: $gitId, ')
+          ..write('name: $name, ')
+          ..write('accountId: $accountId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TGitRelTable extends TGitRel with TableInfo<$TGitRelTable, TGitRelData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TGitRelTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _projectIdMeta =
+      const VerificationMeta('projectId');
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+      'project_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES t_project (project_id)'));
+  static const VerificationMeta _gitIdMeta = const VerificationMeta('gitId');
+  @override
+  late final GeneratedColumn<String> gitId = GeneratedColumn<String>(
+      'git_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES t_git (git_id)'));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, projectId, gitId, createAt, updateAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 't_git_rel';
+  @override
+  VerificationContext validateIntegrity(Insertable<TGitRelData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(_projectIdMeta,
+          projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta));
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('git_id')) {
+      context.handle(
+          _gitIdMeta, gitId.isAcceptableOrUnknown(data['git_id']!, _gitIdMeta));
+    } else if (isInserting) {
+      context.missing(_gitIdMeta);
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TGitRelData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TGitRelData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      projectId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}project_id'])!,
+      gitId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}git_id'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $TGitRelTable createAlias(String alias) {
+    return $TGitRelTable(attachedDatabase, alias);
+  }
+}
+
+class TGitRelData extends DataClass implements Insertable<TGitRelData> {
+  final int id;
+  final String projectId;
+  final String gitId;
+  final String createAt;
+  final String updateAt;
+  const TGitRelData(
+      {required this.id,
+      required this.projectId,
+      required this.gitId,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['git_id'] = Variable<String>(gitId);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  TGitRelCompanion toCompanion(bool nullToAbsent) {
+    return TGitRelCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      gitId: Value(gitId),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory TGitRelData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TGitRelData(
+      id: serializer.fromJson<int>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      gitId: serializer.fromJson<String>(json['gitId']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'gitId': serializer.toJson<String>(gitId),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  TGitRelData copyWith(
+          {int? id,
+          String? projectId,
+          String? gitId,
+          String? createAt,
+          String? updateAt}) =>
+      TGitRelData(
+        id: id ?? this.id,
+        projectId: projectId ?? this.projectId,
+        gitId: gitId ?? this.gitId,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TGitRelData(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('gitId: $gitId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, projectId, gitId, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TGitRelData &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.gitId == this.gitId &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class TGitRelCompanion extends UpdateCompanion<TGitRelData> {
+  final Value<int> id;
+  final Value<String> projectId;
+  final Value<String> gitId;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  const TGitRelCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.gitId = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  });
+  TGitRelCompanion.insert({
+    this.id = const Value.absent(),
+    required String projectId,
+    required String gitId,
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  })  : projectId = Value(projectId),
+        gitId = Value(gitId);
+  static Insertable<TGitRelData> custom({
+    Expression<int>? id,
+    Expression<String>? projectId,
+    Expression<String>? gitId,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (gitId != null) 'git_id': gitId,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+    });
+  }
+
+  TGitRelCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? projectId,
+      Value<String>? gitId,
+      Value<String>? createAt,
+      Value<String>? updateAt}) {
+    return TGitRelCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      gitId: gitId ?? this.gitId,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (gitId.present) {
+      map['git_id'] = Variable<String>(gitId.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TGitRelCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('gitId: $gitId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TMwTable extends TMw with TableInfo<$TMwTable, TMwData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TMwTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _mwIdMeta = const VerificationMeta('mwId');
+  @override
+  late final GeneratedColumn<String> mwId = GeneratedColumn<String>(
+      'mw_id', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _accountIdMeta =
+      const VerificationMeta('accountId');
+  @override
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+      'account_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES m_account (account_id)'));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns =>
+      [mwId, name, accountId, createAt, updateAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 't_mw';
+  @override
+  VerificationContext validateIntegrity(Insertable<TMwData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('mw_id')) {
+      context.handle(
+          _mwIdMeta, mwId.isAcceptableOrUnknown(data['mw_id']!, _mwIdMeta));
+    } else if (isInserting) {
+      context.missing(_mwIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(_accountIdMeta,
+          accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {mwId};
+  @override
+  TMwData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TMwData(
+      mwId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}mw_id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      accountId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}account_id'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $TMwTable createAlias(String alias) {
+    return $TMwTable(attachedDatabase, alias);
+  }
+}
+
+class TMwData extends DataClass implements Insertable<TMwData> {
+  final String mwId;
+  final String name;
+  final String accountId;
+  final String createAt;
+  final String updateAt;
+  const TMwData(
+      {required this.mwId,
+      required this.name,
+      required this.accountId,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['mw_id'] = Variable<String>(mwId);
+    map['name'] = Variable<String>(name);
+    map['account_id'] = Variable<String>(accountId);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  TMwCompanion toCompanion(bool nullToAbsent) {
+    return TMwCompanion(
+      mwId: Value(mwId),
+      name: Value(name),
+      accountId: Value(accountId),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory TMwData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TMwData(
+      mwId: serializer.fromJson<String>(json['mwId']),
+      name: serializer.fromJson<String>(json['name']),
+      accountId: serializer.fromJson<String>(json['accountId']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'mwId': serializer.toJson<String>(mwId),
+      'name': serializer.toJson<String>(name),
+      'accountId': serializer.toJson<String>(accountId),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  TMwData copyWith(
+          {String? mwId,
+          String? name,
+          String? accountId,
+          String? createAt,
+          String? updateAt}) =>
+      TMwData(
+        mwId: mwId ?? this.mwId,
+        name: name ?? this.name,
+        accountId: accountId ?? this.accountId,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TMwData(')
+          ..write('mwId: $mwId, ')
+          ..write('name: $name, ')
+          ..write('accountId: $accountId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(mwId, name, accountId, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TMwData &&
+          other.mwId == this.mwId &&
+          other.name == this.name &&
+          other.accountId == this.accountId &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class TMwCompanion extends UpdateCompanion<TMwData> {
+  final Value<String> mwId;
+  final Value<String> name;
+  final Value<String> accountId;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  final Value<int> rowid;
+  const TMwCompanion({
+    this.mwId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TMwCompanion.insert({
+    required String mwId,
+    required String name,
+    required String accountId,
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : mwId = Value(mwId),
+        name = Value(name),
+        accountId = Value(accountId);
+  static Insertable<TMwData> custom({
+    Expression<String>? mwId,
+    Expression<String>? name,
+    Expression<String>? accountId,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (mwId != null) 'mw_id': mwId,
+      if (name != null) 'name': name,
+      if (accountId != null) 'account_id': accountId,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TMwCompanion copyWith(
+      {Value<String>? mwId,
+      Value<String>? name,
+      Value<String>? accountId,
+      Value<String>? createAt,
+      Value<String>? updateAt,
+      Value<int>? rowid}) {
+    return TMwCompanion(
+      mwId: mwId ?? this.mwId,
+      name: name ?? this.name,
+      accountId: accountId ?? this.accountId,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (mwId.present) {
+      map['mw_id'] = Variable<String>(mwId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TMwCompanion(')
+          ..write('mwId: $mwId, ')
+          ..write('name: $name, ')
+          ..write('accountId: $accountId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TMwRelTable extends TMwRel with TableInfo<$TMwRelTable, TMwRelData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TMwRelTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _projectIdMeta =
+      const VerificationMeta('projectId');
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+      'project_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES t_project (project_id)'));
+  static const VerificationMeta _mwIdMeta = const VerificationMeta('mwId');
+  @override
+  late final GeneratedColumn<String> mwId = GeneratedColumn<String>(
+      'mw_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES t_mw (mw_id)'));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, projectId, mwId, createAt, updateAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 't_mw_rel';
+  @override
+  VerificationContext validateIntegrity(Insertable<TMwRelData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(_projectIdMeta,
+          projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta));
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('mw_id')) {
+      context.handle(
+          _mwIdMeta, mwId.isAcceptableOrUnknown(data['mw_id']!, _mwIdMeta));
+    } else if (isInserting) {
+      context.missing(_mwIdMeta);
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TMwRelData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TMwRelData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      projectId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}project_id'])!,
+      mwId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}mw_id'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $TMwRelTable createAlias(String alias) {
+    return $TMwRelTable(attachedDatabase, alias);
+  }
+}
+
+class TMwRelData extends DataClass implements Insertable<TMwRelData> {
+  final int id;
+  final String projectId;
+  final String mwId;
+  final String createAt;
+  final String updateAt;
+  const TMwRelData(
+      {required this.id,
+      required this.projectId,
+      required this.mwId,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['mw_id'] = Variable<String>(mwId);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  TMwRelCompanion toCompanion(bool nullToAbsent) {
+    return TMwRelCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      mwId: Value(mwId),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory TMwRelData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TMwRelData(
+      id: serializer.fromJson<int>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      mwId: serializer.fromJson<String>(json['mwId']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'mwId': serializer.toJson<String>(mwId),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  TMwRelData copyWith(
+          {int? id,
+          String? projectId,
+          String? mwId,
+          String? createAt,
+          String? updateAt}) =>
+      TMwRelData(
+        id: id ?? this.id,
+        projectId: projectId ?? this.projectId,
+        mwId: mwId ?? this.mwId,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TMwRelData(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('mwId: $mwId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, projectId, mwId, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TMwRelData &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.mwId == this.mwId &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class TMwRelCompanion extends UpdateCompanion<TMwRelData> {
+  final Value<int> id;
+  final Value<String> projectId;
+  final Value<String> mwId;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  const TMwRelCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.mwId = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  });
+  TMwRelCompanion.insert({
+    this.id = const Value.absent(),
+    required String projectId,
+    required String mwId,
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  })  : projectId = Value(projectId),
+        mwId = Value(mwId);
+  static Insertable<TMwRelData> custom({
+    Expression<int>? id,
+    Expression<String>? projectId,
+    Expression<String>? mwId,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (mwId != null) 'mw_id': mwId,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+    });
+  }
+
+  TMwRelCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? projectId,
+      Value<String>? mwId,
+      Value<String>? createAt,
+      Value<String>? updateAt}) {
+    return TMwRelCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      mwId: mwId ?? this.mwId,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (mwId.present) {
+      map['mw_id'] = Variable<String>(mwId.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TMwRelCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('mwId: $mwId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $TToolTable extends TTool with TableInfo<$TToolTable, TToolData> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -8818,6 +10010,10 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
       $TDevProgressRelTable(this);
   late final $TTagTable tTag = $TTagTable(this);
   late final $TTagRelTable tTagRel = $TTagRelTable(this);
+  late final $TGitTable tGit = $TGitTable(this);
+  late final $TGitRelTable tGitRel = $TGitRelTable(this);
+  late final $TMwTable tMw = $TMwTable(this);
+  late final $TMwRelTable tMwRel = $TMwRelTable(this);
   late final $TToolTable tTool = $TToolTable(this);
   late final $TToolRelTable tToolRel = $TToolRelTable(this);
   late final $TOsInfoTable tOsInfo = $TOsInfoTable(this);
@@ -8852,6 +10048,13 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final Index tagId = Index('tag_id', 'CREATE INDEX tag_id ON t_tag (id)');
   late final Index tagRelId =
       Index('tag_rel_id', 'CREATE INDEX tag_rel_id ON t_tag_rel (id)');
+  late final Index gitId =
+      Index('git_id', 'CREATE INDEX git_id ON t_git (git_id)');
+  late final Index gitRelId =
+      Index('git_rel_id', 'CREATE INDEX git_rel_id ON t_git_rel (id)');
+  late final Index mwId = Index('mw_id', 'CREATE INDEX mw_id ON t_mw (mw_id)');
+  late final Index mwRelId =
+      Index('mw_rel_id', 'CREATE INDEX mw_rel_id ON t_mw_rel (id)');
   late final Index toolId =
       Index('tool_id', 'CREATE INDEX tool_id ON t_tool (tool_id)');
   late final Index toolRelId =
@@ -8889,6 +10092,10 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final TDbRelDao tDbRelDao = TDbRelDao(this as StairsDatabase);
   late final TDevLangRelDao tDevLangRelDao =
       TDevLangRelDao(this as StairsDatabase);
+  late final TGitDao tGitDao = TGitDao(this as StairsDatabase);
+  late final TGitRelDao tGitRelDao = TGitRelDao(this as StairsDatabase);
+  late final TMwDao tMwDao = TMwDao(this as StairsDatabase);
+  late final TMwRelDao tMwRelDao = TMwRelDao(this as StairsDatabase);
   late final TToolDao tToolDao = TToolDao(this as StairsDatabase);
   late final TToolRelDao tToolRelDao = TToolRelDao(this as StairsDatabase);
   late final TDevProgressRelDao tDevProgressRelDao =
@@ -8917,6 +10124,10 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         tDevProgressRel,
         tTag,
         tTagRel,
+        tGit,
+        tGitRel,
+        tMw,
+        tMwRel,
         tTool,
         tToolRel,
         tOsInfo,
@@ -8941,6 +10152,10 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         devProgressRelId,
         tagId,
         tagRelId,
+        gitId,
+        gitRelId,
+        mwId,
+        mwRelId,
         toolId,
         toolRelId,
         osId,

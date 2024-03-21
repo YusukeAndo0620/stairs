@@ -7,6 +7,10 @@ enum ProjectUpdateParam {
   db,
   // 開発言語紐付け
   devLangRel,
+  // Git
+  git,
+  // ミドルウェア
+  mw,
   // 開発ツール
   tool,
   // 開発工程
