@@ -58,7 +58,7 @@ class ProjectDetail extends _$ProjectDetail {
       endDate:
           DateTime(now.year, now.month + 7, 1).add(const Duration(days: -1)),
       devLanguageList: const [],
-      toolList: [],
+      toolIdList: [],
       devProgressIdList: [],
       tagList: tagList!,
     );
@@ -311,13 +311,11 @@ class ProjectDetail extends _$ProjectDetail {
     );
   }
 
-  void changeToolList({required List<LabelModel> toolList}) {
-    final targetToolList =
-        toolList.where((item) => item.labelName.isNotEmpty).toList();
+  void changeToolList({required List<String> toolIdList}) {
     update(
       (data) {
         state = const AsyncLoading();
-        return data = data!.copyWith(toolList: targetToolList);
+        return data = data!.copyWith(toolIdList: toolIdList);
       },
       onError: (error, stack) {
         state = AsyncError(error, stack);

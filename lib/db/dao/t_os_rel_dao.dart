@@ -34,7 +34,7 @@ class TOsRelDao extends DatabaseAccessor<StairsDatabase> with _$TOsRelDaoMixin {
     }
   }
 
-  /// DB紐付け 追加
+  /// OS紐付け 追加
   Future<void> insertOsRel({
     required TOsRelCompanion osRelData,
   }) async {
@@ -50,7 +50,7 @@ class TOsRelDao extends DatabaseAccessor<StairsDatabase> with _$TOsRelDaoMixin {
     }
   }
 
-  /// DB紐付け 更新
+  /// OS紐付け 更新
   Future<void> updateOsRel({
     required TOsRelCompanion osRelData,
   }) async {
@@ -66,7 +66,7 @@ class TOsRelDao extends DatabaseAccessor<StairsDatabase> with _$TOsRelDaoMixin {
     }
   }
 
-  /// DB紐付け 削除
+  /// OS紐付け 削除
   Future<void> deleteOsRel({required int id}) async {
     try {
       _logger.d('deleteOsRel 通信開始');
@@ -81,7 +81,7 @@ class TOsRelDao extends DatabaseAccessor<StairsDatabase> with _$TOsRelDaoMixin {
     }
   }
 
-  /// DB紐付け projectId一致のもの全て削除
+  /// OS紐付け projectId一致のもの全て削除
   Future<void> deleteOsRelByProjectId({required String projectId}) async {
     try {
       _logger.d('deleteOsRelByProjectId 通信開始');
@@ -97,7 +97,7 @@ class TOsRelDao extends DatabaseAccessor<StairsDatabase> with _$TOsRelDaoMixin {
     }
   }
 
-  /// DB紐付け osIdのもの全て削除
+  /// OS紐付け osIdのもの全て削除
   Future<void> deleteOsRelByOsId({required String osId}) async {
     try {
       _logger.d('deleteOsRelByOsId 通信開始');
@@ -112,7 +112,7 @@ class TOsRelDao extends DatabaseAccessor<StairsDatabase> with _$TOsRelDaoMixin {
     }
   }
 
-  // DB紐付け model to entity
+  // OS紐付け model to entity
   TOsRelCompanion convertOsRelToEntity({
     required String projectId,
     required String osId,

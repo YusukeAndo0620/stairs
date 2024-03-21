@@ -3960,17 +3960,15 @@ class $TToolTable extends TTool with TableInfo<$TToolTable, TToolData> {
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
-  static const VerificationMeta _projectIdMeta =
-      const VerificationMeta('projectId');
+  static const VerificationMeta _accountIdMeta =
+      const VerificationMeta('accountId');
   @override
-  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
-      'project_id', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+      'account_id', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES t_project (project_id)'));
+          'REFERENCES m_account (account_id)'));
   static const VerificationMeta _createAtMeta =
       const VerificationMeta('createAt');
   @override
@@ -3989,7 +3987,7 @@ class $TToolTable extends TTool with TableInfo<$TToolTable, TToolData> {
       clientDefault: () => DateTime.now().toIso8601String());
   @override
   List<GeneratedColumn> get $columns =>
-      [toolId, name, projectId, createAt, updateAt];
+      [toolId, name, accountId, createAt, updateAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4012,11 +4010,11 @@ class $TToolTable extends TTool with TableInfo<$TToolTable, TToolData> {
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('project_id')) {
-      context.handle(_projectIdMeta,
-          projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta));
+    if (data.containsKey('account_id')) {
+      context.handle(_accountIdMeta,
+          accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta));
     } else if (isInserting) {
-      context.missing(_projectIdMeta);
+      context.missing(_accountIdMeta);
     }
     if (data.containsKey('create_at')) {
       context.handle(_createAtMeta,
@@ -4039,8 +4037,8 @@ class $TToolTable extends TTool with TableInfo<$TToolTable, TToolData> {
           .read(DriftSqlType.string, data['${effectivePrefix}tool_id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      projectId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}project_id'])!,
+      accountId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}account_id'])!,
       createAt: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
       updateAt: attachedDatabase.typeMapping
@@ -4057,13 +4055,13 @@ class $TToolTable extends TTool with TableInfo<$TToolTable, TToolData> {
 class TToolData extends DataClass implements Insertable<TToolData> {
   final String toolId;
   final String name;
-  final String projectId;
+  final String accountId;
   final String createAt;
   final String updateAt;
   const TToolData(
       {required this.toolId,
       required this.name,
-      required this.projectId,
+      required this.accountId,
       required this.createAt,
       required this.updateAt});
   @override
@@ -4071,7 +4069,7 @@ class TToolData extends DataClass implements Insertable<TToolData> {
     final map = <String, Expression>{};
     map['tool_id'] = Variable<String>(toolId);
     map['name'] = Variable<String>(name);
-    map['project_id'] = Variable<String>(projectId);
+    map['account_id'] = Variable<String>(accountId);
     map['create_at'] = Variable<String>(createAt);
     map['update_at'] = Variable<String>(updateAt);
     return map;
@@ -4081,7 +4079,7 @@ class TToolData extends DataClass implements Insertable<TToolData> {
     return TToolCompanion(
       toolId: Value(toolId),
       name: Value(name),
-      projectId: Value(projectId),
+      accountId: Value(accountId),
       createAt: Value(createAt),
       updateAt: Value(updateAt),
     );
@@ -4093,7 +4091,7 @@ class TToolData extends DataClass implements Insertable<TToolData> {
     return TToolData(
       toolId: serializer.fromJson<String>(json['toolId']),
       name: serializer.fromJson<String>(json['name']),
-      projectId: serializer.fromJson<String>(json['projectId']),
+      accountId: serializer.fromJson<String>(json['accountId']),
       createAt: serializer.fromJson<String>(json['createAt']),
       updateAt: serializer.fromJson<String>(json['updateAt']),
     );
@@ -4104,7 +4102,7 @@ class TToolData extends DataClass implements Insertable<TToolData> {
     return <String, dynamic>{
       'toolId': serializer.toJson<String>(toolId),
       'name': serializer.toJson<String>(name),
-      'projectId': serializer.toJson<String>(projectId),
+      'accountId': serializer.toJson<String>(accountId),
       'createAt': serializer.toJson<String>(createAt),
       'updateAt': serializer.toJson<String>(updateAt),
     };
@@ -4113,13 +4111,13 @@ class TToolData extends DataClass implements Insertable<TToolData> {
   TToolData copyWith(
           {String? toolId,
           String? name,
-          String? projectId,
+          String? accountId,
           String? createAt,
           String? updateAt}) =>
       TToolData(
         toolId: toolId ?? this.toolId,
         name: name ?? this.name,
-        projectId: projectId ?? this.projectId,
+        accountId: accountId ?? this.accountId,
         createAt: createAt ?? this.createAt,
         updateAt: updateAt ?? this.updateAt,
       );
@@ -4128,7 +4126,7 @@ class TToolData extends DataClass implements Insertable<TToolData> {
     return (StringBuffer('TToolData(')
           ..write('toolId: $toolId, ')
           ..write('name: $name, ')
-          ..write('projectId: $projectId, ')
+          ..write('accountId: $accountId, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
           ..write(')'))
@@ -4136,14 +4134,14 @@ class TToolData extends DataClass implements Insertable<TToolData> {
   }
 
   @override
-  int get hashCode => Object.hash(toolId, name, projectId, createAt, updateAt);
+  int get hashCode => Object.hash(toolId, name, accountId, createAt, updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TToolData &&
           other.toolId == this.toolId &&
           other.name == this.name &&
-          other.projectId == this.projectId &&
+          other.accountId == this.accountId &&
           other.createAt == this.createAt &&
           other.updateAt == this.updateAt);
 }
@@ -4151,14 +4149,14 @@ class TToolData extends DataClass implements Insertable<TToolData> {
 class TToolCompanion extends UpdateCompanion<TToolData> {
   final Value<String> toolId;
   final Value<String> name;
-  final Value<String> projectId;
+  final Value<String> accountId;
   final Value<String> createAt;
   final Value<String> updateAt;
   final Value<int> rowid;
   const TToolCompanion({
     this.toolId = const Value.absent(),
     this.name = const Value.absent(),
-    this.projectId = const Value.absent(),
+    this.accountId = const Value.absent(),
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -4166,17 +4164,17 @@ class TToolCompanion extends UpdateCompanion<TToolData> {
   TToolCompanion.insert({
     required String toolId,
     required String name,
-    required String projectId,
+    required String accountId,
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : toolId = Value(toolId),
         name = Value(name),
-        projectId = Value(projectId);
+        accountId = Value(accountId);
   static Insertable<TToolData> custom({
     Expression<String>? toolId,
     Expression<String>? name,
-    Expression<String>? projectId,
+    Expression<String>? accountId,
     Expression<String>? createAt,
     Expression<String>? updateAt,
     Expression<int>? rowid,
@@ -4184,7 +4182,7 @@ class TToolCompanion extends UpdateCompanion<TToolData> {
     return RawValuesInsertable({
       if (toolId != null) 'tool_id': toolId,
       if (name != null) 'name': name,
-      if (projectId != null) 'project_id': projectId,
+      if (accountId != null) 'account_id': accountId,
       if (createAt != null) 'create_at': createAt,
       if (updateAt != null) 'update_at': updateAt,
       if (rowid != null) 'rowid': rowid,
@@ -4194,14 +4192,14 @@ class TToolCompanion extends UpdateCompanion<TToolData> {
   TToolCompanion copyWith(
       {Value<String>? toolId,
       Value<String>? name,
-      Value<String>? projectId,
+      Value<String>? accountId,
       Value<String>? createAt,
       Value<String>? updateAt,
       Value<int>? rowid}) {
     return TToolCompanion(
       toolId: toolId ?? this.toolId,
       name: name ?? this.name,
-      projectId: projectId ?? this.projectId,
+      accountId: accountId ?? this.accountId,
       createAt: createAt ?? this.createAt,
       updateAt: updateAt ?? this.updateAt,
       rowid: rowid ?? this.rowid,
@@ -4217,8 +4215,8 @@ class TToolCompanion extends UpdateCompanion<TToolData> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (projectId.present) {
-      map['project_id'] = Variable<String>(projectId.value);
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
     }
     if (createAt.present) {
       map['create_at'] = Variable<String>(createAt.value);
@@ -4237,10 +4235,302 @@ class TToolCompanion extends UpdateCompanion<TToolData> {
     return (StringBuffer('TToolCompanion(')
           ..write('toolId: $toolId, ')
           ..write('name: $name, ')
-          ..write('projectId: $projectId, ')
+          ..write('accountId: $accountId, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt, ')
           ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TToolRelTable extends TToolRel
+    with TableInfo<$TToolRelTable, TToolRelData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TToolRelTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _projectIdMeta =
+      const VerificationMeta('projectId');
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+      'project_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES t_project (project_id)'));
+  static const VerificationMeta _toolIdMeta = const VerificationMeta('toolId');
+  @override
+  late final GeneratedColumn<String> toolId = GeneratedColumn<String>(
+      'tool_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES t_tool (tool_id)'));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, projectId, toolId, createAt, updateAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 't_tool_rel';
+  @override
+  VerificationContext validateIntegrity(Insertable<TToolRelData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(_projectIdMeta,
+          projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta));
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('tool_id')) {
+      context.handle(_toolIdMeta,
+          toolId.isAcceptableOrUnknown(data['tool_id']!, _toolIdMeta));
+    } else if (isInserting) {
+      context.missing(_toolIdMeta);
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TToolRelData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TToolRelData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      projectId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}project_id'])!,
+      toolId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}tool_id'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $TToolRelTable createAlias(String alias) {
+    return $TToolRelTable(attachedDatabase, alias);
+  }
+}
+
+class TToolRelData extends DataClass implements Insertable<TToolRelData> {
+  final int id;
+  final String projectId;
+  final String toolId;
+  final String createAt;
+  final String updateAt;
+  const TToolRelData(
+      {required this.id,
+      required this.projectId,
+      required this.toolId,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['project_id'] = Variable<String>(projectId);
+    map['tool_id'] = Variable<String>(toolId);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  TToolRelCompanion toCompanion(bool nullToAbsent) {
+    return TToolRelCompanion(
+      id: Value(id),
+      projectId: Value(projectId),
+      toolId: Value(toolId),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory TToolRelData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TToolRelData(
+      id: serializer.fromJson<int>(json['id']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      toolId: serializer.fromJson<String>(json['toolId']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'projectId': serializer.toJson<String>(projectId),
+      'toolId': serializer.toJson<String>(toolId),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  TToolRelData copyWith(
+          {int? id,
+          String? projectId,
+          String? toolId,
+          String? createAt,
+          String? updateAt}) =>
+      TToolRelData(
+        id: id ?? this.id,
+        projectId: projectId ?? this.projectId,
+        toolId: toolId ?? this.toolId,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TToolRelData(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('toolId: $toolId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, projectId, toolId, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TToolRelData &&
+          other.id == this.id &&
+          other.projectId == this.projectId &&
+          other.toolId == this.toolId &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class TToolRelCompanion extends UpdateCompanion<TToolRelData> {
+  final Value<int> id;
+  final Value<String> projectId;
+  final Value<String> toolId;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  const TToolRelCompanion({
+    this.id = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.toolId = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  });
+  TToolRelCompanion.insert({
+    this.id = const Value.absent(),
+    required String projectId,
+    required String toolId,
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  })  : projectId = Value(projectId),
+        toolId = Value(toolId);
+  static Insertable<TToolRelData> custom({
+    Expression<int>? id,
+    Expression<String>? projectId,
+    Expression<String>? toolId,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (projectId != null) 'project_id': projectId,
+      if (toolId != null) 'tool_id': toolId,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+    });
+  }
+
+  TToolRelCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? projectId,
+      Value<String>? toolId,
+      Value<String>? createAt,
+      Value<String>? updateAt}) {
+    return TToolRelCompanion(
+      id: id ?? this.id,
+      projectId: projectId ?? this.projectId,
+      toolId: toolId ?? this.toolId,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (toolId.present) {
+      map['tool_id'] = Variable<String>(toolId.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TToolRelCompanion(')
+          ..write('id: $id, ')
+          ..write('projectId: $projectId, ')
+          ..write('toolId: $toolId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
           ..write(')'))
         .toString();
   }
@@ -8529,6 +8819,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final $TTagTable tTag = $TTagTable(this);
   late final $TTagRelTable tTagRel = $TTagRelTable(this);
   late final $TToolTable tTool = $TToolTable(this);
+  late final $TToolRelTable tToolRel = $TToolRelTable(this);
   late final $TOsInfoTable tOsInfo = $TOsInfoTable(this);
   late final $TOsRelTable tOsRel = $TOsRelTable(this);
   late final $TDbTable tDb = $TDbTable(this);
@@ -8563,6 +8854,8 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
       Index('tag_rel_id', 'CREATE INDEX tag_rel_id ON t_tag_rel (id)');
   late final Index toolId =
       Index('tool_id', 'CREATE INDEX tool_id ON t_tool (tool_id)');
+  late final Index toolRelId =
+      Index('tool_rel_id', 'CREATE INDEX tool_rel_id ON t_tool_rel (id)');
   late final Index osId =
       Index('os_id', 'CREATE INDEX os_id ON t_os_info (os_id)');
   late final Index osRelId =
@@ -8597,6 +8890,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final TDevLangRelDao tDevLangRelDao =
       TDevLangRelDao(this as StairsDatabase);
   late final TToolDao tToolDao = TToolDao(this as StairsDatabase);
+  late final TToolRelDao tToolRelDao = TToolRelDao(this as StairsDatabase);
   late final TDevProgressRelDao tDevProgressRelDao =
       TDevProgressRelDao(this as StairsDatabase);
   late final TTagDao tTagDao = TTagDao(this as StairsDatabase);
@@ -8624,6 +8918,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         tTag,
         tTagRel,
         tTool,
+        tToolRel,
         tOsInfo,
         tOsRel,
         tDb,
@@ -8647,6 +8942,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         tagId,
         tagRelId,
         toolId,
+        toolRelId,
         osId,
         osRelId,
         dbId,

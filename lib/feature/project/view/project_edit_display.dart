@@ -1,5 +1,6 @@
 import 'package:stairs/feature/common/provider/db_provider.dart';
 import 'package:stairs/feature/common/provider/os_provider.dart';
+import 'package:stairs/feature/common/provider/tool_provider.dart';
 import 'package:stairs/feature/project/provider/component/dev_lang_provider.dart';
 import 'package:stairs/feature/project/enum/project_update_param.dart';
 import 'package:stairs/feature/project/provider/project_detail_provider.dart';
@@ -100,19 +101,16 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
     _logger.d('===================================');
     _logger.d('プロジェクト編集モーダル 表示 {projectId:${widget.projectId}');
     final theme = LoomTheme.of(context);
-    //プロジェクト詳細
+    // プロジェクト詳細
     final projectDetailState =
         ref.watch(projectDetailProvider(projectId: widget.projectId));
 
-    //プロジェクト詳細 Notifier
+    // プロジェクト詳細 Notifier
     final projectDetailNotifier =
         ref.watch(projectDetailProvider(projectId: widget.projectId).notifier);
 
-    //プロジェクト一覧 Notifier
+    // プロジェクト一覧 Notifier
     final projectListNotifier = ref.watch(projectListProvider.notifier);
-
-    //開発言語一覧
-    final devLangList = ref.watch(devLangProvider);
 
     // OS一覧
     final osList = ref.watch(osProvider);
@@ -121,7 +119,15 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
     // DB一覧
     final dbList = ref.watch(dbProvider);
     final dbNotifier = ref.watch(dbProvider.notifier);
-    //開発工程一覧
+
+    // 開発言語一覧
+    final devLangList = ref.watch(devLangProvider);
+
+    // 開発Tool一覧
+    final toolList = ref.watch(toolProvider);
+    final toolNotifier = ref.watch(toolProvider.notifier);
+
+    // 開発工程一覧
     final devProgressList = ref.watch(devProgressProvider);
     final devProgressNotifier = ref.watch(devProgressProvider.notifier);
 
@@ -562,26 +568,52 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                           iconData: theme.icons.tool,
                           hintText: _kToolHintTxt,
                           itemList: [
-                            for (final item in detail.toolList)
+                            for (final toolId in detail.toolIdList)
                               LabelTip(
-                                label: item.labelName,
+                                label: toolNotifier.getName(toolId: toolId),
                                 themeColor: theme.colorFgDisabled,
                               )
                           ],
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) {
-                                return LabelInputDisplay(
+                                return SelectLabelDisplay(
                                   title: _kToolTxt,
-                                  labelList: detail.toolList,
+                                  labelList: toolList.value ?? [],
+                                  checkedIdList: detail.toolIdList,
                                   hintText: _kToolInputHintTxt,
                                   emptyText: _kToolListEmptyTxt,
-                                  onTapBack: (data) {
-                                    if (detail.toolList != data) {
+                                  isEditable: true,
+                                  onAddLabel: (id, labelName) async {
+                                    // Tool項目追加
+                                    await toolNotifier.createTool(
+                                      labelModel: LabelModel(
+                                          id: id, labelName: labelName),
+                                    );
+                                    // 更新後のTool一覧をStateにセット
+                                    await toolNotifier.setToolList();
+                                  },
+                                  onSubmitEditedText: (id, labelName) async {
+                                    // Toolの名称変更
+                                    await toolNotifier.updateTool(
+                                      labelModel: LabelModel(
+                                          id: id, labelName: labelName),
+                                    );
+                                    // 更新後のTool一覧をStateにセット
+                                    await toolNotifier.setToolList();
+                                  },
+                                  onTapDelete: (id) async {
+                                    // Toolの項目削除
+                                    await toolNotifier.deleteTool(toolId: id);
+                                    // 更新後のTool一覧をStateにセット
+                                    await toolNotifier.setToolList();
+                                  },
+                                  onTapBackIcon: (idList) {
+                                    if (detail.toolIdList != idList) {
                                       addUpdateParam(
                                           param: ProjectUpdateParam.tool);
                                       projectDetailNotifier.changeToolList(
-                                          toolList: (data as List<LabelModel>));
+                                          toolIdList: idList);
                                     }
                                   },
                                 );

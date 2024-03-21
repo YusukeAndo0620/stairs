@@ -13,12 +13,12 @@ class TToolDao extends DatabaseAccessor<StairsDatabase> with _$TToolDaoMixin {
 
   /// プロジェクトで設定されたツール取得
   Future<List<TToolData>> getToolList({
-    required String projectId,
+    required String accountId,
   }) async {
     try {
       _logger.d('getToolList 通信開始');
       final query = db.select(db.tTool)
-        ..where((tbl) => tbl.projectId.equals(projectId));
+        ..where((tbl) => tbl.accountId.equals(accountId));
       final response = await query.get();
       _logger.d('取得データ：$response');
       return response;
@@ -63,32 +63,35 @@ class TToolDao extends DatabaseAccessor<StairsDatabase> with _$TToolDaoMixin {
   }
 
   /// ツール 削除
-  Future<void> deleteToolByProjectId({
-    required String projectId,
+  Future<void> deleteTool({
+    required String accountId,
+    required String toolId,
   }) async {
     try {
-      _logger.d('deleteToolByProjectId 通信開始');
-      _logger.d('projectId: $projectId');
+      _logger.d('deleteTool 通信開始');
+      _logger.d('accountId: $accountId');
+      _logger.d('toolId: $toolId');
       final query = db.delete(db.tTool)
-        ..where((tbl) => tbl.projectId.equals(projectId));
+        ..where((tbl) =>
+            tbl.accountId.equals(accountId) & tbl.toolId.equals(toolId));
       await query.go();
     } on Exception catch (exception) {
       _logger.e(exception);
       rethrow;
     } finally {
-      _logger.d('deleteToolByProjectId 通信終了');
+      _logger.d('deleteTool 通信終了');
     }
   }
 
   // Tool model to entity
   TToolCompanion convertToolToEntity({
-    required String projectId,
+    required String accountId,
     required LabelModel model,
   }) {
     return TToolCompanion(
       toolId: Value(model.id),
       name: Value(model.labelName),
-      projectId: Value(projectId),
+      accountId: Value(accountId),
       updateAt: Value(DateTime.now().toIso8601String()),
     );
   }

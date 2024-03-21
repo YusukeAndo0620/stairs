@@ -16,7 +16,7 @@ class ProjectDetailModel {
     this.osIdList = const [],
     this.dbIdList = const [],
     this.devLanguageList = const [],
-    this.toolList = const [],
+    this.toolIdList = const [],
     this.devProgressIdList = const [],
     this.tagList = const [],
   });
@@ -64,7 +64,7 @@ class ProjectDetailModel {
   final List<LabelWithContent> devLanguageList;
 
   /// 開発ツールリスト
-  final List<LabelModel> toolList;
+  final List<String> toolIdList;
 
   /// 開発工程リスト
   final List<String> devProgressIdList;
@@ -87,7 +87,7 @@ class ProjectDetailModel {
     List<String>? osIdList,
     List<String>? dbIdList,
     List<LabelWithContent>? devLanguageList,
-    List<LabelModel>? toolList,
+    List<String>? toolIdList,
     List<String>? devProgressIdList,
     List<ColorLabelModel>? tagList,
   }) =>
@@ -106,7 +106,7 @@ class ProjectDetailModel {
         osIdList: osIdList ?? this.osIdList,
         dbIdList: dbIdList ?? this.dbIdList,
         devLanguageList: devLanguageList ?? this.devLanguageList,
-        toolList: toolList ?? this.toolList,
+        toolIdList: toolIdList ?? this.toolIdList,
         devProgressIdList: devProgressIdList ?? this.devProgressIdList,
         tagList: tagList ?? this.tagList,
       );
@@ -130,10 +130,10 @@ class ProjectDetailModel {
   //     devLanguageList.add(linkTagModel);
   //   }
   //   // 開発ツールリスト
-  //   final List<LabelModel> toolList = [];
+  //   final List<LabelModel> toolIdList = [];
   //   for (final item in json["tool_list"]) {
   //     final labelModel = LabelModel.fromJson(item);
-  //     toolList.add(labelModel);
+  //     toolIdList.add(labelModel);
   //   }
   //   // 開発工程リスト
   //   final List<LabelModel> devProgressIdList = [];
@@ -164,7 +164,7 @@ class ProjectDetailModel {
   //     os: os,
   //     db: db,
   //     devLanguageList: devLanguageList,
-  //     toolList: toolList,
+  //     toolIdList: toolIdList,
   //     devProgressIdList: devProgressIdList,
   //     devSize: devSize,
   //     tagList: tagList,
@@ -196,7 +196,7 @@ class ProjectDetailModel {
 
   //   // 開発ツールリスト
   //   final targetToolList = [];
-  //   for (final item in toolList) {
+  //   for (final item in toolIdList) {
   //     final labelModel = item.toJson();
   //     targetToolList.add(labelModel);
   //   }
@@ -234,7 +234,7 @@ class ProjectDetailModel {
   //   }
   //   // 開発ツールリスト
   //   final targetToolList = [];
-  //   for (final item in toolList) {
+  //   for (final item in toolIdList) {
   //     final labelModel = item.toJson();
   //     targetToolList.add(labelModel);
   //   }
@@ -265,7 +265,7 @@ class ProjectDetailModel {
   //       os: $os,
   //       db: $db,
   //       devLanguageList: $targetDevLanguageList,
-  //       toolList: $targetToolList,
+  //       toolIdList: $targetToolList,
   //       devProgressIdList: $targetdevProgressIdList,
   //       dev_size: $devSize,
   //       tool_list: $targetTagList

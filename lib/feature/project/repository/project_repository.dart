@@ -60,7 +60,8 @@ class ProjectRepository {
           await db.tDevLangRelDao.getDevLangList(projectId: projectId);
 
       // 開発ツール
-      final toolResponse = await db.tToolDao.getToolList(projectId: projectId);
+      final toolResponse =
+          await db.tToolRelDao.getToolRelList(projectId: projectId);
 
       // 開発工程
       final devProgressResponse =
@@ -87,7 +88,7 @@ class ProjectRepository {
         devLangRelData: devLangResponse
             .map((e) => e.readTable(db.tDevLanguageRel))
             .toList(),
-        toolData: toolResponse,
+        toolRelData: toolResponse.map((e) => e.readTable(db.tToolRel)).toList(),
         devProgressRelData: devProgressResponse,
         tagData: tagResponse.map((e) => e.readTable(db.tTag)).toList(),
         tagRelData: tagResponse.map((e) => e.readTable(db.tTagRel)).toList(),
@@ -132,11 +133,11 @@ class ProjectRepository {
               projectId: detailModel.projectId, model: item))
           .toList();
 
-      final toolDataList = detailModel.toolList
-          .map((item) => db.tToolDao.convertToolToEntity(
-              projectId: detailModel.projectId, model: item))
+      final toolRelDataList = detailModel.toolIdList
+          .map((toolId) => db.tToolRelDao.convertToolRelToEntity(
+              projectId: detailModel.projectId, toolId: toolId))
           .toList()
-          .whereType<TToolCompanion>()
+          .whereType<TToolRelCompanion>()
           .toList();
 
       final devProgressDataList = detailModel.devProgressIdList
@@ -169,8 +170,8 @@ class ProjectRepository {
         await db.tDevLangRelDao.insertDevLanguage(devLangData: item);
       }
       // 開発ツール 作成
-      for (final item in toolDataList) {
-        await db.tToolDao.insertTool(toolData: item);
+      for (final item in toolRelDataList) {
+        await db.tToolRelDao.insertToolRel(toolRelData: item);
       }
       // 開発工程 作成
       for (final item in devProgressDataList) {
@@ -249,17 +250,17 @@ class ProjectRepository {
             // 開発ツール
             case ProjectUpdateParam.tool:
               _logger.d('開発ツール 更新');
-              final toolDataList = detailModel.toolList
-                  .map((item) => db.tToolDao.convertToolToEntity(
-                      projectId: detailModel.projectId, model: item))
-                  .whereType<TToolCompanion>()
+              final toolRelDataList = detailModel.toolIdList
+                  .map((toolId) => db.tToolRelDao.convertToolRelToEntity(
+                      projectId: detailModel.projectId, toolId: toolId))
+                  .whereType<TToolRelCompanion>()
                   .toList();
               // 開発ツール 削除
-              await db.tToolDao
-                  .deleteToolByProjectId(projectId: detailModel.projectId);
+              await db.tToolRelDao
+                  .deleteToolRelByProjectId(projectId: detailModel.projectId);
               // 開発ツール 作成
-              for (final item in toolDataList) {
-                await db.tToolDao.insertTool(toolData: item);
+              for (final item in toolRelDataList) {
+                await db.tToolRelDao.insertToolRel(toolRelData: item);
               }
             // 開発工程(delete & insert)
             case ProjectUpdateParam.devProgress:
@@ -353,7 +354,7 @@ ProjectDetailModel _convertProjectDetailToModel({
   required List<TDbRelData> dbRelData,
   required List<TDevLanguageData> devLangData,
   required List<TDevLanguageRelData> devLangRelData,
-  required List<TToolData> toolData,
+  required List<TToolRelData> toolRelData,
   required List<TDevProgressRelData> devProgressRelData,
   required List<TTagData> tagData,
   required List<TTagRelData> tagRelData,
@@ -408,9 +409,7 @@ ProjectDetailModel _convertProjectDetailToModel({
     osIdList: osData.map((item) => item.osId).toList(),
     dbIdList: dbRelData.map((item) => item.dbId).toList(),
     devLanguageList: devLangList,
-    toolList: toolData
-        .map((item) => LabelModel(id: item.toolId, labelName: item.name))
-        .toList(),
+    toolIdList: toolRelData.map((item) => item.toolId).toList(),
     devProgressIdList: devProgressRelData
         .map((item) => item.devProgressId.toString())
         .toList(),

@@ -15,7 +15,7 @@ class CommonRepository {
       _logger.i('getAccount 通信開始');
       final response = await db.mAccountDao.getAccount();
       _logger.i('取得データ：$response');
-      final responseData = _convertMAccountToModel(accountData: response);
+      final responseData = _convertAccountToModel(accountData: response);
 
       return responseData;
     } on Exception catch (exception) {
@@ -32,7 +32,7 @@ class CommonRepository {
       _logger.i('getColorList 通信開始');
       final response = await db.select(db.mColor).get();
       _logger.i('取得数：${response.length}件');
-      final responseData = _convertMColorToModel(colorData: response);
+      final responseData = _convertColorToModel(colorData: response);
 
       return responseData;
     } on Exception catch (exception) {
@@ -71,7 +71,7 @@ class CommonRepository {
       _logger.i('getDbList 通信開始');
       final response = await db.tDbDao.getDbList(accountId: accountId);
       _logger.i('取得数：${response.length}件');
-      final responseData = _convertTDbToModel(dbList: response);
+      final responseData = _convertDbToModel(dbList: response);
 
       return responseData;
     } on Exception catch (exception) {
@@ -88,7 +88,7 @@ class CommonRepository {
     try {
       _logger.i('createDb 通信開始');
       final dbData =
-          _convertTDbToEntity(accountId: accountId, labelModel: labelModel);
+          _convertDbToEntity(accountId: accountId, labelModel: labelModel);
       await db.tDbDao.insertDb(dbData: dbData);
     } on Exception catch (exception) {
       _logger.e(exception);
@@ -104,7 +104,7 @@ class CommonRepository {
     try {
       _logger.i('updateDb 通信開始');
       final dbData =
-          _convertTDbToEntity(accountId: accountId, labelModel: labelModel);
+          _convertDbToEntity(accountId: accountId, labelModel: labelModel);
       await db.tDbDao.updateDb(dbData: dbData);
     } on Exception catch (exception) {
       _logger.e(exception);
@@ -128,13 +128,76 @@ class CommonRepository {
     }
   }
 
+  /// Tool 一覧取得
+  Future<List<LabelModel>?> getToolList({required String accountId}) async {
+    try {
+      _logger.i('getToolList 通信開始');
+      final response = await db.tToolDao.getToolList(accountId: accountId);
+      _logger.i('取得数：${response.length}件');
+      final responseData = _convertToolToModel(toolList: response);
+
+      return responseData;
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('getToolList 通信終了');
+    }
+  }
+
+  /// Tool 追加
+  Future<void> createTool(
+      {required String accountId, required LabelModel labelModel}) async {
+    try {
+      _logger.i('createTool 通信開始');
+      final toolData =
+          _convertToolToEntity(accountId: accountId, labelModel: labelModel);
+      await db.tToolDao.insertTool(toolData: toolData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('createTool 通信終了');
+    }
+  }
+
+  /// Tool 更新
+  Future<void> updateTool(
+      {required String accountId, required LabelModel labelModel}) async {
+    try {
+      _logger.i('updateTool 通信開始');
+      final toolData =
+          _convertToolToEntity(accountId: accountId, labelModel: labelModel);
+      await db.tToolDao.updateTool(toolData: toolData);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('updateTool 通信終了');
+    }
+  }
+
+  /// Tool 削除
+  Future<void> deleteTool(
+      {required String accountId, required String toolId}) async {
+    try {
+      _logger.i('deleteTool 通信開始');
+      await db.tToolDao.deleteTool(accountId: accountId, toolId: toolId);
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.i('deleteTool 通信終了');
+    }
+  }
+
   /// OS 一覧取得
   Future<List<LabelModel>?> getOsList({required String accountId}) async {
     try {
       _logger.i('getOsList 通信開始');
       final response = await db.tOsInfoDao.getOsList(accountId: accountId);
       _logger.i('取得数：${response.length}件');
-      final responseData = _convertTOsToModel(osList: response);
+      final responseData = _convertOsToModel(osList: response);
 
       return responseData;
     } on Exception catch (exception) {
@@ -151,7 +214,7 @@ class CommonRepository {
     try {
       _logger.i('createOs 通信開始');
       final osData =
-          _convertTOsToEntity(accountId: accountId, labelModel: labelModel);
+          _convertOsToEntity(accountId: accountId, labelModel: labelModel);
       await db.tOsInfoDao.insertOs(osData: osData);
     } on Exception catch (exception) {
       _logger.e(exception);
@@ -167,7 +230,7 @@ class CommonRepository {
     try {
       _logger.i('updateOs 通信開始');
       final osData =
-          _convertTOsToEntity(accountId: accountId, labelModel: labelModel);
+          _convertOsToEntity(accountId: accountId, labelModel: labelModel);
       await db.tOsInfoDao.updateOs(osData: osData);
     } on Exception catch (exception) {
       _logger.e(exception);
@@ -198,7 +261,7 @@ class CommonRepository {
       final response = await db.select(db.mDevProgressList).get();
       _logger.i('取得数：${response.length}件');
       final responseData =
-          _convertMDevProgressToModel(devProgressList: response);
+          _convertDevProgressToModel(devProgressList: response);
 
       return responseData;
     } on Exception catch (exception) {
@@ -216,7 +279,7 @@ class CommonRepository {
       _logger.i('getDefaultTagList 通信開始');
       final response = await db.tTagDao.getDefaultTagList(accountId: accountId);
       _logger.i('取得数：${response.length}件');
-      final responseData = _convertTTagToModel(
+      final responseData = _convertTagToModel(
         tagList: response.map((e) => e.readTable(db.tTag)).toList(),
         tagColorData: response.map((e) => e.readTable(db.mColor)).toList(),
       );
@@ -232,7 +295,7 @@ class CommonRepository {
 }
 
 /// account to model
-AccountModel _convertMAccountToModel({required MAccountData accountData}) {
+AccountModel _convertAccountToModel({required MAccountData accountData}) {
   return AccountModel(
       accountId: accountData.accountId,
       address: accountData.address,
@@ -240,7 +303,7 @@ AccountModel _convertMAccountToModel({required MAccountData accountData}) {
 }
 
 /// color to model
-List<ColorModel> _convertMColorToModel({required List<MColorData> colorData}) {
+List<ColorModel> _convertColorToModel({required List<MColorData> colorData}) {
   return colorData
       .map((item) => ColorModel(
           id: item.id, color: getColorFromCode(code: item.colorCodeId)))
@@ -248,14 +311,14 @@ List<ColorModel> _convertMColorToModel({required List<MColorData> colorData}) {
 }
 
 /// db to model
-List<LabelModel> _convertTDbToModel({required List<TDbData> dbList}) {
+List<LabelModel> _convertDbToModel({required List<TDbData> dbList}) {
   return dbList
       .map((item) => LabelModel(id: item.dbId, labelName: item.name))
       .toList();
 }
 
 /// db to entity
-TDbCompanion _convertTDbToEntity({
+TDbCompanion _convertDbToEntity({
   required String accountId,
   required LabelModel labelModel,
 }) {
@@ -269,15 +332,37 @@ TDbCompanion _convertTDbToEntity({
   );
 }
 
+/// Tool to model
+List<LabelModel> _convertToolToModel({required List<TToolData> toolList}) {
+  return toolList
+      .map((item) => LabelModel(id: item.toolId, labelName: item.name))
+      .toList();
+}
+
+/// Tool to entity
+TToolCompanion _convertToolToEntity({
+  required String accountId,
+  required LabelModel labelModel,
+}) {
+  return TToolCompanion(
+    toolId: Value(labelModel.id),
+    name: Value(
+      labelModel.labelName,
+    ),
+    accountId: Value(accountId),
+    updateAt: Value(DateTime.now().toIso8601String()),
+  );
+}
+
 /// os to model
-List<LabelModel> _convertTOsToModel({required List<TOsInfoData> osList}) {
+List<LabelModel> _convertOsToModel({required List<TOsInfoData> osList}) {
   return osList
       .map((item) => LabelModel(id: item.osId, labelName: item.name))
       .toList();
 }
 
 /// os to entity
-TOsInfoCompanion _convertTOsToEntity({
+TOsInfoCompanion _convertOsToEntity({
   required String accountId,
   required LabelModel labelModel,
 }) {
@@ -292,14 +377,14 @@ TOsInfoCompanion _convertTOsToEntity({
 }
 
 /// dev progress to model
-List<LabelModel> _convertMDevProgressToModel(
+List<LabelModel> _convertDevProgressToModel(
     {required List<MDevProgressListData> devProgressList}) {
   return devProgressList
       .map((item) => LabelModel(id: item.id.toString(), labelName: item.name))
       .toList();
 }
 
-List<ColorLabelModel> _convertTTagToModel({
+List<ColorLabelModel> _convertTagToModel({
   required List<TTagData> tagList,
   required List<MColorData> tagColorData,
 }) {
