@@ -7,6 +7,9 @@ class TResumeTag extends Table {
   /// id
   IntColumn get id => integer().autoIncrement()();
 
+  /// タグID
+  IntColumn get tagId => integer().references(TTag, #id)();
+
   /// タスク数
   IntColumn get taskCount => integer()();
 
@@ -14,8 +17,6 @@ class TResumeTag extends Table {
   TextColumn get resumeProjectId =>
       text().references(TResumeProject, #resumeProjectId)();
 
-  /// タグID
-  IntColumn get tagId => integer().references(TTag, #id)();
   TextColumn get createAt =>
       text().clientDefault(() => DateTime.now().toIso8601String())();
   TextColumn get updateAt =>

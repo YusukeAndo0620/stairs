@@ -1,9 +1,9 @@
 import 'package:drift/drift.dart';
 import 'package:stairs/db/db_package.dart';
 
-/// 経歴書 役割
-@TableIndex(name: 'resume_dev_lang_rel_id', columns: {#id})
-class TResumeDevLangRel extends Table {
+/// 経歴書 開発言語
+@TableIndex(name: 'resume_dev_lang_id', columns: {#id})
+class TResumeDevLang extends Table {
   /// id
   IntColumn get id => integer().autoIncrement()();
 

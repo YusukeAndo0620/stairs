@@ -53,7 +53,7 @@ final _logger = stairsLogger(name: 'database');
     TResumeTool,
     TResumeGit,
     TResumeMw,
-    TResumeDevLangRel,
+    TResumeDevLang,
     TResumeTag,
   ],
   daos: [
@@ -85,6 +85,8 @@ final _logger = stairsLogger(name: 'database');
     TResumeDbDao,
     TResumeGitDao,
     TResumeMwDao,
+    TResumeDevLangDao,
+    TResumeTagDao,
     TResumeToolDao,
   ],
 )
