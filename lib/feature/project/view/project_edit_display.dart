@@ -40,14 +40,14 @@ const _kTableCountTxt = 'テーブル数';
 const _kTableCountHintTxt = 'テーブル数を設定';
 
 const _kOsTxt = 'OS';
-const _kOsHintTxt = '使用OS・機種';
+const _kOsHintTxt = 'OSを設定';
 const _kOsInputHintTxt = 'OSを入力';
 const _kOsListEmptyTxt = 'OSが登録されていません。\nOSを追加してください';
 
-const _kDbTxt = 'DB';
-const _kDbHintTxt = '使用DB';
-const _kDbInputHintTxt = 'DBを入力';
-const _kDbListEmptyTxt = 'DBが登録されていません。\nDBを追加してください';
+const _kDbTxt = 'DB・ORM';
+const _kDbHintTxt = 'DB, ORMを設定';
+const _kDbInputHintTxt = 'DB・ORMを入力';
+const _kDbListEmptyTxt = 'DB, ORMが登録されていません。\nDB, ORMを追加してください';
 
 const _kDevLangTxt = '開発言語';
 const _kDevLangHintTxt = '開発言語、フレームワークを設定';

@@ -8,11 +8,15 @@ class TResumeDevLangRel extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   /// 開発言語ID
-  TextColumn get devLangId =>
-      text().withLength(min: 1, max: 50).references(TDevLanguage, #devLangId)();
+  TextColumn get devLangId => text().references(TDevLanguage, #devLangId)();
+
+  /// バージョンなど
+  TextColumn get content =>
+      text().withLength(min: 0, max: 50).clientDefault(() => '')();
 
   /// 経歴書プロジェクトID
-  IntColumn get resumeProjectId => integer().references(TResumeProject, #id)();
+  TextColumn get resumeProjectId =>
+      text().references(TResumeProject, #resumeProjectId)();
 
   TextColumn get createAt =>
       text().clientDefault(() => DateTime.now().toIso8601String())();

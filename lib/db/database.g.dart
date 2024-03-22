@@ -8380,15 +8380,15 @@ class $TResumeProjectTable extends TResumeProject
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $TResumeProjectTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  static const VerificationMeta _resumeProjectIdMeta =
+      const VerificationMeta('resumeProjectId');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  late final GeneratedColumn<String> resumeProjectId = GeneratedColumn<String>(
+      'resume_project_id', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -8486,7 +8486,7 @@ class $TResumeProjectTable extends TResumeProject
       clientDefault: () => DateTime.now().toIso8601String());
   @override
   List<GeneratedColumn> get $columns => [
-        id,
+        resumeProjectId,
         name,
         description,
         industry,
@@ -8510,8 +8510,13 @@ class $TResumeProjectTable extends TResumeProject
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    if (data.containsKey('resume_project_id')) {
+      context.handle(
+          _resumeProjectIdMeta,
+          resumeProjectId.isAcceptableOrUnknown(
+              data['resume_project_id']!, _resumeProjectIdMeta));
+    } else if (isInserting) {
+      context.missing(_resumeProjectIdMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -8587,13 +8592,13 @@ class $TResumeProjectTable extends TResumeProject
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {resumeProjectId};
   @override
   TResumeProjectData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TResumeProjectData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      resumeProjectId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}resume_project_id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       description: attachedDatabase.typeMapping
@@ -8629,8 +8634,8 @@ class $TResumeProjectTable extends TResumeProject
 
 class TResumeProjectData extends DataClass
     implements Insertable<TResumeProjectData> {
-  /// id
-  final int id;
+  /// 経歴書プロジェクトID
+  final String resumeProjectId;
 
   /// タイトル名
   final String name;
@@ -8662,7 +8667,7 @@ class TResumeProjectData extends DataClass
   final String createAt;
   final String updateAt;
   const TResumeProjectData(
-      {required this.id,
+      {required this.resumeProjectId,
       required this.name,
       required this.description,
       required this.industry,
@@ -8678,7 +8683,7 @@ class TResumeProjectData extends DataClass
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
+    map['resume_project_id'] = Variable<String>(resumeProjectId);
     map['name'] = Variable<String>(name);
     map['description'] = Variable<String>(description);
     map['industry'] = Variable<String>(industry);
@@ -8696,7 +8701,7 @@ class TResumeProjectData extends DataClass
 
   TResumeProjectCompanion toCompanion(bool nullToAbsent) {
     return TResumeProjectCompanion(
-      id: Value(id),
+      resumeProjectId: Value(resumeProjectId),
       name: Value(name),
       description: Value(description),
       industry: Value(industry),
@@ -8716,7 +8721,7 @@ class TResumeProjectData extends DataClass
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TResumeProjectData(
-      id: serializer.fromJson<int>(json['id']),
+      resumeProjectId: serializer.fromJson<String>(json['resumeProjectId']),
       name: serializer.fromJson<String>(json['name']),
       description: serializer.fromJson<String>(json['description']),
       industry: serializer.fromJson<String>(json['industry']),
@@ -8735,7 +8740,7 @@ class TResumeProjectData extends DataClass
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
+      'resumeProjectId': serializer.toJson<String>(resumeProjectId),
       'name': serializer.toJson<String>(name),
       'description': serializer.toJson<String>(description),
       'industry': serializer.toJson<String>(industry),
@@ -8752,7 +8757,7 @@ class TResumeProjectData extends DataClass
   }
 
   TResumeProjectData copyWith(
-          {int? id,
+          {String? resumeProjectId,
           String? name,
           String? description,
           String? industry,
@@ -8766,7 +8771,7 @@ class TResumeProjectData extends DataClass
           String? createAt,
           String? updateAt}) =>
       TResumeProjectData(
-        id: id ?? this.id,
+        resumeProjectId: resumeProjectId ?? this.resumeProjectId,
         name: name ?? this.name,
         description: description ?? this.description,
         industry: industry ?? this.industry,
@@ -8783,7 +8788,7 @@ class TResumeProjectData extends DataClass
   @override
   String toString() {
     return (StringBuffer('TResumeProjectData(')
-          ..write('id: $id, ')
+          ..write('resumeProjectId: $resumeProjectId, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('industry: $industry, ')
@@ -8802,7 +8807,7 @@ class TResumeProjectData extends DataClass
 
   @override
   int get hashCode => Object.hash(
-      id,
+      resumeProjectId,
       name,
       description,
       industry,
@@ -8819,7 +8824,7 @@ class TResumeProjectData extends DataClass
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TResumeProjectData &&
-          other.id == this.id &&
+          other.resumeProjectId == this.resumeProjectId &&
           other.name == this.name &&
           other.description == this.description &&
           other.industry == this.industry &&
@@ -8835,7 +8840,7 @@ class TResumeProjectData extends DataClass
 }
 
 class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
-  final Value<int> id;
+  final Value<String> resumeProjectId;
   final Value<String> name;
   final Value<String> description;
   final Value<String> industry;
@@ -8848,8 +8853,9 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
   final Value<String> accountId;
   final Value<String> createAt;
   final Value<String> updateAt;
+  final Value<int> rowid;
   const TResumeProjectCompanion({
-    this.id = const Value.absent(),
+    this.resumeProjectId = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
     this.industry = const Value.absent(),
@@ -8862,9 +8868,10 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
     this.accountId = const Value.absent(),
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
   TResumeProjectCompanion.insert({
-    this.id = const Value.absent(),
+    required String resumeProjectId,
     required String name,
     required String description,
     required String industry,
@@ -8877,7 +8884,9 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
     required String accountId,
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
-  })  : name = Value(name),
+    this.rowid = const Value.absent(),
+  })  : resumeProjectId = Value(resumeProjectId),
+        name = Value(name),
         description = Value(description),
         industry = Value(industry),
         displayCount = Value(displayCount),
@@ -8885,7 +8894,7 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
         devSize = Value(devSize),
         accountId = Value(accountId);
   static Insertable<TResumeProjectData> custom({
-    Expression<int>? id,
+    Expression<String>? resumeProjectId,
     Expression<String>? name,
     Expression<String>? description,
     Expression<String>? industry,
@@ -8898,9 +8907,10 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
     Expression<String>? accountId,
     Expression<String>? createAt,
     Expression<String>? updateAt,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
-      if (id != null) 'id': id,
+      if (resumeProjectId != null) 'resume_project_id': resumeProjectId,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (industry != null) 'industry': industry,
@@ -8913,11 +8923,12 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
       if (accountId != null) 'account_id': accountId,
       if (createAt != null) 'create_at': createAt,
       if (updateAt != null) 'update_at': updateAt,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
   TResumeProjectCompanion copyWith(
-      {Value<int>? id,
+      {Value<String>? resumeProjectId,
       Value<String>? name,
       Value<String>? description,
       Value<String>? industry,
@@ -8929,9 +8940,10 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
       Value<int>? devSize,
       Value<String>? accountId,
       Value<String>? createAt,
-      Value<String>? updateAt}) {
+      Value<String>? updateAt,
+      Value<int>? rowid}) {
     return TResumeProjectCompanion(
-      id: id ?? this.id,
+      resumeProjectId: resumeProjectId ?? this.resumeProjectId,
       name: name ?? this.name,
       description: description ?? this.description,
       industry: industry ?? this.industry,
@@ -8944,14 +8956,15 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
       accountId: accountId ?? this.accountId,
       createAt: createAt ?? this.createAt,
       updateAt: updateAt ?? this.updateAt,
+      rowid: rowid ?? this.rowid,
     );
   }
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
+    if (resumeProjectId.present) {
+      map['resume_project_id'] = Variable<String>(resumeProjectId.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -8989,13 +9002,16 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
     if (updateAt.present) {
       map['update_at'] = Variable<String>(updateAt.value);
     }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
     return map;
   }
 
   @override
   String toString() {
     return (StringBuffer('TResumeProjectCompanion(')
-          ..write('id: $id, ')
+          ..write('resumeProjectId: $resumeProjectId, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
           ..write('industry: $industry, ')
@@ -9007,7 +9023,8 @@ class TResumeProjectCompanion extends UpdateCompanion<TResumeProjectData> {
           ..write('devSize: $devSize, ')
           ..write('accountId: $accountId, ')
           ..write('createAt: $createAt, ')
-          ..write('updateAt: $updateAt')
+          ..write('updateAt: $updateAt, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -9038,12 +9055,12 @@ class $TResumeRoleTable extends TResumeRole
   static const VerificationMeta _resumeProjectIdMeta =
       const VerificationMeta('resumeProjectId');
   @override
-  late final GeneratedColumn<int> resumeProjectId = GeneratedColumn<int>(
+  late final GeneratedColumn<String> resumeProjectId = GeneratedColumn<String>(
       'resume_project_id', aliasedName, false,
-      type: DriftSqlType.int,
+      type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES t_resume_project (id)'));
+          'REFERENCES t_resume_project (resume_project_id)'));
   static const VerificationMeta _createAtMeta =
       const VerificationMeta('createAt');
   @override
@@ -9109,8 +9126,8 @@ class $TResumeRoleTable extends TResumeRole
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       code: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}code'])!,
-      resumeProjectId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}resume_project_id'])!,
+      resumeProjectId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}resume_project_id'])!,
       createAt: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
       updateAt: attachedDatabase.typeMapping
@@ -9132,7 +9149,7 @@ class TResumeRoleData extends DataClass implements Insertable<TResumeRoleData> {
   final int code;
 
   /// 経歴書プロジェクトID
-  final int resumeProjectId;
+  final String resumeProjectId;
   final String createAt;
   final String updateAt;
   const TResumeRoleData(
@@ -9146,7 +9163,7 @@ class TResumeRoleData extends DataClass implements Insertable<TResumeRoleData> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['code'] = Variable<int>(code);
-    map['resume_project_id'] = Variable<int>(resumeProjectId);
+    map['resume_project_id'] = Variable<String>(resumeProjectId);
     map['create_at'] = Variable<String>(createAt);
     map['update_at'] = Variable<String>(updateAt);
     return map;
@@ -9168,7 +9185,7 @@ class TResumeRoleData extends DataClass implements Insertable<TResumeRoleData> {
     return TResumeRoleData(
       id: serializer.fromJson<int>(json['id']),
       code: serializer.fromJson<int>(json['code']),
-      resumeProjectId: serializer.fromJson<int>(json['resumeProjectId']),
+      resumeProjectId: serializer.fromJson<String>(json['resumeProjectId']),
       createAt: serializer.fromJson<String>(json['createAt']),
       updateAt: serializer.fromJson<String>(json['updateAt']),
     );
@@ -9179,7 +9196,7 @@ class TResumeRoleData extends DataClass implements Insertable<TResumeRoleData> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'code': serializer.toJson<int>(code),
-      'resumeProjectId': serializer.toJson<int>(resumeProjectId),
+      'resumeProjectId': serializer.toJson<String>(resumeProjectId),
       'createAt': serializer.toJson<String>(createAt),
       'updateAt': serializer.toJson<String>(updateAt),
     };
@@ -9188,7 +9205,7 @@ class TResumeRoleData extends DataClass implements Insertable<TResumeRoleData> {
   TResumeRoleData copyWith(
           {int? id,
           int? code,
-          int? resumeProjectId,
+          String? resumeProjectId,
           String? createAt,
           String? updateAt}) =>
       TResumeRoleData(
@@ -9227,7 +9244,7 @@ class TResumeRoleData extends DataClass implements Insertable<TResumeRoleData> {
 class TResumeRoleCompanion extends UpdateCompanion<TResumeRoleData> {
   final Value<int> id;
   final Value<int> code;
-  final Value<int> resumeProjectId;
+  final Value<String> resumeProjectId;
   final Value<String> createAt;
   final Value<String> updateAt;
   const TResumeRoleCompanion({
@@ -9240,14 +9257,14 @@ class TResumeRoleCompanion extends UpdateCompanion<TResumeRoleData> {
   TResumeRoleCompanion.insert({
     this.id = const Value.absent(),
     this.code = const Value.absent(),
-    required int resumeProjectId,
+    required String resumeProjectId,
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
   }) : resumeProjectId = Value(resumeProjectId);
   static Insertable<TResumeRoleData> custom({
     Expression<int>? id,
     Expression<int>? code,
-    Expression<int>? resumeProjectId,
+    Expression<String>? resumeProjectId,
     Expression<String>? createAt,
     Expression<String>? updateAt,
   }) {
@@ -9263,7 +9280,7 @@ class TResumeRoleCompanion extends UpdateCompanion<TResumeRoleData> {
   TResumeRoleCompanion copyWith(
       {Value<int>? id,
       Value<int>? code,
-      Value<int>? resumeProjectId,
+      Value<String>? resumeProjectId,
       Value<String>? createAt,
       Value<String>? updateAt}) {
     return TResumeRoleCompanion(
@@ -9285,7 +9302,7 @@ class TResumeRoleCompanion extends UpdateCompanion<TResumeRoleData> {
       map['code'] = Variable<int>(code.value);
     }
     if (resumeProjectId.present) {
-      map['resume_project_id'] = Variable<int>(resumeProjectId.value);
+      map['resume_project_id'] = Variable<String>(resumeProjectId.value);
     }
     if (createAt.present) {
       map['create_at'] = Variable<String>(createAt.value);
@@ -9301,6 +9318,1507 @@ class TResumeRoleCompanion extends UpdateCompanion<TResumeRoleData> {
     return (StringBuffer('TResumeRoleCompanion(')
           ..write('id: $id, ')
           ..write('code: $code, ')
+          ..write('resumeProjectId: $resumeProjectId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TResumeOsRelTable extends TResumeOsRel
+    with TableInfo<$TResumeOsRelTable, TResumeOsRelData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TResumeOsRelTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _osIdMeta = const VerificationMeta('osId');
+  @override
+  late final GeneratedColumn<String> osId = GeneratedColumn<String>(
+      'os_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES t_os_info (os_id)'));
+  static const VerificationMeta _resumeProjectIdMeta =
+      const VerificationMeta('resumeProjectId');
+  @override
+  late final GeneratedColumn<String> resumeProjectId = GeneratedColumn<String>(
+      'resume_project_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES t_resume_project (resume_project_id)'));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, osId, resumeProjectId, createAt, updateAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 't_resume_os_rel';
+  @override
+  VerificationContext validateIntegrity(Insertable<TResumeOsRelData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('os_id')) {
+      context.handle(
+          _osIdMeta, osId.isAcceptableOrUnknown(data['os_id']!, _osIdMeta));
+    } else if (isInserting) {
+      context.missing(_osIdMeta);
+    }
+    if (data.containsKey('resume_project_id')) {
+      context.handle(
+          _resumeProjectIdMeta,
+          resumeProjectId.isAcceptableOrUnknown(
+              data['resume_project_id']!, _resumeProjectIdMeta));
+    } else if (isInserting) {
+      context.missing(_resumeProjectIdMeta);
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TResumeOsRelData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TResumeOsRelData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      osId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}os_id'])!,
+      resumeProjectId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}resume_project_id'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $TResumeOsRelTable createAlias(String alias) {
+    return $TResumeOsRelTable(attachedDatabase, alias);
+  }
+}
+
+class TResumeOsRelData extends DataClass
+    implements Insertable<TResumeOsRelData> {
+  /// id
+  final int id;
+
+  /// OSのID
+  final String osId;
+
+  /// 経歴書プロジェクトID
+  final String resumeProjectId;
+  final String createAt;
+  final String updateAt;
+  const TResumeOsRelData(
+      {required this.id,
+      required this.osId,
+      required this.resumeProjectId,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['os_id'] = Variable<String>(osId);
+    map['resume_project_id'] = Variable<String>(resumeProjectId);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  TResumeOsRelCompanion toCompanion(bool nullToAbsent) {
+    return TResumeOsRelCompanion(
+      id: Value(id),
+      osId: Value(osId),
+      resumeProjectId: Value(resumeProjectId),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory TResumeOsRelData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TResumeOsRelData(
+      id: serializer.fromJson<int>(json['id']),
+      osId: serializer.fromJson<String>(json['osId']),
+      resumeProjectId: serializer.fromJson<String>(json['resumeProjectId']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'osId': serializer.toJson<String>(osId),
+      'resumeProjectId': serializer.toJson<String>(resumeProjectId),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  TResumeOsRelData copyWith(
+          {int? id,
+          String? osId,
+          String? resumeProjectId,
+          String? createAt,
+          String? updateAt}) =>
+      TResumeOsRelData(
+        id: id ?? this.id,
+        osId: osId ?? this.osId,
+        resumeProjectId: resumeProjectId ?? this.resumeProjectId,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TResumeOsRelData(')
+          ..write('id: $id, ')
+          ..write('osId: $osId, ')
+          ..write('resumeProjectId: $resumeProjectId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, osId, resumeProjectId, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TResumeOsRelData &&
+          other.id == this.id &&
+          other.osId == this.osId &&
+          other.resumeProjectId == this.resumeProjectId &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class TResumeOsRelCompanion extends UpdateCompanion<TResumeOsRelData> {
+  final Value<int> id;
+  final Value<String> osId;
+  final Value<String> resumeProjectId;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  const TResumeOsRelCompanion({
+    this.id = const Value.absent(),
+    this.osId = const Value.absent(),
+    this.resumeProjectId = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  });
+  TResumeOsRelCompanion.insert({
+    this.id = const Value.absent(),
+    required String osId,
+    required String resumeProjectId,
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  })  : osId = Value(osId),
+        resumeProjectId = Value(resumeProjectId);
+  static Insertable<TResumeOsRelData> custom({
+    Expression<int>? id,
+    Expression<String>? osId,
+    Expression<String>? resumeProjectId,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (osId != null) 'os_id': osId,
+      if (resumeProjectId != null) 'resume_project_id': resumeProjectId,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+    });
+  }
+
+  TResumeOsRelCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? osId,
+      Value<String>? resumeProjectId,
+      Value<String>? createAt,
+      Value<String>? updateAt}) {
+    return TResumeOsRelCompanion(
+      id: id ?? this.id,
+      osId: osId ?? this.osId,
+      resumeProjectId: resumeProjectId ?? this.resumeProjectId,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (osId.present) {
+      map['os_id'] = Variable<String>(osId.value);
+    }
+    if (resumeProjectId.present) {
+      map['resume_project_id'] = Variable<String>(resumeProjectId.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TResumeOsRelCompanion(')
+          ..write('id: $id, ')
+          ..write('osId: $osId, ')
+          ..write('resumeProjectId: $resumeProjectId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TResumeDbTable extends TResumeDb
+    with TableInfo<$TResumeDbTable, TResumeDbData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TResumeDbTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _dbIdMeta = const VerificationMeta('dbId');
+  @override
+  late final GeneratedColumn<String> dbId = GeneratedColumn<String>(
+      'db_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES t_db (db_id)'));
+  static const VerificationMeta _resumeProjectIdMeta =
+      const VerificationMeta('resumeProjectId');
+  @override
+  late final GeneratedColumn<String> resumeProjectId = GeneratedColumn<String>(
+      'resume_project_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES t_resume_project (resume_project_id)'));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, dbId, resumeProjectId, createAt, updateAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 't_resume_db';
+  @override
+  VerificationContext validateIntegrity(Insertable<TResumeDbData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('db_id')) {
+      context.handle(
+          _dbIdMeta, dbId.isAcceptableOrUnknown(data['db_id']!, _dbIdMeta));
+    } else if (isInserting) {
+      context.missing(_dbIdMeta);
+    }
+    if (data.containsKey('resume_project_id')) {
+      context.handle(
+          _resumeProjectIdMeta,
+          resumeProjectId.isAcceptableOrUnknown(
+              data['resume_project_id']!, _resumeProjectIdMeta));
+    } else if (isInserting) {
+      context.missing(_resumeProjectIdMeta);
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TResumeDbData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TResumeDbData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      dbId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}db_id'])!,
+      resumeProjectId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}resume_project_id'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $TResumeDbTable createAlias(String alias) {
+    return $TResumeDbTable(attachedDatabase, alias);
+  }
+}
+
+class TResumeDbData extends DataClass implements Insertable<TResumeDbData> {
+  /// id
+  final int id;
+
+  /// DbのID
+  final String dbId;
+
+  /// 経歴書プロジェクトID
+  final String resumeProjectId;
+  final String createAt;
+  final String updateAt;
+  const TResumeDbData(
+      {required this.id,
+      required this.dbId,
+      required this.resumeProjectId,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['db_id'] = Variable<String>(dbId);
+    map['resume_project_id'] = Variable<String>(resumeProjectId);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  TResumeDbCompanion toCompanion(bool nullToAbsent) {
+    return TResumeDbCompanion(
+      id: Value(id),
+      dbId: Value(dbId),
+      resumeProjectId: Value(resumeProjectId),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory TResumeDbData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TResumeDbData(
+      id: serializer.fromJson<int>(json['id']),
+      dbId: serializer.fromJson<String>(json['dbId']),
+      resumeProjectId: serializer.fromJson<String>(json['resumeProjectId']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'dbId': serializer.toJson<String>(dbId),
+      'resumeProjectId': serializer.toJson<String>(resumeProjectId),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  TResumeDbData copyWith(
+          {int? id,
+          String? dbId,
+          String? resumeProjectId,
+          String? createAt,
+          String? updateAt}) =>
+      TResumeDbData(
+        id: id ?? this.id,
+        dbId: dbId ?? this.dbId,
+        resumeProjectId: resumeProjectId ?? this.resumeProjectId,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TResumeDbData(')
+          ..write('id: $id, ')
+          ..write('dbId: $dbId, ')
+          ..write('resumeProjectId: $resumeProjectId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, dbId, resumeProjectId, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TResumeDbData &&
+          other.id == this.id &&
+          other.dbId == this.dbId &&
+          other.resumeProjectId == this.resumeProjectId &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class TResumeDbCompanion extends UpdateCompanion<TResumeDbData> {
+  final Value<int> id;
+  final Value<String> dbId;
+  final Value<String> resumeProjectId;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  const TResumeDbCompanion({
+    this.id = const Value.absent(),
+    this.dbId = const Value.absent(),
+    this.resumeProjectId = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  });
+  TResumeDbCompanion.insert({
+    this.id = const Value.absent(),
+    required String dbId,
+    required String resumeProjectId,
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  })  : dbId = Value(dbId),
+        resumeProjectId = Value(resumeProjectId);
+  static Insertable<TResumeDbData> custom({
+    Expression<int>? id,
+    Expression<String>? dbId,
+    Expression<String>? resumeProjectId,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (dbId != null) 'db_id': dbId,
+      if (resumeProjectId != null) 'resume_project_id': resumeProjectId,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+    });
+  }
+
+  TResumeDbCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? dbId,
+      Value<String>? resumeProjectId,
+      Value<String>? createAt,
+      Value<String>? updateAt}) {
+    return TResumeDbCompanion(
+      id: id ?? this.id,
+      dbId: dbId ?? this.dbId,
+      resumeProjectId: resumeProjectId ?? this.resumeProjectId,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (dbId.present) {
+      map['db_id'] = Variable<String>(dbId.value);
+    }
+    if (resumeProjectId.present) {
+      map['resume_project_id'] = Variable<String>(resumeProjectId.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TResumeDbCompanion(')
+          ..write('id: $id, ')
+          ..write('dbId: $dbId, ')
+          ..write('resumeProjectId: $resumeProjectId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TResumeToolTable extends TResumeTool
+    with TableInfo<$TResumeToolTable, TResumeToolData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TResumeToolTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _toolIdMeta = const VerificationMeta('toolId');
+  @override
+  late final GeneratedColumn<String> toolId = GeneratedColumn<String>(
+      'tool_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES t_tool (tool_id)'));
+  static const VerificationMeta _resumeProjectIdMeta =
+      const VerificationMeta('resumeProjectId');
+  @override
+  late final GeneratedColumn<String> resumeProjectId = GeneratedColumn<String>(
+      'resume_project_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES t_resume_project (resume_project_id)'));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, toolId, resumeProjectId, createAt, updateAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 't_resume_tool';
+  @override
+  VerificationContext validateIntegrity(Insertable<TResumeToolData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('tool_id')) {
+      context.handle(_toolIdMeta,
+          toolId.isAcceptableOrUnknown(data['tool_id']!, _toolIdMeta));
+    } else if (isInserting) {
+      context.missing(_toolIdMeta);
+    }
+    if (data.containsKey('resume_project_id')) {
+      context.handle(
+          _resumeProjectIdMeta,
+          resumeProjectId.isAcceptableOrUnknown(
+              data['resume_project_id']!, _resumeProjectIdMeta));
+    } else if (isInserting) {
+      context.missing(_resumeProjectIdMeta);
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TResumeToolData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TResumeToolData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      toolId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}tool_id'])!,
+      resumeProjectId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}resume_project_id'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $TResumeToolTable createAlias(String alias) {
+    return $TResumeToolTable(attachedDatabase, alias);
+  }
+}
+
+class TResumeToolData extends DataClass implements Insertable<TResumeToolData> {
+  /// id
+  final int id;
+
+  /// ToolのID
+  final String toolId;
+
+  /// 経歴書プロジェクトID
+  final String resumeProjectId;
+  final String createAt;
+  final String updateAt;
+  const TResumeToolData(
+      {required this.id,
+      required this.toolId,
+      required this.resumeProjectId,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['tool_id'] = Variable<String>(toolId);
+    map['resume_project_id'] = Variable<String>(resumeProjectId);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  TResumeToolCompanion toCompanion(bool nullToAbsent) {
+    return TResumeToolCompanion(
+      id: Value(id),
+      toolId: Value(toolId),
+      resumeProjectId: Value(resumeProjectId),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory TResumeToolData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TResumeToolData(
+      id: serializer.fromJson<int>(json['id']),
+      toolId: serializer.fromJson<String>(json['toolId']),
+      resumeProjectId: serializer.fromJson<String>(json['resumeProjectId']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'toolId': serializer.toJson<String>(toolId),
+      'resumeProjectId': serializer.toJson<String>(resumeProjectId),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  TResumeToolData copyWith(
+          {int? id,
+          String? toolId,
+          String? resumeProjectId,
+          String? createAt,
+          String? updateAt}) =>
+      TResumeToolData(
+        id: id ?? this.id,
+        toolId: toolId ?? this.toolId,
+        resumeProjectId: resumeProjectId ?? this.resumeProjectId,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TResumeToolData(')
+          ..write('id: $id, ')
+          ..write('toolId: $toolId, ')
+          ..write('resumeProjectId: $resumeProjectId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, toolId, resumeProjectId, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TResumeToolData &&
+          other.id == this.id &&
+          other.toolId == this.toolId &&
+          other.resumeProjectId == this.resumeProjectId &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class TResumeToolCompanion extends UpdateCompanion<TResumeToolData> {
+  final Value<int> id;
+  final Value<String> toolId;
+  final Value<String> resumeProjectId;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  const TResumeToolCompanion({
+    this.id = const Value.absent(),
+    this.toolId = const Value.absent(),
+    this.resumeProjectId = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  });
+  TResumeToolCompanion.insert({
+    this.id = const Value.absent(),
+    required String toolId,
+    required String resumeProjectId,
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  })  : toolId = Value(toolId),
+        resumeProjectId = Value(resumeProjectId);
+  static Insertable<TResumeToolData> custom({
+    Expression<int>? id,
+    Expression<String>? toolId,
+    Expression<String>? resumeProjectId,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (toolId != null) 'tool_id': toolId,
+      if (resumeProjectId != null) 'resume_project_id': resumeProjectId,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+    });
+  }
+
+  TResumeToolCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? toolId,
+      Value<String>? resumeProjectId,
+      Value<String>? createAt,
+      Value<String>? updateAt}) {
+    return TResumeToolCompanion(
+      id: id ?? this.id,
+      toolId: toolId ?? this.toolId,
+      resumeProjectId: resumeProjectId ?? this.resumeProjectId,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (toolId.present) {
+      map['tool_id'] = Variable<String>(toolId.value);
+    }
+    if (resumeProjectId.present) {
+      map['resume_project_id'] = Variable<String>(resumeProjectId.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TResumeToolCompanion(')
+          ..write('id: $id, ')
+          ..write('toolId: $toolId, ')
+          ..write('resumeProjectId: $resumeProjectId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TResumeGitTable extends TResumeGit
+    with TableInfo<$TResumeGitTable, TResumeGitData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TResumeGitTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _gitIdMeta = const VerificationMeta('gitId');
+  @override
+  late final GeneratedColumn<String> gitId = GeneratedColumn<String>(
+      'git_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES t_git (git_id)'));
+  static const VerificationMeta _resumeProjectIdMeta =
+      const VerificationMeta('resumeProjectId');
+  @override
+  late final GeneratedColumn<String> resumeProjectId = GeneratedColumn<String>(
+      'resume_project_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES t_resume_project (resume_project_id)'));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, gitId, resumeProjectId, createAt, updateAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 't_resume_git';
+  @override
+  VerificationContext validateIntegrity(Insertable<TResumeGitData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('git_id')) {
+      context.handle(
+          _gitIdMeta, gitId.isAcceptableOrUnknown(data['git_id']!, _gitIdMeta));
+    } else if (isInserting) {
+      context.missing(_gitIdMeta);
+    }
+    if (data.containsKey('resume_project_id')) {
+      context.handle(
+          _resumeProjectIdMeta,
+          resumeProjectId.isAcceptableOrUnknown(
+              data['resume_project_id']!, _resumeProjectIdMeta));
+    } else if (isInserting) {
+      context.missing(_resumeProjectIdMeta);
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TResumeGitData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TResumeGitData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      gitId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}git_id'])!,
+      resumeProjectId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}resume_project_id'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $TResumeGitTable createAlias(String alias) {
+    return $TResumeGitTable(attachedDatabase, alias);
+  }
+}
+
+class TResumeGitData extends DataClass implements Insertable<TResumeGitData> {
+  /// id
+  final int id;
+
+  /// GitのID
+  final String gitId;
+
+  /// 経歴書プロジェクトID
+  final String resumeProjectId;
+  final String createAt;
+  final String updateAt;
+  const TResumeGitData(
+      {required this.id,
+      required this.gitId,
+      required this.resumeProjectId,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['git_id'] = Variable<String>(gitId);
+    map['resume_project_id'] = Variable<String>(resumeProjectId);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  TResumeGitCompanion toCompanion(bool nullToAbsent) {
+    return TResumeGitCompanion(
+      id: Value(id),
+      gitId: Value(gitId),
+      resumeProjectId: Value(resumeProjectId),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory TResumeGitData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TResumeGitData(
+      id: serializer.fromJson<int>(json['id']),
+      gitId: serializer.fromJson<String>(json['gitId']),
+      resumeProjectId: serializer.fromJson<String>(json['resumeProjectId']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'gitId': serializer.toJson<String>(gitId),
+      'resumeProjectId': serializer.toJson<String>(resumeProjectId),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  TResumeGitData copyWith(
+          {int? id,
+          String? gitId,
+          String? resumeProjectId,
+          String? createAt,
+          String? updateAt}) =>
+      TResumeGitData(
+        id: id ?? this.id,
+        gitId: gitId ?? this.gitId,
+        resumeProjectId: resumeProjectId ?? this.resumeProjectId,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TResumeGitData(')
+          ..write('id: $id, ')
+          ..write('gitId: $gitId, ')
+          ..write('resumeProjectId: $resumeProjectId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, gitId, resumeProjectId, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TResumeGitData &&
+          other.id == this.id &&
+          other.gitId == this.gitId &&
+          other.resumeProjectId == this.resumeProjectId &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class TResumeGitCompanion extends UpdateCompanion<TResumeGitData> {
+  final Value<int> id;
+  final Value<String> gitId;
+  final Value<String> resumeProjectId;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  const TResumeGitCompanion({
+    this.id = const Value.absent(),
+    this.gitId = const Value.absent(),
+    this.resumeProjectId = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  });
+  TResumeGitCompanion.insert({
+    this.id = const Value.absent(),
+    required String gitId,
+    required String resumeProjectId,
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  })  : gitId = Value(gitId),
+        resumeProjectId = Value(resumeProjectId);
+  static Insertable<TResumeGitData> custom({
+    Expression<int>? id,
+    Expression<String>? gitId,
+    Expression<String>? resumeProjectId,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (gitId != null) 'git_id': gitId,
+      if (resumeProjectId != null) 'resume_project_id': resumeProjectId,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+    });
+  }
+
+  TResumeGitCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? gitId,
+      Value<String>? resumeProjectId,
+      Value<String>? createAt,
+      Value<String>? updateAt}) {
+    return TResumeGitCompanion(
+      id: id ?? this.id,
+      gitId: gitId ?? this.gitId,
+      resumeProjectId: resumeProjectId ?? this.resumeProjectId,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (gitId.present) {
+      map['git_id'] = Variable<String>(gitId.value);
+    }
+    if (resumeProjectId.present) {
+      map['resume_project_id'] = Variable<String>(resumeProjectId.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TResumeGitCompanion(')
+          ..write('id: $id, ')
+          ..write('gitId: $gitId, ')
+          ..write('resumeProjectId: $resumeProjectId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TResumeMwTable extends TResumeMw
+    with TableInfo<$TResumeMwTable, TResumeMwData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TResumeMwTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _mwIdMeta = const VerificationMeta('mwId');
+  @override
+  late final GeneratedColumn<String> mwId = GeneratedColumn<String>(
+      'mw_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES t_mw (mw_id)'));
+  static const VerificationMeta _resumeProjectIdMeta =
+      const VerificationMeta('resumeProjectId');
+  @override
+  late final GeneratedColumn<String> resumeProjectId = GeneratedColumn<String>(
+      'resume_project_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES t_resume_project (resume_project_id)'));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, mwId, resumeProjectId, createAt, updateAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 't_resume_mw';
+  @override
+  VerificationContext validateIntegrity(Insertable<TResumeMwData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('mw_id')) {
+      context.handle(
+          _mwIdMeta, mwId.isAcceptableOrUnknown(data['mw_id']!, _mwIdMeta));
+    } else if (isInserting) {
+      context.missing(_mwIdMeta);
+    }
+    if (data.containsKey('resume_project_id')) {
+      context.handle(
+          _resumeProjectIdMeta,
+          resumeProjectId.isAcceptableOrUnknown(
+              data['resume_project_id']!, _resumeProjectIdMeta));
+    } else if (isInserting) {
+      context.missing(_resumeProjectIdMeta);
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TResumeMwData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TResumeMwData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      mwId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}mw_id'])!,
+      resumeProjectId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}resume_project_id'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $TResumeMwTable createAlias(String alias) {
+    return $TResumeMwTable(attachedDatabase, alias);
+  }
+}
+
+class TResumeMwData extends DataClass implements Insertable<TResumeMwData> {
+  /// id
+  final int id;
+
+  /// MwのID
+  final String mwId;
+
+  /// 経歴書プロジェクトID
+  final String resumeProjectId;
+  final String createAt;
+  final String updateAt;
+  const TResumeMwData(
+      {required this.id,
+      required this.mwId,
+      required this.resumeProjectId,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['mw_id'] = Variable<String>(mwId);
+    map['resume_project_id'] = Variable<String>(resumeProjectId);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  TResumeMwCompanion toCompanion(bool nullToAbsent) {
+    return TResumeMwCompanion(
+      id: Value(id),
+      mwId: Value(mwId),
+      resumeProjectId: Value(resumeProjectId),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory TResumeMwData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TResumeMwData(
+      id: serializer.fromJson<int>(json['id']),
+      mwId: serializer.fromJson<String>(json['mwId']),
+      resumeProjectId: serializer.fromJson<String>(json['resumeProjectId']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'mwId': serializer.toJson<String>(mwId),
+      'resumeProjectId': serializer.toJson<String>(resumeProjectId),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  TResumeMwData copyWith(
+          {int? id,
+          String? mwId,
+          String? resumeProjectId,
+          String? createAt,
+          String? updateAt}) =>
+      TResumeMwData(
+        id: id ?? this.id,
+        mwId: mwId ?? this.mwId,
+        resumeProjectId: resumeProjectId ?? this.resumeProjectId,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TResumeMwData(')
+          ..write('id: $id, ')
+          ..write('mwId: $mwId, ')
+          ..write('resumeProjectId: $resumeProjectId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, mwId, resumeProjectId, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TResumeMwData &&
+          other.id == this.id &&
+          other.mwId == this.mwId &&
+          other.resumeProjectId == this.resumeProjectId &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class TResumeMwCompanion extends UpdateCompanion<TResumeMwData> {
+  final Value<int> id;
+  final Value<String> mwId;
+  final Value<String> resumeProjectId;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  const TResumeMwCompanion({
+    this.id = const Value.absent(),
+    this.mwId = const Value.absent(),
+    this.resumeProjectId = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  });
+  TResumeMwCompanion.insert({
+    this.id = const Value.absent(),
+    required String mwId,
+    required String resumeProjectId,
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  })  : mwId = Value(mwId),
+        resumeProjectId = Value(resumeProjectId);
+  static Insertable<TResumeMwData> custom({
+    Expression<int>? id,
+    Expression<String>? mwId,
+    Expression<String>? resumeProjectId,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (mwId != null) 'mw_id': mwId,
+      if (resumeProjectId != null) 'resume_project_id': resumeProjectId,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+    });
+  }
+
+  TResumeMwCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? mwId,
+      Value<String>? resumeProjectId,
+      Value<String>? createAt,
+      Value<String>? updateAt}) {
+    return TResumeMwCompanion(
+      id: id ?? this.id,
+      mwId: mwId ?? this.mwId,
+      resumeProjectId: resumeProjectId ?? this.resumeProjectId,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (mwId.present) {
+      map['mw_id'] = Variable<String>(mwId.value);
+    }
+    if (resumeProjectId.present) {
+      map['resume_project_id'] = Variable<String>(resumeProjectId.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TResumeMwCompanion(')
+          ..write('id: $id, ')
+          ..write('mwId: $mwId, ')
           ..write('resumeProjectId: $resumeProjectId, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
@@ -9329,21 +10847,29 @@ class $TResumeDevLangRelTable extends TResumeDevLangRel
   @override
   late final GeneratedColumn<String> devLangId = GeneratedColumn<String>(
       'dev_lang_id', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES t_dev_language (dev_lang_id)'));
+  static const VerificationMeta _contentMeta =
+      const VerificationMeta('content');
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+      'content', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 0, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => '');
   static const VerificationMeta _resumeProjectIdMeta =
       const VerificationMeta('resumeProjectId');
   @override
-  late final GeneratedColumn<int> resumeProjectId = GeneratedColumn<int>(
+  late final GeneratedColumn<String> resumeProjectId = GeneratedColumn<String>(
       'resume_project_id', aliasedName, false,
-      type: DriftSqlType.int,
+      type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES t_resume_project (id)'));
+          'REFERENCES t_resume_project (resume_project_id)'));
   static const VerificationMeta _createAtMeta =
       const VerificationMeta('createAt');
   @override
@@ -9362,7 +10888,7 @@ class $TResumeDevLangRelTable extends TResumeDevLangRel
       clientDefault: () => DateTime.now().toIso8601String());
   @override
   List<GeneratedColumn> get $columns =>
-      [id, devLangId, resumeProjectId, createAt, updateAt];
+      [id, devLangId, content, resumeProjectId, createAt, updateAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -9384,6 +10910,10 @@ class $TResumeDevLangRelTable extends TResumeDevLangRel
               data['dev_lang_id']!, _devLangIdMeta));
     } else if (isInserting) {
       context.missing(_devLangIdMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(_contentMeta,
+          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
     }
     if (data.containsKey('resume_project_id')) {
       context.handle(
@@ -9414,8 +10944,10 @@ class $TResumeDevLangRelTable extends TResumeDevLangRel
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       devLangId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}dev_lang_id'])!,
-      resumeProjectId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}resume_project_id'])!,
+      content: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
+      resumeProjectId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}resume_project_id'])!,
       createAt: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
       updateAt: attachedDatabase.typeMapping
@@ -9437,13 +10969,17 @@ class TResumeDevLangRelData extends DataClass
   /// 開発言語ID
   final String devLangId;
 
+  /// バージョンなど
+  final String content;
+
   /// 経歴書プロジェクトID
-  final int resumeProjectId;
+  final String resumeProjectId;
   final String createAt;
   final String updateAt;
   const TResumeDevLangRelData(
       {required this.id,
       required this.devLangId,
+      required this.content,
       required this.resumeProjectId,
       required this.createAt,
       required this.updateAt});
@@ -9452,7 +10988,8 @@ class TResumeDevLangRelData extends DataClass
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['dev_lang_id'] = Variable<String>(devLangId);
-    map['resume_project_id'] = Variable<int>(resumeProjectId);
+    map['content'] = Variable<String>(content);
+    map['resume_project_id'] = Variable<String>(resumeProjectId);
     map['create_at'] = Variable<String>(createAt);
     map['update_at'] = Variable<String>(updateAt);
     return map;
@@ -9462,6 +10999,7 @@ class TResumeDevLangRelData extends DataClass
     return TResumeDevLangRelCompanion(
       id: Value(id),
       devLangId: Value(devLangId),
+      content: Value(content),
       resumeProjectId: Value(resumeProjectId),
       createAt: Value(createAt),
       updateAt: Value(updateAt),
@@ -9474,7 +11012,8 @@ class TResumeDevLangRelData extends DataClass
     return TResumeDevLangRelData(
       id: serializer.fromJson<int>(json['id']),
       devLangId: serializer.fromJson<String>(json['devLangId']),
-      resumeProjectId: serializer.fromJson<int>(json['resumeProjectId']),
+      content: serializer.fromJson<String>(json['content']),
+      resumeProjectId: serializer.fromJson<String>(json['resumeProjectId']),
       createAt: serializer.fromJson<String>(json['createAt']),
       updateAt: serializer.fromJson<String>(json['updateAt']),
     );
@@ -9485,7 +11024,8 @@ class TResumeDevLangRelData extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'devLangId': serializer.toJson<String>(devLangId),
-      'resumeProjectId': serializer.toJson<int>(resumeProjectId),
+      'content': serializer.toJson<String>(content),
+      'resumeProjectId': serializer.toJson<String>(resumeProjectId),
       'createAt': serializer.toJson<String>(createAt),
       'updateAt': serializer.toJson<String>(updateAt),
     };
@@ -9494,12 +11034,14 @@ class TResumeDevLangRelData extends DataClass
   TResumeDevLangRelData copyWith(
           {int? id,
           String? devLangId,
-          int? resumeProjectId,
+          String? content,
+          String? resumeProjectId,
           String? createAt,
           String? updateAt}) =>
       TResumeDevLangRelData(
         id: id ?? this.id,
         devLangId: devLangId ?? this.devLangId,
+        content: content ?? this.content,
         resumeProjectId: resumeProjectId ?? this.resumeProjectId,
         createAt: createAt ?? this.createAt,
         updateAt: updateAt ?? this.updateAt,
@@ -9509,6 +11051,7 @@ class TResumeDevLangRelData extends DataClass
     return (StringBuffer('TResumeDevLangRelData(')
           ..write('id: $id, ')
           ..write('devLangId: $devLangId, ')
+          ..write('content: $content, ')
           ..write('resumeProjectId: $resumeProjectId, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
@@ -9518,13 +11061,14 @@ class TResumeDevLangRelData extends DataClass
 
   @override
   int get hashCode =>
-      Object.hash(id, devLangId, resumeProjectId, createAt, updateAt);
+      Object.hash(id, devLangId, content, resumeProjectId, createAt, updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TResumeDevLangRelData &&
           other.id == this.id &&
           other.devLangId == this.devLangId &&
+          other.content == this.content &&
           other.resumeProjectId == this.resumeProjectId &&
           other.createAt == this.createAt &&
           other.updateAt == this.updateAt);
@@ -9534,12 +11078,14 @@ class TResumeDevLangRelCompanion
     extends UpdateCompanion<TResumeDevLangRelData> {
   final Value<int> id;
   final Value<String> devLangId;
-  final Value<int> resumeProjectId;
+  final Value<String> content;
+  final Value<String> resumeProjectId;
   final Value<String> createAt;
   final Value<String> updateAt;
   const TResumeDevLangRelCompanion({
     this.id = const Value.absent(),
     this.devLangId = const Value.absent(),
+    this.content = const Value.absent(),
     this.resumeProjectId = const Value.absent(),
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
@@ -9547,7 +11093,8 @@ class TResumeDevLangRelCompanion
   TResumeDevLangRelCompanion.insert({
     this.id = const Value.absent(),
     required String devLangId,
-    required int resumeProjectId,
+    this.content = const Value.absent(),
+    required String resumeProjectId,
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
   })  : devLangId = Value(devLangId),
@@ -9555,13 +11102,15 @@ class TResumeDevLangRelCompanion
   static Insertable<TResumeDevLangRelData> custom({
     Expression<int>? id,
     Expression<String>? devLangId,
-    Expression<int>? resumeProjectId,
+    Expression<String>? content,
+    Expression<String>? resumeProjectId,
     Expression<String>? createAt,
     Expression<String>? updateAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (devLangId != null) 'dev_lang_id': devLangId,
+      if (content != null) 'content': content,
       if (resumeProjectId != null) 'resume_project_id': resumeProjectId,
       if (createAt != null) 'create_at': createAt,
       if (updateAt != null) 'update_at': updateAt,
@@ -9571,12 +11120,14 @@ class TResumeDevLangRelCompanion
   TResumeDevLangRelCompanion copyWith(
       {Value<int>? id,
       Value<String>? devLangId,
-      Value<int>? resumeProjectId,
+      Value<String>? content,
+      Value<String>? resumeProjectId,
       Value<String>? createAt,
       Value<String>? updateAt}) {
     return TResumeDevLangRelCompanion(
       id: id ?? this.id,
       devLangId: devLangId ?? this.devLangId,
+      content: content ?? this.content,
       resumeProjectId: resumeProjectId ?? this.resumeProjectId,
       createAt: createAt ?? this.createAt,
       updateAt: updateAt ?? this.updateAt,
@@ -9592,8 +11143,11 @@ class TResumeDevLangRelCompanion
     if (devLangId.present) {
       map['dev_lang_id'] = Variable<String>(devLangId.value);
     }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
     if (resumeProjectId.present) {
-      map['resume_project_id'] = Variable<int>(resumeProjectId.value);
+      map['resume_project_id'] = Variable<String>(resumeProjectId.value);
     }
     if (createAt.present) {
       map['create_at'] = Variable<String>(createAt.value);
@@ -9609,6 +11163,7 @@ class TResumeDevLangRelCompanion
     return (StringBuffer('TResumeDevLangRelCompanion(')
           ..write('id: $id, ')
           ..write('devLangId: $devLangId, ')
+          ..write('content: $content, ')
           ..write('resumeProjectId: $resumeProjectId, ')
           ..write('createAt: $createAt, ')
           ..write('updateAt: $updateAt')
@@ -9632,14 +11187,6 @@ class $TResumeTagTable extends TResumeTag
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
   static const VerificationMeta _taskCountMeta =
       const VerificationMeta('taskCount');
   @override
@@ -9649,12 +11196,12 @@ class $TResumeTagTable extends TResumeTag
   static const VerificationMeta _resumeProjectIdMeta =
       const VerificationMeta('resumeProjectId');
   @override
-  late final GeneratedColumn<int> resumeProjectId = GeneratedColumn<int>(
+  late final GeneratedColumn<String> resumeProjectId = GeneratedColumn<String>(
       'resume_project_id', aliasedName, false,
-      type: DriftSqlType.int,
+      type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES t_resume_project (id)'));
+          'REFERENCES t_resume_project (resume_project_id)'));
   static const VerificationMeta _tagIdMeta = const VerificationMeta('tagId');
   @override
   late final GeneratedColumn<int> tagId = GeneratedColumn<int>(
@@ -9681,7 +11228,7 @@ class $TResumeTagTable extends TResumeTag
       clientDefault: () => DateTime.now().toIso8601String());
   @override
   List<GeneratedColumn> get $columns =>
-      [id, name, taskCount, resumeProjectId, tagId, createAt, updateAt];
+      [id, taskCount, resumeProjectId, tagId, createAt, updateAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -9694,12 +11241,6 @@ class $TResumeTagTable extends TResumeTag
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
     }
     if (data.containsKey('task_count')) {
       context.handle(_taskCountMeta,
@@ -9740,12 +11281,10 @@ class $TResumeTagTable extends TResumeTag
     return TResumeTagData(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       taskCount: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}task_count'])!,
-      resumeProjectId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}resume_project_id'])!,
+      resumeProjectId: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}resume_project_id'])!,
       tagId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}tag_id'])!,
       createAt: attachedDatabase.typeMapping
@@ -9765,14 +11304,11 @@ class TResumeTagData extends DataClass implements Insertable<TResumeTagData> {
   /// id
   final int id;
 
-  /// タグ名
-  final String name;
-
   /// タスク数
   final int taskCount;
 
   /// 経歴書プロジェクトID
-  final int resumeProjectId;
+  final String resumeProjectId;
 
   /// タグID
   final int tagId;
@@ -9780,7 +11316,6 @@ class TResumeTagData extends DataClass implements Insertable<TResumeTagData> {
   final String updateAt;
   const TResumeTagData(
       {required this.id,
-      required this.name,
       required this.taskCount,
       required this.resumeProjectId,
       required this.tagId,
@@ -9790,9 +11325,8 @@ class TResumeTagData extends DataClass implements Insertable<TResumeTagData> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['name'] = Variable<String>(name);
     map['task_count'] = Variable<int>(taskCount);
-    map['resume_project_id'] = Variable<int>(resumeProjectId);
+    map['resume_project_id'] = Variable<String>(resumeProjectId);
     map['tag_id'] = Variable<int>(tagId);
     map['create_at'] = Variable<String>(createAt);
     map['update_at'] = Variable<String>(updateAt);
@@ -9802,7 +11336,6 @@ class TResumeTagData extends DataClass implements Insertable<TResumeTagData> {
   TResumeTagCompanion toCompanion(bool nullToAbsent) {
     return TResumeTagCompanion(
       id: Value(id),
-      name: Value(name),
       taskCount: Value(taskCount),
       resumeProjectId: Value(resumeProjectId),
       tagId: Value(tagId),
@@ -9816,9 +11349,8 @@ class TResumeTagData extends DataClass implements Insertable<TResumeTagData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TResumeTagData(
       id: serializer.fromJson<int>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
       taskCount: serializer.fromJson<int>(json['taskCount']),
-      resumeProjectId: serializer.fromJson<int>(json['resumeProjectId']),
+      resumeProjectId: serializer.fromJson<String>(json['resumeProjectId']),
       tagId: serializer.fromJson<int>(json['tagId']),
       createAt: serializer.fromJson<String>(json['createAt']),
       updateAt: serializer.fromJson<String>(json['updateAt']),
@@ -9829,9 +11361,8 @@ class TResumeTagData extends DataClass implements Insertable<TResumeTagData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'name': serializer.toJson<String>(name),
       'taskCount': serializer.toJson<int>(taskCount),
-      'resumeProjectId': serializer.toJson<int>(resumeProjectId),
+      'resumeProjectId': serializer.toJson<String>(resumeProjectId),
       'tagId': serializer.toJson<int>(tagId),
       'createAt': serializer.toJson<String>(createAt),
       'updateAt': serializer.toJson<String>(updateAt),
@@ -9840,15 +11371,13 @@ class TResumeTagData extends DataClass implements Insertable<TResumeTagData> {
 
   TResumeTagData copyWith(
           {int? id,
-          String? name,
           int? taskCount,
-          int? resumeProjectId,
+          String? resumeProjectId,
           int? tagId,
           String? createAt,
           String? updateAt}) =>
       TResumeTagData(
         id: id ?? this.id,
-        name: name ?? this.name,
         taskCount: taskCount ?? this.taskCount,
         resumeProjectId: resumeProjectId ?? this.resumeProjectId,
         tagId: tagId ?? this.tagId,
@@ -9859,7 +11388,6 @@ class TResumeTagData extends DataClass implements Insertable<TResumeTagData> {
   String toString() {
     return (StringBuffer('TResumeTagData(')
           ..write('id: $id, ')
-          ..write('name: $name, ')
           ..write('taskCount: $taskCount, ')
           ..write('resumeProjectId: $resumeProjectId, ')
           ..write('tagId: $tagId, ')
@@ -9870,14 +11398,13 @@ class TResumeTagData extends DataClass implements Insertable<TResumeTagData> {
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, name, taskCount, resumeProjectId, tagId, createAt, updateAt);
+  int get hashCode =>
+      Object.hash(id, taskCount, resumeProjectId, tagId, createAt, updateAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is TResumeTagData &&
           other.id == this.id &&
-          other.name == this.name &&
           other.taskCount == this.taskCount &&
           other.resumeProjectId == this.resumeProjectId &&
           other.tagId == this.tagId &&
@@ -9887,15 +11414,13 @@ class TResumeTagData extends DataClass implements Insertable<TResumeTagData> {
 
 class TResumeTagCompanion extends UpdateCompanion<TResumeTagData> {
   final Value<int> id;
-  final Value<String> name;
   final Value<int> taskCount;
-  final Value<int> resumeProjectId;
+  final Value<String> resumeProjectId;
   final Value<int> tagId;
   final Value<String> createAt;
   final Value<String> updateAt;
   const TResumeTagCompanion({
     this.id = const Value.absent(),
-    this.name = const Value.absent(),
     this.taskCount = const Value.absent(),
     this.resumeProjectId = const Value.absent(),
     this.tagId = const Value.absent(),
@@ -9904,28 +11429,24 @@ class TResumeTagCompanion extends UpdateCompanion<TResumeTagData> {
   });
   TResumeTagCompanion.insert({
     this.id = const Value.absent(),
-    required String name,
     required int taskCount,
-    required int resumeProjectId,
+    required String resumeProjectId,
     required int tagId,
     this.createAt = const Value.absent(),
     this.updateAt = const Value.absent(),
-  })  : name = Value(name),
-        taskCount = Value(taskCount),
+  })  : taskCount = Value(taskCount),
         resumeProjectId = Value(resumeProjectId),
         tagId = Value(tagId);
   static Insertable<TResumeTagData> custom({
     Expression<int>? id,
-    Expression<String>? name,
     Expression<int>? taskCount,
-    Expression<int>? resumeProjectId,
+    Expression<String>? resumeProjectId,
     Expression<int>? tagId,
     Expression<String>? createAt,
     Expression<String>? updateAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (name != null) 'name': name,
       if (taskCount != null) 'task_count': taskCount,
       if (resumeProjectId != null) 'resume_project_id': resumeProjectId,
       if (tagId != null) 'tag_id': tagId,
@@ -9936,15 +11457,13 @@ class TResumeTagCompanion extends UpdateCompanion<TResumeTagData> {
 
   TResumeTagCompanion copyWith(
       {Value<int>? id,
-      Value<String>? name,
       Value<int>? taskCount,
-      Value<int>? resumeProjectId,
+      Value<String>? resumeProjectId,
       Value<int>? tagId,
       Value<String>? createAt,
       Value<String>? updateAt}) {
     return TResumeTagCompanion(
       id: id ?? this.id,
-      name: name ?? this.name,
       taskCount: taskCount ?? this.taskCount,
       resumeProjectId: resumeProjectId ?? this.resumeProjectId,
       tagId: tagId ?? this.tagId,
@@ -9959,14 +11478,11 @@ class TResumeTagCompanion extends UpdateCompanion<TResumeTagData> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
     if (taskCount.present) {
       map['task_count'] = Variable<int>(taskCount.value);
     }
     if (resumeProjectId.present) {
-      map['resume_project_id'] = Variable<int>(resumeProjectId.value);
+      map['resume_project_id'] = Variable<String>(resumeProjectId.value);
     }
     if (tagId.present) {
       map['tag_id'] = Variable<int>(tagId.value);
@@ -9984,7 +11500,6 @@ class TResumeTagCompanion extends UpdateCompanion<TResumeTagData> {
   String toString() {
     return (StringBuffer('TResumeTagCompanion(')
           ..write('id: $id, ')
-          ..write('name: $name, ')
           ..write('taskCount: $taskCount, ')
           ..write('resumeProjectId: $resumeProjectId, ')
           ..write('tagId: $tagId, ')
@@ -10026,6 +11541,11 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final $TTaskDevTable tTaskDev = $TTaskDevTable(this);
   late final $TResumeProjectTable tResumeProject = $TResumeProjectTable(this);
   late final $TResumeRoleTable tResumeRole = $TResumeRoleTable(this);
+  late final $TResumeOsRelTable tResumeOsRel = $TResumeOsRelTable(this);
+  late final $TResumeDbTable tResumeDb = $TResumeDbTable(this);
+  late final $TResumeToolTable tResumeTool = $TResumeToolTable(this);
+  late final $TResumeGitTable tResumeGit = $TResumeGitTable(this);
+  late final $TResumeMwTable tResumeMw = $TResumeMwTable(this);
   late final $TResumeDevLangRelTable tResumeDevLangRel =
       $TResumeDevLangRelTable(this);
   late final $TResumeTagTable tResumeTag = $TResumeTagTable(this);
@@ -10075,9 +11595,19 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final Index taskDevId =
       Index('task_dev_id', 'CREATE INDEX task_dev_id ON t_task_dev (task_id)');
   late final Index resumeProjectId = Index('resume_project_id',
-      'CREATE INDEX resume_project_id ON t_resume_project (id)');
+      'CREATE INDEX resume_project_id ON t_resume_project (resume_project_id)');
   late final Index resumeRoleId = Index(
       'resume_role_id', 'CREATE INDEX resume_role_id ON t_resume_role (id)');
+  late final Index resumeOsRelId = Index('resume_os_rel_id',
+      'CREATE INDEX resume_os_rel_id ON t_resume_os_rel (id)');
+  late final Index resumeDbId =
+      Index('resume_db_id', 'CREATE INDEX resume_db_id ON t_resume_db (id)');
+  late final Index resumeToolId = Index(
+      'resume_tool_id', 'CREATE INDEX resume_tool_id ON t_resume_tool (id)');
+  late final Index resumeGitId =
+      Index('resume_git_id', 'CREATE INDEX resume_git_id ON t_resume_git (id)');
+  late final Index resumeMwId =
+      Index('resume_mw_id', 'CREATE INDEX resume_mw_id ON t_resume_mw (id)');
   late final Index resumeDevLangRelId = Index('resume_dev_lang_rel_id',
       'CREATE INDEX resume_dev_lang_rel_id ON t_resume_dev_lang_rel (id)');
   late final Index resumeTagId =
@@ -10109,6 +11639,16 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final TTaskDevDao tTaskDevDao = TTaskDevDao(this as StairsDatabase);
   late final TResumeProjectDao tResumeProjectDao =
       TResumeProjectDao(this as StairsDatabase);
+  late final TResumeRoleDao tResumeRoleDao =
+      TResumeRoleDao(this as StairsDatabase);
+  late final TResumeOsRelDao tResumeOsRelDao =
+      TResumeOsRelDao(this as StairsDatabase);
+  late final TResumeDbDao tResumeDbDao = TResumeDbDao(this as StairsDatabase);
+  late final TResumeGitDao tResumeGitDao =
+      TResumeGitDao(this as StairsDatabase);
+  late final TResumeMwDao tResumeMwDao = TResumeMwDao(this as StairsDatabase);
+  late final TResumeToolDao tResumeToolDao =
+      TResumeToolDao(this as StairsDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -10140,6 +11680,11 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         tTaskDev,
         tResumeProject,
         tResumeRole,
+        tResumeOsRel,
+        tResumeDb,
+        tResumeTool,
+        tResumeGit,
+        tResumeMw,
         tResumeDevLangRel,
         tResumeTag,
         colorId,
@@ -10168,6 +11713,11 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         taskDevId,
         resumeProjectId,
         resumeRoleId,
+        resumeOsRelId,
+        resumeDbId,
+        resumeToolId,
+        resumeGitId,
+        resumeMwId,
         resumeDevLangRelId,
         resumeTagId
       ];

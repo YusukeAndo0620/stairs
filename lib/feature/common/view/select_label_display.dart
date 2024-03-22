@@ -1,6 +1,8 @@
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+const _kColumnSpace = 100.0;
+const _kNewItemColumnSpace = 300.0;
 const _kEmptyTxt = "選択できる項目がありません";
 const _kContentPadding = EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0);
 
@@ -40,6 +42,7 @@ class SelectLabelDisplay extends ConsumerStatefulWidget {
 class _SelectLabelDisplayState extends ConsumerState<SelectLabelDisplay> {
   // 新規ラベル項目が表示されているかどうか
   bool isNewLabelShown = false;
+  final ScrollController controller = ScrollController();
 
   @override
   void initState() {
@@ -60,6 +63,18 @@ class _SelectLabelDisplayState extends ConsumerState<SelectLabelDisplay> {
             labelList: widget.labelList, checkedIdList: widget.checkedIdList)
         .notifier);
 
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        // 最後のレコードまでスクロール
+        if (isNewLabelShown) {
+          Future.delayed(const Duration(milliseconds: 100)).then(
+            (value) => controller.animateTo(controller.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.linear),
+          );
+        }
+      },
+    );
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -98,6 +113,7 @@ class _SelectLabelDisplayState extends ConsumerState<SelectLabelDisplay> {
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
+                      controller: controller,
                       child: Column(
                         children: [
                           for (final info in selectLabelState)
@@ -151,7 +167,9 @@ class _SelectLabelDisplayState extends ConsumerState<SelectLabelDisplay> {
                                 },
                               ),
                             ),
-                          ]
+                            const SizedBox(height: _kNewItemColumnSpace),
+                          ],
+                          const SizedBox(height: _kColumnSpace),
                         ],
                       ),
                     ),

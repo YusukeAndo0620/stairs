@@ -7,14 +7,12 @@ class TResumeTag extends Table {
   /// id
   IntColumn get id => integer().autoIncrement()();
 
-  /// タグ名
-  TextColumn get name => text().withLength(min: 1, max: 100)();
-
   /// タスク数
   IntColumn get taskCount => integer()();
 
   /// 経歴書プロジェクトID
-  IntColumn get resumeProjectId => integer().references(TResumeProject, #id)();
+  TextColumn get resumeProjectId =>
+      text().references(TResumeProject, #resumeProjectId)();
 
   /// タグID
   IntColumn get tagId => integer().references(TTag, #id)();

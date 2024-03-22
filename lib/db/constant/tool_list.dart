@@ -44,6 +44,22 @@ final defaultToolList = [
     name: Value("Jira"),
     accountId: Value("1"),
   ),
+  // Git管理
+  const TToolCompanion(
+    toolId: Value("ag3e19d3-52c2-49fc-9c23-a5b250872329"),
+    name: Value("SourceTree"),
+    accountId: Value("1"),
+  ),
+  const TToolCompanion(
+    toolId: Value("bg3e19d3-52c2-49fc-9c23-a5b250872329"),
+    name: Value("TortoiseGit"),
+    accountId: Value("1"),
+  ),
+  const TToolCompanion(
+    toolId: Value("cg3e19d3-52c2-49fc-9c23-a5b250872329"),
+    name: Value("TortoiseSVN"),
+    accountId: Value("1"),
+  ),
   // テスト用ツール、CI・CD
   const TToolCompanion(
     toolId: Value("if3e19d3-52c2-49fc-9c23-a5b250872329"),

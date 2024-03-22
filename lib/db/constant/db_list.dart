@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:stairs/db/database.dart';
 
 final defaultDbList = [
+  // DB
   const TDbCompanion(
     dbId: Value("4e4fe560-261b-43e3-a282-29d1d6c95c96"),
     name: Value("Oracle"),
@@ -70,6 +71,72 @@ final defaultDbList = [
   const TDbCompanion(
     dbId: Value("77517371-b553-4579-9a4d-075585431b03"),
     name: Value("Amazon ElastiCache"),
+    accountId: Value("1"),
+  ),
+  // ORM
+  const TDbCompanion(
+    dbId: Value("78517371-b553-4579-9a4d-075585431b03"),
+    name: Value("MyBatis"),
+    accountId: Value("1"),
+  ),
+  const TDbCompanion(
+    dbId: Value("79517371-b553-4579-9a4d-075585431b03"),
+    name: Value("Spring JDBC"),
+    accountId: Value("1"),
+  ),
+  const TDbCompanion(
+    dbId: Value("80517371-b553-4579-9a4d-075585431b03"),
+    name: Value("Apache Commons DbUtils"),
+    accountId: Value("1"),
+  ),
+  const TDbCompanion(
+    dbId: Value("81517371-b553-4579-9a4d-075585431b03"),
+    name: Value("JPA"),
+    accountId: Value("1"),
+  ),
+  const TDbCompanion(
+    dbId: Value("90517371-b553-4579-9a4d-075585431b03"),
+    name: Value("Hibernate"),
+    accountId: Value("1"),
+  ),
+  const TDbCompanion(
+    dbId: Value("82517371-b553-4579-9a4d-075585431b03"),
+    name: Value("Doctrine"),
+    accountId: Value("1"),
+  ),
+  const TDbCompanion(
+    dbId: Value("83517371-b553-4579-9a4d-075585431b03"),
+    name: Value("Eloquent"),
+    accountId: Value("1"),
+  ),
+  const TDbCompanion(
+    dbId: Value("84517371-b553-4579-9a4d-075585431b03"),
+    name: Value("idiorm"),
+    accountId: Value("1"),
+  ),
+  const TDbCompanion(
+    dbId: Value("85517371-b553-4579-9a4d-075585431b03"),
+    name: Value("SQLAlchemy"),
+    accountId: Value("1"),
+  ),
+  const TDbCompanion(
+    dbId: Value("86517371-b553-4579-9a4d-075585431b03"),
+    name: Value("Storm"),
+    accountId: Value("1"),
+  ),
+  const TDbCompanion(
+    dbId: Value("87517371-b553-4579-9a4d-075585431b03"),
+    name: Value("Peewee"),
+    accountId: Value("1"),
+  ),
+  const TDbCompanion(
+    dbId: Value("88517371-b553-4579-9a4d-075585431b03"),
+    name: Value("Django's ORM"),
+    accountId: Value("1"),
+  ),
+  const TDbCompanion(
+    dbId: Value("89517371-b553-4579-9a4d-075585431b03"),
+    name: Value("Ruby on Rails ActiveRecord"),
     accountId: Value("1"),
   ),
 ];
