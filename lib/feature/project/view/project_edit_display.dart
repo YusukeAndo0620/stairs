@@ -39,6 +39,9 @@ const _kDisplayCountHintTxt = '画面数を設定';
 const _kTableCountTxt = 'テーブル数';
 const _kTableCountHintTxt = 'テーブル数を設定';
 
+const _kRoleTxt = '役割';
+const _kRoleHintTxt = 'プロジェクトにおける役割を設定';
+
 const _kOsTxt = 'OS';
 const _kOsHintTxt = 'OSを設定';
 const _kOsInputHintTxt = 'OSを入力';
@@ -423,6 +426,53 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                                   description: description);
                             }
                           },
+                        ),
+                        // 役割
+                        CardLstItem.labeWithIcon(
+                          width: secondaryItemWidth,
+                          label: _kRoleTxt,
+                          iconColor: theme.colorPrimary,
+                          iconData: theme.icons.resume,
+                          hintText: _kRoleHintTxt,
+                          itemList: [
+                            for (final roleType in detail.roleList)
+                              LabelTip(
+                                label: roleType.typeValue,
+                                themeColor: theme.colorFgDisabled,
+                              )
+                          ],
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return SelectLabelDisplay(
+                                  title: _kRoleTxt,
+                                  labelList: RoleType.values
+                                      .map((e) => LabelModel(
+                                          id: e.code.toString(),
+                                          labelName: e.typeValue))
+                                      .toList(),
+                                  checkedIdList: detail.roleList
+                                      .map((e) => e.code.toString())
+                                      .toList(),
+                                  onTapBackIcon: (idList) {
+                                    if (detail.roleList
+                                            .map((e) => e.code.toString())
+                                            .toList() !=
+                                        idList) {
+                                      addUpdateParam(
+                                          param: ProjectUpdateParam.role);
+                                      projectDetailNotifier.changeRole(
+                                        roleList: idList
+                                            .map((code) =>
+                                                getRoleType(int.parse(code)))
+                                            .toList(),
+                                      );
+                                    }
+                                  },
+                                );
+                              },
+                            ),
+                          ),
                         ),
                         // OS
                         CardLstItem.labeWithIcon(

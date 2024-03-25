@@ -57,6 +57,7 @@ class ProjectDetail extends _$ProjectDetail {
       startDate: DateTime(now.year, now.month, 1),
       endDate:
           DateTime(now.year, now.month + 7, 1).add(const Duration(days: -1)),
+      roleList: const [],
       devLanguageList: const [],
       gitIdList: [],
       mwIdList: [],
@@ -263,6 +264,19 @@ class ProjectDetail extends _$ProjectDetail {
       (data) {
         state = const AsyncLoading();
         return data = data!.copyWith(startDate: startDate, endDate: endDate);
+      },
+      onError: (error, stack) {
+        state = AsyncError(error, stack);
+        throw Exception(error);
+      },
+    );
+  }
+
+  void changeRole({required List<RoleType> roleList}) {
+    update(
+      (data) {
+        state = const AsyncLoading();
+        return data = data!.copyWith(roleList: roleList);
       },
       onError: (error, stack) {
         state = AsyncError(error, stack);

@@ -232,6 +232,21 @@ class ProjectRepository {
               final projectData =
                   _convertProjectDetailToEntity(detailModel: detailModel);
               await db.tProjectDao.updateProject(projectData: projectData);
+            // 役割
+            case ProjectUpdateParam.role:
+              _logger.d('役割 更新');
+              final roleDataList = detailModel.roleList
+                  .map((role) => db.tProjectRoleDao.convertProjectRoleToEntity(
+                      projectId: detailModel.projectId, code: role.code))
+                  .toList();
+              // 役割 削除
+              await db.tProjectRoleDao.deleteProjectRoleByProjectId(
+                  projectId: detailModel.projectId);
+              // 役割 作成
+              for (final item in roleDataList) {
+                await db.tProjectRoleDao
+                    .insertProjectRole(resumeRoleData: item);
+              }
             // OS
             case ProjectUpdateParam.os:
               _logger.d('OS 更新');

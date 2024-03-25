@@ -2934,6 +2934,300 @@ class TDevLanguageRelCompanion extends UpdateCompanion<TDevLanguageRelData> {
   }
 }
 
+class $TProjectRoleTable extends TProjectRole
+    with TableInfo<$TProjectRoleTable, TProjectRoleData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TProjectRoleTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _codeMeta = const VerificationMeta('code');
+  @override
+  late final GeneratedColumn<int> code = GeneratedColumn<int>(
+      'code', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(6));
+  static const VerificationMeta _projectIdMeta =
+      const VerificationMeta('projectId');
+  @override
+  late final GeneratedColumn<String> projectId = GeneratedColumn<String>(
+      'project_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES t_project (project_id)'));
+  static const VerificationMeta _createAtMeta =
+      const VerificationMeta('createAt');
+  @override
+  late final GeneratedColumn<String> createAt = GeneratedColumn<String>(
+      'create_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  static const VerificationMeta _updateAtMeta =
+      const VerificationMeta('updateAt');
+  @override
+  late final GeneratedColumn<String> updateAt = GeneratedColumn<String>(
+      'update_at', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => DateTime.now().toIso8601String());
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, code, projectId, createAt, updateAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 't_project_role';
+  @override
+  VerificationContext validateIntegrity(Insertable<TProjectRoleData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('code')) {
+      context.handle(
+          _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(_projectIdMeta,
+          projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta));
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('create_at')) {
+      context.handle(_createAtMeta,
+          createAt.isAcceptableOrUnknown(data['create_at']!, _createAtMeta));
+    }
+    if (data.containsKey('update_at')) {
+      context.handle(_updateAtMeta,
+          updateAt.isAcceptableOrUnknown(data['update_at']!, _updateAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TProjectRoleData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TProjectRoleData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      code: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}code'])!,
+      projectId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}project_id'])!,
+      createAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}create_at'])!,
+      updateAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}update_at'])!,
+    );
+  }
+
+  @override
+  $TProjectRoleTable createAlias(String alias) {
+    return $TProjectRoleTable(attachedDatabase, alias);
+  }
+}
+
+class TProjectRoleData extends DataClass
+    implements Insertable<TProjectRoleData> {
+  /// id
+  final int id;
+
+  /// コード PM: 1, PL: 2, SM: 3, TL: 4, SL: 5, 開発: 6, テスター: 7
+  final int code;
+
+  /// 経歴書プロジェクトID
+  final String projectId;
+  final String createAt;
+  final String updateAt;
+  const TProjectRoleData(
+      {required this.id,
+      required this.code,
+      required this.projectId,
+      required this.createAt,
+      required this.updateAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['code'] = Variable<int>(code);
+    map['project_id'] = Variable<String>(projectId);
+    map['create_at'] = Variable<String>(createAt);
+    map['update_at'] = Variable<String>(updateAt);
+    return map;
+  }
+
+  TProjectRoleCompanion toCompanion(bool nullToAbsent) {
+    return TProjectRoleCompanion(
+      id: Value(id),
+      code: Value(code),
+      projectId: Value(projectId),
+      createAt: Value(createAt),
+      updateAt: Value(updateAt),
+    );
+  }
+
+  factory TProjectRoleData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TProjectRoleData(
+      id: serializer.fromJson<int>(json['id']),
+      code: serializer.fromJson<int>(json['code']),
+      projectId: serializer.fromJson<String>(json['projectId']),
+      createAt: serializer.fromJson<String>(json['createAt']),
+      updateAt: serializer.fromJson<String>(json['updateAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'code': serializer.toJson<int>(code),
+      'projectId': serializer.toJson<String>(projectId),
+      'createAt': serializer.toJson<String>(createAt),
+      'updateAt': serializer.toJson<String>(updateAt),
+    };
+  }
+
+  TProjectRoleData copyWith(
+          {int? id,
+          int? code,
+          String? projectId,
+          String? createAt,
+          String? updateAt}) =>
+      TProjectRoleData(
+        id: id ?? this.id,
+        code: code ?? this.code,
+        projectId: projectId ?? this.projectId,
+        createAt: createAt ?? this.createAt,
+        updateAt: updateAt ?? this.updateAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TProjectRoleData(')
+          ..write('id: $id, ')
+          ..write('code: $code, ')
+          ..write('projectId: $projectId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, code, projectId, createAt, updateAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TProjectRoleData &&
+          other.id == this.id &&
+          other.code == this.code &&
+          other.projectId == this.projectId &&
+          other.createAt == this.createAt &&
+          other.updateAt == this.updateAt);
+}
+
+class TProjectRoleCompanion extends UpdateCompanion<TProjectRoleData> {
+  final Value<int> id;
+  final Value<int> code;
+  final Value<String> projectId;
+  final Value<String> createAt;
+  final Value<String> updateAt;
+  const TProjectRoleCompanion({
+    this.id = const Value.absent(),
+    this.code = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  });
+  TProjectRoleCompanion.insert({
+    this.id = const Value.absent(),
+    this.code = const Value.absent(),
+    required String projectId,
+    this.createAt = const Value.absent(),
+    this.updateAt = const Value.absent(),
+  }) : projectId = Value(projectId);
+  static Insertable<TProjectRoleData> custom({
+    Expression<int>? id,
+    Expression<int>? code,
+    Expression<String>? projectId,
+    Expression<String>? createAt,
+    Expression<String>? updateAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (code != null) 'code': code,
+      if (projectId != null) 'project_id': projectId,
+      if (createAt != null) 'create_at': createAt,
+      if (updateAt != null) 'update_at': updateAt,
+    });
+  }
+
+  TProjectRoleCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? code,
+      Value<String>? projectId,
+      Value<String>? createAt,
+      Value<String>? updateAt}) {
+    return TProjectRoleCompanion(
+      id: id ?? this.id,
+      code: code ?? this.code,
+      projectId: projectId ?? this.projectId,
+      createAt: createAt ?? this.createAt,
+      updateAt: updateAt ?? this.updateAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (code.present) {
+      map['code'] = Variable<int>(code.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<String>(projectId.value);
+    }
+    if (createAt.present) {
+      map['create_at'] = Variable<String>(createAt.value);
+    }
+    if (updateAt.present) {
+      map['update_at'] = Variable<String>(updateAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TProjectRoleCompanion(')
+          ..write('id: $id, ')
+          ..write('code: $code, ')
+          ..write('projectId: $projectId, ')
+          ..write('createAt: $createAt, ')
+          ..write('updateAt: $updateAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $TDevProgressRelTable extends TDevProgressRel
     with TableInfo<$TDevProgressRelTable, TDevProgressRelData> {
   @override
@@ -11869,6 +12163,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final $TProjectTable tProject = $TProjectTable(this);
   late final $TDevLanguageRelTable tDevLanguageRel =
       $TDevLanguageRelTable(this);
+  late final $TProjectRoleTable tProjectRole = $TProjectRoleTable(this);
   late final $TDevProgressRelTable tDevProgressRel =
       $TDevProgressRelTable(this);
   late final $TTagTable tTag = $TTagTable(this);
@@ -11912,6 +12207,8 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
       'CREATE INDEX dev_lang_rel_id ON t_dev_language_rel (id)');
   late final Index projectId =
       Index('project_id', 'CREATE INDEX project_id ON t_project (project_id)');
+  late final Index projectRoleId = Index(
+      'project_role_id', 'CREATE INDEX project_role_id ON t_project_role (id)');
   late final Index devProgressRelId = Index('dev_progress_rel_id',
       'CREATE INDEX dev_progress_rel_id ON t_dev_progress_rel (id)');
   late final Index tagId = Index('tag_id', 'CREATE INDEX tag_id ON t_tag (id)');
@@ -11967,6 +12264,8 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
   late final MCountryCodeDao mCountryCodeDao =
       MCountryCodeDao(this as StairsDatabase);
   late final TProjectDao tProjectDao = TProjectDao(this as StairsDatabase);
+  late final TProjectRoleDao tProjectRoleDao =
+      TProjectRoleDao(this as StairsDatabase);
   late final TOsInfoDao tOsInfoDao = TOsInfoDao(this as StairsDatabase);
   late final TOsRelDao tOsRelDao = TOsRelDao(this as StairsDatabase);
   late final TDbDao tDbDao = TDbDao(this as StairsDatabase);
@@ -12018,6 +12317,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         tDevLanguage,
         tProject,
         tDevLanguageRel,
+        tProjectRole,
         tDevProgressRel,
         tTag,
         tTagRel,
@@ -12052,6 +12352,7 @@ abstract class _$StairsDatabase extends GeneratedDatabase {
         tDevLangId,
         devLangRelId,
         projectId,
+        projectRoleId,
         devProgressRelId,
         tagId,
         tagRelId,

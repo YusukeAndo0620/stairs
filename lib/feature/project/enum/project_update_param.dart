@@ -1,6 +1,8 @@
 enum ProjectUpdateParam {
   // プロジェクト
   project,
+  // 役割
+  role,
   // OS
   os,
   // DB
