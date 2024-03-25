@@ -52,6 +52,10 @@ class ProjectRepository {
       // OS
       final osResponse = await db.tOsRelDao.getOsRelList(projectId: projectId);
 
+      // 役割
+      final roleResponse =
+          await db.tProjectRoleDao.getProjectRoleList(projectId: projectId);
+
       // DB
       final dbResponse = await db.tDbRelDao.getDbRelList(projectId: projectId);
 
@@ -84,6 +88,7 @@ class ProjectRepository {
             .map((e) => e.readTableOrNull(db.tOsRel))
             .whereType<TOsRelData>()
             .toList(),
+        roleData: roleResponse,
         dbRelData: dbResponse
             .map((e) => e.readTableOrNull(db.tDbRel))
             .whereType<TDbRelData>()
@@ -126,6 +131,11 @@ class ProjectRepository {
       final osRelDataList = detailModel.osIdList
           .map((osId) => db.tOsRelDao.convertOsRelToEntity(
               projectId: detailModel.projectId, osId: osId))
+          .toList();
+
+      final roleDataList = detailModel.roleList
+          .map((roleType) => db.tProjectRoleDao.convertProjectRoleToEntity(
+              projectId: detailModel.projectId, code: roleType.code))
           .toList();
 
       final dbRelDataList = detailModel.dbIdList
@@ -176,6 +186,10 @@ class ProjectRepository {
 
       // プロジェクト作成
       await db.tProjectDao.insertProject(projectData: projectData);
+      // 役割 作成
+      for (final item in roleDataList) {
+        await db.tProjectRoleDao.insertProjectRole(resumeRoleData: item);
+      }
       // OS 作成
       for (final item in osRelDataList) {
         await db.tOsRelDao.insertOsRel(osRelData: item);
@@ -424,6 +438,7 @@ ProjectListItemModel _convertProjectListToModel({
 ProjectDetailModel _convertProjectDetailToModel({
   required TProjectData projectData,
   required MColorData colorData,
+  required List<TProjectRoleData> roleData,
   required List<TOsRelData> osData,
   required List<TDbRelData> dbRelData,
   required List<TDevLanguageData> devLangData,
@@ -482,6 +497,7 @@ ProjectDetailModel _convertProjectDetailToModel({
     tableCount: projectData.tableCount,
     startDate: DateTime.parse(projectData.startDate).toLocal(),
     endDate: DateTime.parse(projectData.endDate).toLocal(),
+    roleList: roleData.map((item) => getRoleType(item.code)).toList(),
     osIdList: osData.map((item) => item.osId).toList(),
     dbIdList: dbRelData.map((item) => item.dbId).toList(),
     devLanguageList: devLangList,
