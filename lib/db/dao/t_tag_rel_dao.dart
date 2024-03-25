@@ -43,6 +43,48 @@ class TTagRelDao extends DatabaseAccessor<StairsDatabase>
     }
   }
 
+  /// プロジェクトで設定されタグに紐づくタスク取得 {tTagRel, tTag, tTaskTag, tTask}
+  Future<List<TypedResult>> getTagWithTaskList({
+    required String projectId,
+  }) async {
+    try {
+      _logger.d('getTagWithTaskList 通信開始');
+      final query = db.select(db.tTagRel)
+        ..where((tbl) => tbl.projectId.equals(projectId));
+
+      final response = await query.join([
+        // タグ
+        innerJoin(
+          db.tTag,
+          db.tTagRel.tagId.equalsExp(db.tTag.id),
+        ),
+        // タスクタグ
+        innerJoin(
+          db.tTaskTag,
+          db.tTaskTag.tagRelId.equalsExp(db.tTagRel.id),
+        ),
+        // タスク
+        innerJoin(
+          db.tTask,
+          db.tTask.taskId.equalsExp(db.tTaskTag.taskId),
+        ),
+        // タスク
+        innerJoin(
+          db.tTaskDev,
+          db.tTaskDev.taskId.equalsExp(db.tTask.taskId),
+        ),
+      ]).get();
+      _logger.d('取得データ：$response');
+      _logger.d('length: ${response.length}');
+      return response;
+    } on Exception catch (exception) {
+      _logger.e(exception);
+      rethrow;
+    } finally {
+      _logger.d('getTagWithTaskList 通信終了');
+    }
+  }
+
   Future<TypedResult> getTagWithTagRelId({
     required int tagRelId,
   }) async {

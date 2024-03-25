@@ -1,11 +1,31 @@
-class LabelModel {
-  LabelModel({
+import 'package:stairs/loom/loom_package.dart';
+
+class LabelModel extends Equatable {
+  const LabelModel({
     required this.id,
     required this.labelName,
   });
 
+  /// ID
   final String id;
+
+  /// 名称
   final String labelName;
+
+  @override
+  List<Object?> get props => [
+        id,
+        labelName,
+      ];
+
+  LabelModel copyWith({
+    String? id,
+    String? labelName,
+  }) =>
+      LabelModel(
+        id: id ?? this.id,
+        labelName: labelName ?? this.labelName,
+      );
 
   factory LabelModel.fromJson(dynamic json) {
     final id = json['id'];

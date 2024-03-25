@@ -33,6 +33,7 @@ export 'model/t_resume_mw.dart';
 export 'model/t_resume_role.dart';
 export 'model/t_resume_dev_lang.dart';
 export 'model/t_resume_tag.dart';
+export 'model/t_resume_dev_progress_list.dart';
 
 // dao
 export 'dao/m_account_dao.dart';
@@ -66,6 +67,7 @@ export 'dao/t_resume_mw_dao.dart';
 export 'dao/t_resume_tool_dao.dart';
 export 'dao/t_resume_tag_dao.dart';
 export 'dao/t_resume_dev_lang_dao.dart';
+export 'dao/t_resume_dev_progress_dao.dart';
 export 'dummy/board_list.dart';
 export 'dummy/dummy_project_detail.dart';
 export 'constant/dev_language_list.dart';

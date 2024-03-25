@@ -3,7 +3,7 @@ import 'package:stairs/db/database.dart';
 import 'package:stairs/feature/project/enum/project_update_param.dart';
 import 'package:stairs/feature/project/model/project_detail_model.dart';
 import 'package:stairs/feature/project/model/project_list_item_model.dart';
-import 'package:stairs/loom/loom_package.dart' hide Row;
+import 'package:stairs/loom/loom_package.dart';
 
 class ProjectRepository {
   ProjectRepository({required this.db});

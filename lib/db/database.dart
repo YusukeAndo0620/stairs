@@ -55,6 +55,7 @@ final _logger = stairsLogger(name: 'database');
     TResumeMw,
     TResumeDevLang,
     TResumeTag,
+    TResumeDevProgressList,
   ],
   daos: [
     MAccountDao,
@@ -88,6 +89,7 @@ final _logger = stairsLogger(name: 'database');
     TResumeDevLangDao,
     TResumeTagDao,
     TResumeToolDao,
+    TResumeDevProgressDao,
   ],
 )
 class StairsDatabase extends _$StairsDatabase {

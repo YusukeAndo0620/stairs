@@ -8,6 +8,7 @@ mixin _$TResumeTagDaoMixin on DatabaseAccessor<StairsDatabase> {
   $MCountryCodeTable get mCountryCode => attachedDatabase.mCountryCode;
   $MAccountTable get mAccount => attachedDatabase.mAccount;
   $TTagTable get tTag => attachedDatabase.tTag;
+  $TDevLanguageTable get tDevLanguage => attachedDatabase.tDevLanguage;
   $TResumeProjectTable get tResumeProject => attachedDatabase.tResumeProject;
   $TResumeTagTable get tResumeTag => attachedDatabase.tResumeTag;
 }

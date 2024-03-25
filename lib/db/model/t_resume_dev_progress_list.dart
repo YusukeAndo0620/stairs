@@ -1,20 +1,14 @@
 import 'package:drift/drift.dart';
 import 'package:stairs/db/db_package.dart';
 
-/// 経歴書 タグ
-@TableIndex(name: 'resume_tag_id', columns: {#id})
-class TResumeTag extends Table {
+/// 経歴書 開発工程紐付け
+@TableIndex(name: 'resume_dev_progress_id', columns: {#id})
+class TResumeDevProgressList extends Table {
   /// id
   IntColumn get id => integer().autoIncrement()();
 
-  /// タグID
-  IntColumn get tagId => integer().references(TTag, #id)();
-
-  /// タスク数
-  IntColumn get taskCount => integer()();
-
-  /// 開発言語ID
-  TextColumn get devLangId => text().references(TDevLanguage, #devLangId)();
+  /// DevProgressListのID
+  IntColumn get devProgressId => integer().references(MDevProgressList, #id)();
 
   /// 経歴書プロジェクトID
   TextColumn get resumeProjectId =>
