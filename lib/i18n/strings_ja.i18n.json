@@ -1,0 +1,51 @@
+{
+  "common": {
+    "addWithTitle": "$titleを追加",
+    "emptyWithTitle": "$titleが登録されていません。\n$titleを追加してください。",
+    "hintWithTitle": "$titleを設定",
+    "inputWithTitle": "$titleを入力",
+    "add": "追加",
+    "completed": "完了",
+    "cancel": "キャンセル",
+    "color": "色",
+    "colorHint": "メインテーマを設定",
+    "role": "役割",
+    "roleHint": "プロジェクトにおける役割を設定",
+    "os": "OS",
+    "db": "DB・ORM",
+    "devLang": "開発言語",
+    "devLangHint": "開発言語、フレームワークを設定",
+    "devLangVersionHint": "バージョンなどを入力してください。表示例: Java(Java8)",
+    "git": "Git",
+    "mw": "ミドルウェア",
+    "tool": "開発ツール",
+    "toolHint": "ツールを設定（Backlog, Figmaなど）",
+    "workProgress": "作業工程",
+    "label": "ラベル"
+  },
+  "project": {
+    "name": "プロジェクト名",
+    "list": "プロジェクト一覧",
+    "projectEmpty": "表示可能なボードがありません。\nボードを作成してください。",
+    "industry": "業種",
+    "devMethod": "開発手法",
+    "period": "期間",
+    "workContent": "業務内容",
+    "devSize": "開発人数",
+    "displaySize": "画面数",
+    "tableCount": "テーブル数"
+  },
+  "board": {
+    "name": "ボード",
+    "workBoard": "ワークボード"
+  },
+  "task": {
+    "name": "タスク"
+  },
+  "status": {
+    "name": "ステータス"
+  },
+  "resume": {
+    "name": "経歴書"
+  }
+}

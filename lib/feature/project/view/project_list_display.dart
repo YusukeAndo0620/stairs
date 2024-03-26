@@ -8,7 +8,6 @@ import 'package:stairs/loom/loom_package.dart';
 import 'project_edit_display.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const _kProjectTitleTxt = 'プロジェクト一覧';
 const _kProjectListTitlePadding =
     EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0);
 const _kProjectListItemBorder = 1.0;
@@ -22,6 +21,7 @@ class ProjectListDisplay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = LoomTheme.of(context);
+    final t = Translations.of(context);
     // トーストプロバイダー
     final toastMsgNotifier = ref.watch(toastMsgProvider.notifier);
 
@@ -57,7 +57,7 @@ class ProjectListDisplay extends ConsumerWidget {
               ),
             ),
             child: Text(
-              _kProjectTitleTxt,
+              t.project.list,
               style: theme.textStyleSubHeading,
             ),
           ),

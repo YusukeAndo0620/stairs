@@ -10,74 +10,8 @@ import 'package:stairs/feature/project/provider/project_list_provider.dart';
 import 'package:stairs/loom/loom_package.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const _kProjectTitleTxt = 'プロジェクト';
-const _kProjectNameTitleTxt = 'プロジェクト名';
-const _kProjectHintTxt = 'プロジェクト名';
-
-const _kColorTxt = '色';
-const _kColorHintTxt = 'メインテーマを設定';
-
-const _kIndustryTxt = '業種';
-const _kIndustryHintTxt = '業種';
-
-const _kDevMethodTxt = '開発手法';
-
-const _kDueTxt = '期間';
-const _kDueHintTxt = '期間を設定';
-
-const _kContentTxt = '業務内容';
-const _kContentHintTxt = '業務内容';
 const _kContentMaxLength = 500;
 const _kContentMaxLines = 10;
-
-const _kDevSizeTxt = '開発人数';
-const _kDevSizeHintTxt = '開発人数を設定';
-
-const _kDisplayCountTxt = '画面数';
-const _kDisplayCountHintTxt = '画面数を設定';
-
-const _kTableCountTxt = 'テーブル数';
-const _kTableCountHintTxt = 'テーブル数を設定';
-
-const _kRoleTxt = '役割';
-const _kRoleHintTxt = 'プロジェクトにおける役割を設定';
-
-const _kOsTxt = 'OS';
-const _kOsHintTxt = 'OSを設定';
-const _kOsInputHintTxt = 'OSを入力';
-const _kOsListEmptyTxt = 'OSが登録されていません。\nOSを追加してください';
-
-const _kDbTxt = 'DB・ORM';
-const _kDbHintTxt = 'DB, ORMを設定';
-const _kDbInputHintTxt = 'DB・ORMを入力';
-const _kDbListEmptyTxt = 'DB, ORMが登録されていません。\nDB, ORMを追加してください';
-
-const _kDevLangTxt = '開発言語';
-const _kDevLangHintTxt = '開発言語、フレームワークを設定';
-const _kDevLangListEmptyTxt = '言語が登録されていません。\n言語を登録してください。';
-const _kDevLangVersionHintTxt = 'バージョンなどを入力してください。表示例: Java(Java8)';
-
-const _kGitTxt = 'Git';
-const _kGitHintTxt = 'Gitを設定（GitHubなど）';
-const _kGitInputHintTxt = 'Gitを入力';
-const _kGitListEmptyTxt = 'Gitが登録されていません。\nGitを追加してください';
-
-const _kMwTxt = 'ミドルウェア';
-const _kMwHintTxt = 'ミドルウェアを設定（Apacheなど）';
-const _kMwInputHintTxt = 'ミドルウェアを入力';
-const _kMwListEmptyTxt = 'ミドルウェアが登録されていません。\nミドルウェアを追加してください';
-
-const _kToolTxt = '開発ツール';
-const _kToolHintTxt = 'ツールを設定（Backlog, Figmaなど）';
-const _kToolInputHintTxt = 'ツール名を入力';
-const _kToolListEmptyTxt = '開発ツールが登録されていません。\n開発ツールを追加してください';
-
-const _kProgressTxt = '作業工程';
-const _kProgressHintTxt = '携わった作業工程を設定';
-
-const _kBoardTitleTxt = 'ボード';
-const _kLabelTxt = 'ラベル';
-const _kLabelHintTxt = 'ラベルを設定';
 
 const _kProjectAndBoardSpace = 30.0;
 const _kContentPadding = EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0);
@@ -116,6 +50,8 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
     _logger.d('===================================');
     _logger.d('プロジェクト編集モーダル 表示 {projectId:${widget.projectId}');
     final theme = LoomTheme.of(context);
+    final t = Translations.of(context);
+
     // プロジェクト詳細
     final projectDetailState =
         ref.watch(projectDetailProvider(projectId: widget.projectId));
@@ -205,17 +141,18 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         CardLstItem.header(
-                          title: _kProjectTitleTxt,
+                          title: t.project.name,
                           bgColor: theme.colorBgLayer1,
                         ),
                         // プロジェクト名
                         CardLstItem.input(
                             width: secondaryItemWidth,
-                            label: _kProjectNameTitleTxt,
+                            label: t.project.name,
                             iconColor: theme.colorPrimary,
                             iconData: theme.icons.project,
                             inputValue: detail.projectName,
-                            hintText: _kProjectHintTxt,
+                            hintText:
+                                t.common.hintWithTitle(title: t.project.name),
                             onSubmitted: (projectName) {
                               if (detail.projectName != projectName) {
                                 addUpdateParam(
@@ -227,10 +164,10 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // 色
                         CardLstItem.labeWithIcon(
                           width: secondaryItemWidth,
-                          label: _kColorTxt,
+                          label: t.common.color,
                           iconData: Icons.palette,
                           iconColor: theme.colorPrimary,
-                          hintText: _kColorHintTxt,
+                          hintText: t.common.colorHint,
                           itemList: [
                             ColorBox(
                               color: detail.themeColorModel.color,
@@ -240,7 +177,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return SelectColorDisplay(
-                                  title: _kColorTxt,
+                                  title: t.common.color,
                                   selectedColorInfo:
                                       detail.themeColorModel.color,
                                   onTap: (id) {},
@@ -261,11 +198,12 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // 業種
                         CardLstItem.input(
                           width: secondaryItemWidth,
-                          label: _kIndustryTxt,
+                          label: t.project.industry,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.industry,
                           inputValue: detail.industry,
-                          hintText: _kIndustryHintTxt,
+                          hintText:
+                              t.common.hintWithTitle(title: t.project.industry),
                           onSubmitted: (industry) {
                             if (detail.industry != industry) {
                               addUpdateParam(param: ProjectUpdateParam.project);
@@ -277,7 +215,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // 開発手法
                         CardLstItem.dropDown(
                           width: secondaryItemWidth * 0.8,
-                          label: _kDevMethodTxt,
+                          label: t.project.devMethod,
                           iconData: theme.icons.developers,
                           iconColor: theme.colorPrimary,
                           isShownDefaultItem: false,
@@ -301,12 +239,13 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // 開発人数
                         CardLstItem.input(
                           width: secondaryItemWidth,
-                          label: _kDevSizeTxt,
+                          label: t.project.devSize,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.group,
                           inputType: TextInputType.number,
                           inputValue: detail.devSize.toString(),
-                          hintText: _kDevSizeHintTxt,
+                          hintText:
+                              t.common.hintWithTitle(title: t.project.devSize),
                           onSubmitted: (devSize) {
                             if (detail.devSize.toString() != devSize) {
                               addUpdateParam(param: ProjectUpdateParam.project);
@@ -319,14 +258,15 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // 画面数
                         CardLstItem.input(
                           width: secondaryItemWidth,
-                          label: _kDisplayCountTxt,
+                          label: t.project.displaySize,
                           iconColor: theme.colorPrimary,
                           iconData: Icons.desktop_mac_outlined,
                           inputType: TextInputType.number,
                           inputValue: detail.displayCount == 0
                               ? ''
                               : detail.displayCount.toString(),
-                          hintText: _kDisplayCountHintTxt,
+                          hintText: t.common
+                              .hintWithTitle(title: t.project.displaySize),
                           onSubmitted: (displayCount) {
                             if (detail.displayCount.toString() !=
                                 displayCount) {
@@ -340,14 +280,15 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // テーブル数
                         CardLstItem.input(
                           width: secondaryItemWidth,
-                          label: _kTableCountTxt,
+                          label: t.project.tableCount,
                           iconColor: theme.colorPrimary,
                           iconData: Icons.table_rows_outlined,
                           inputType: TextInputType.number,
                           inputValue: detail.tableCount == 0
                               ? ''
                               : detail.tableCount.toString(),
-                          hintText: _kTableCountHintTxt,
+                          hintText: t.common
+                              .hintWithTitle(title: t.project.tableCount),
                           onSubmitted: (tableCount) {
                             if (detail.tableCount.toString() != tableCount) {
                               addUpdateParam(param: ProjectUpdateParam.project);
@@ -360,10 +301,11 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // 期間
                         CardLstItem.labeWithIcon(
                           width: secondaryItemWidth,
-                          label: _kDueTxt,
+                          label: t.project.period,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.calender,
-                          hintText: _kDueHintTxt,
+                          hintText:
+                              t.common.hintWithTitle(title: t.project.period),
                           itemList: [
                             DateRange(
                               startDate: detail.startDate,
@@ -412,11 +354,12 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // 業務内容
                         CardLstItem.inputArea(
                           width: fullWidth,
-                          label: _kContentTxt,
+                          label: t.project.workContent,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.description,
                           inputValue: detail.description,
-                          hintText: _kContentHintTxt,
+                          hintText: t.common
+                              .hintWithTitle(title: t.project.workContent),
                           maxLines: _kContentMaxLines,
                           maxLength: _kContentMaxLength,
                           onSubmitted: (description) {
@@ -430,10 +373,10 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // 役割
                         CardLstItem.labeWithIcon(
                           width: secondaryItemWidth,
-                          label: _kRoleTxt,
+                          label: t.common.role,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.resume,
-                          hintText: _kRoleHintTxt,
+                          hintText: t.common.roleHint,
                           itemList: [
                             for (final roleType in detail.roleList)
                               LabelTip(
@@ -445,7 +388,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return SelectLabelDisplay(
-                                  title: _kRoleTxt,
+                                  title: t.common.role,
                                   labelList: RoleType.values
                                       .map((e) => LabelModel(
                                           id: e.code.toString(),
@@ -477,10 +420,10 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // OS
                         CardLstItem.labeWithIcon(
                           width: secondaryItemWidth,
-                          label: _kOsTxt,
+                          label: t.common.os,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.resume,
-                          hintText: _kOsHintTxt,
+                          hintText: t.common.hintWithTitle(title: t.common.os),
                           itemList: [
                             for (final osId in detail.osIdList)
                               LabelTip(
@@ -492,11 +435,13 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return SelectLabelDisplay(
-                                  title: _kOsTxt,
+                                  title: t.common.os,
                                   labelList: osList.value ?? [],
                                   checkedIdList: detail.osIdList,
-                                  hintText: _kOsInputHintTxt,
-                                  emptyText: _kOsListEmptyTxt,
+                                  hintText: t.common
+                                      .inputWithTitle(title: t.common.os),
+                                  emptyText: t.common
+                                      .emptyWithTitle(title: t.common.os),
                                   isEditable: true,
                                   onAddLabel: (id, labelName) async {
                                     // OS項目追加
@@ -538,10 +483,10 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // DB
                         CardLstItem.labeWithIcon(
                           width: secondaryItemWidth,
-                          label: _kDbTxt,
+                          label: t.common.db,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.resume,
-                          hintText: _kDbHintTxt,
+                          hintText: t.common.hintWithTitle(title: t.common.db),
                           itemList: [
                             for (final dbId in detail.dbIdList)
                               LabelTip(
@@ -553,11 +498,13 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return SelectLabelDisplay(
-                                  title: _kDbTxt,
+                                  title: t.common.db,
                                   labelList: dbList.value ?? [],
                                   checkedIdList: detail.dbIdList,
-                                  hintText: _kDbInputHintTxt,
-                                  emptyText: _kDbListEmptyTxt,
+                                  hintText: t.common
+                                      .inputWithTitle(title: t.common.db),
+                                  emptyText: t.common
+                                      .emptyWithTitle(title: t.common.db),
                                   isEditable: true,
                                   onAddLabel: (id, labelName) async {
                                     // DB項目追加
@@ -599,10 +546,10 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // 開発言語
                         CardLstItem.labeWithIcon(
                           width: secondaryItemWidth,
-                          label: _kDevLangTxt,
+                          label: t.common.devLang,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.developers,
-                          hintText: _kDevLangHintTxt,
+                          hintText: t.common.devLangHint,
                           itemList: [
                             for (final item in detail.devLanguageList)
                               LabelTip(
@@ -614,9 +561,10 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return DrumrollWithContentDisplay(
-                                  title: _kDevLangTxt,
-                                  hintText: _kDevLangVersionHintTxt,
-                                  selectedListEmptyText: _kDevLangListEmptyTxt,
+                                  title: t.common.devLang,
+                                  hintText: t.common.devLangVersionHint,
+                                  selectedListEmptyText: t.common
+                                      .emptyWithTitle(title: t.common.devLang),
                                   labeList: devLangList.value ?? [],
                                   selectedList: detail.devLanguageList,
                                   onTapBack: (data) {
@@ -636,10 +584,10 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // Git
                         CardLstItem.labeWithIcon(
                           width: secondaryItemWidth,
-                          label: _kGitTxt,
+                          label: t.common.git,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.tool,
-                          hintText: _kGitHintTxt,
+                          hintText: t.common.hintWithTitle(title: t.common.git),
                           itemList: [
                             for (final gitId in detail.gitIdList)
                               LabelTip(
@@ -651,11 +599,13 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return SelectLabelDisplay(
-                                  title: _kGitTxt,
+                                  title: t.common.git,
                                   labelList: gitList.value ?? [],
                                   checkedIdList: detail.gitIdList,
-                                  hintText: _kGitInputHintTxt,
-                                  emptyText: _kGitListEmptyTxt,
+                                  hintText: t.common
+                                      .inputWithTitle(title: t.common.git),
+                                  emptyText: t.common
+                                      .emptyWithTitle(title: t.common.git),
                                   isEditable: true,
                                   onAddLabel: (id, labelName) async {
                                     // Git項目追加
@@ -697,10 +647,10 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // ミドルウェア
                         CardLstItem.labeWithIcon(
                           width: secondaryItemWidth,
-                          label: _kMwTxt,
+                          label: t.common.mw,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.tool,
-                          hintText: _kMwHintTxt,
+                          hintText: t.common.hintWithTitle(title: t.common.mw),
                           itemList: [
                             for (final mwId in detail.mwIdList)
                               LabelTip(
@@ -712,11 +662,13 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return SelectLabelDisplay(
-                                  title: _kMwTxt,
+                                  title: t.common.mw,
                                   labelList: mwList.value ?? [],
                                   checkedIdList: detail.mwIdList,
-                                  hintText: _kMwInputHintTxt,
-                                  emptyText: _kMwListEmptyTxt,
+                                  hintText: t.common
+                                      .inputWithTitle(title: t.common.mw),
+                                  emptyText: t.common
+                                      .emptyWithTitle(title: t.common.mw),
                                   isEditable: true,
                                   onAddLabel: (id, labelName) async {
                                     // ミドルウェア項目追加
@@ -758,10 +710,10 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // 開発ツール
                         CardLstItem.labeWithIcon(
                           width: secondaryItemWidth,
-                          label: _kToolTxt,
+                          label: t.common.tool,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.tool,
-                          hintText: _kToolHintTxt,
+                          hintText: t.common.toolHint,
                           itemList: [
                             for (final toolId in detail.toolIdList)
                               LabelTip(
@@ -773,11 +725,13 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return SelectLabelDisplay(
-                                  title: _kToolTxt,
+                                  title: t.common.tool,
                                   labelList: toolList.value ?? [],
                                   checkedIdList: detail.toolIdList,
-                                  hintText: _kToolInputHintTxt,
-                                  emptyText: _kToolListEmptyTxt,
+                                  hintText: t.common
+                                      .inputWithTitle(title: t.common.tool),
+                                  emptyText: t.common
+                                      .emptyWithTitle(title: t.common.tool),
                                   isEditable: true,
                                   onAddLabel: (id, labelName) async {
                                     // Tool項目追加
@@ -819,10 +773,11 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                         // 作業工程
                         CardLstItem.labeWithIcon(
                           width: secondaryItemWidth,
-                          label: _kProgressTxt,
+                          label: t.common.workProgress,
                           iconColor: theme.colorPrimary,
                           iconData: theme.icons.resume,
-                          hintText: _kProgressHintTxt,
+                          hintText: t.common
+                              .hintWithTitle(title: t.common.workProgress),
                           itemList: [
                             for (final devProgressId
                                 in detail.devProgressIdList)
@@ -836,7 +791,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return SelectLabelDisplay(
-                                  title: _kProgressTxt,
+                                  title: t.common.workProgress,
                                   labelList: devProgressList.value!,
                                   checkedIdList: detail.devProgressIdList,
                                   onTapBackIcon: (idList) {
@@ -860,16 +815,17 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                           height: _kProjectAndBoardSpace,
                         ),
                         CardLstItem.header(
-                          title: _kBoardTitleTxt,
+                          title: t.board.name,
                           bgColor: theme.colorBgLayer1,
                         ),
                         // ラベル
                         CardLstItem.labeWithIcon(
                           width: fullWidth,
-                          label: _kLabelTxt,
+                          label: t.common.label,
                           iconColor: theme.colorPrimary,
                           iconData: Icons.label,
-                          hintText: _kLabelHintTxt,
+                          hintText:
+                              t.common.hintWithTitle(title: t.common.label),
                           rowType: RowType.double,
                           itemList: [
                             for (final item in detail.tagList)
@@ -882,7 +838,7 @@ class ProjectEditDisplayState extends ConsumerState<ProjectEditDisplay> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return TagDisplay(
-                                  title: _kLabelTxt,
+                                  title: t.common.label,
                                   tagList: detail.tagList,
                                   onTapBack: (data) {
                                     if (detail.tagList != data) {

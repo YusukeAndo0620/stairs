@@ -1,8 +1,6 @@
 import 'package:stairs/feature/project/view/project_edit_display.dart';
 import 'package:stairs/loom/loom_package.dart';
 
-const _kProjectEmptyTxt = '表示可能なボードがありません。\nボードを作成してください。';
-
 const _kProjectEmptyContentPadding =
     EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0);
 
@@ -12,6 +10,8 @@ class ProjectEmptyDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = LoomTheme.of(context);
+    final t = Translations.of(context);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -19,7 +19,7 @@ class ProjectEmptyDisplay extends StatelessWidget {
         Padding(
           padding: _kProjectEmptyContentPadding,
           child: Text(
-            _kProjectEmptyTxt,
+            t.project.projectEmpty,
             style: theme.textStyleBody,
             textAlign: TextAlign.center,
           ),

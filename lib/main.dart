@@ -17,10 +17,18 @@ BuildContext get scaffoldContext {
 }
 
 void main() {
+  // Flutterのウィジェットバインディングの初期化
+  WidgetsFlutterBinding.ensureInitialized();
+  // デバイスのロケール設定に基づいて初期言語を設定
+  // LocaleSettings.useDeviceLocale();
+  // デフォルト：日本語にしておく
+  LocaleSettings.setLocale(AppLocale.ja);
   runApp(
-    const ProviderScope(
-      child: AppLaunch(
-        app: App(),
+    TranslationProvider(
+      child: const ProviderScope(
+        child: AppLaunch(
+          app: App(),
+        ),
       ),
     ),
   );
@@ -85,11 +93,8 @@ class _AppLaunchState extends ConsumerState<AppLaunch> {
           GlobalCupertinoLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
-        supportedLocales: const [
-          Locale('ja'),
-          Locale('en'),
-        ],
-        locale: const Locale('ja'),
+        supportedLocales: AppLocaleUtils.supportedLocales,
+        locale: TranslationProvider.of(context).flutterLocale,
       ),
     );
   }

@@ -55,6 +55,8 @@ dependencies:
   percent_indicator: ^4.2.3
   syncfusion_flutter_charts: ^24.2.6
   meta: ^1.10.0
+  slang: ^3.30.2
+  slang_flutter: ^3.30.0
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +69,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
   build_runner: ^2.4.7
+  slang_build_runner: ^3.30.0
   drift_dev: ^2.14.1
   riverpod_generator: ^2.3.8
 # For information on the generic Dart part of this file, see the

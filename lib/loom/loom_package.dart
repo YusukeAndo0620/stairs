@@ -11,6 +11,7 @@ export 'package:stairs/loom/screen_widget.dart';
 export 'package:syncfusion_flutter_charts/charts.dart';
 export 'package:data_table_2/data_table_2.dart';
 export 'package:percent_indicator/percent_indicator.dart';
+export 'package:stairs/i18n/strings.g.dart';
 
 export 'dart:convert';
 export 'stairs_logger.dart';
